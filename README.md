@@ -1,73 +1,120 @@
-# Welcome to your Lovable project
+# 🛡️ Upbase Monitoring: Guardian of the Fleet
 
-## Project info
+[![Status](https://img.shields.io/badge/Status-Alpha-orange.svg)](https://github.com/upbasmonitoring/upbase-monitoring-)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Author](https://img.shields.io/badge/Author-upbase--monitoring--green.svg)](https://github.com/upbasmonitoring)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**Upbase Monitoring** (Sentinel IQ) is an AI-powered observability and self-healing platform designed to eliminate the delay between a website breaking and a developer fixing it. It automates the "Oh No!" moment by detecting failures and initiating autonomous remediation.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🚀 Key Features
 
-**Use Lovable**
+### 🌐 Global Monitoring & Observability
+*   **24/7 Uptime Tracking**: Constant pings to monitor availability across global endpoints.
+*   **Performance Metrics**: Real-time tracking of Response Time (TTFB), Error Rates, and SSL certificate health.
+*   **SLIs & SLOs**: Automated Service Level Indicator tracking to ensure your platform meets its reliability goals.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### 🧠 Ralph Intelligence Engine (RCA)
+*   **Root Cause Analysis**: Our custom AI engine, Ralph, analyzes every failure to determine the "Why, What, and How."
+*   **Intelligent Diagnostics**: Distinguishes between network jitter, "Ghost Failures," and critical server-side errors.
 
-Changes made via Lovable will be committed automatically to this repo.
+### ⚡ Self-Healing & Remediation
+*   **Automated Git Rollbacks**: Integrates with GitHub REST API to trigger instant code rollbacks when a "Bad Deploy" is detected.
+*   **Autonomous Fixes**: Ralph doesn't just alert; it takes action to restore service immediately.
 
-**Use your preferred IDE**
+### 📱 Multi-Channel Smart Alerts
+*   **Interactive WhatsApp Bot**: A human-like bot that provides status updates and allows manual triggers (`STATUS`, `ROLLBACK`) directly from your phone.
+*   **Tiered Escalation**: Automatic escalation flow: **WhatsApp → Discord → Email**, based on downtime duration.
+*   **Anti-Ban Engine**: Advanced simulation of "Human Thinking" states to protect your WhatsApp number from being flagged.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Tech Stack
 
-Follow these steps:
+### Frontend
+- **Framework**: React.js with Vite
+- **Styling**: Tailwind CSS & Framer Motion
+- **UI Components**: Shadcn UI & Lucide Icons
+- **State Management**: React Context & Hooks
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Backend
+- **Runtime**: Node.js & Express.js
+- **Database**: MongoDB (Mongoose)
+- **Real-time**: WebSocket & Redis (Caching)
+- **Integrations**: GitHub API, WhatsApp-web.js (Puppeteer), Nodemailer (SMTP)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🏗️ Architecture Flow
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```mermaid
+graph TD
+    A[Monitoring Engine] -->|Ping Fail| B(Failure Gate: 3 mins)
+    B -->|Confirmed| C{Ralph Intelligence}
+    C -->|Analyze Logs| D[Root Cause Analysis]
+    D -->|Identify Bad Commit| E[GitHub API Rollback]
+    E -->|Restore Version| F[Site Recovery]
+    F -->|Alert| G[WhatsApp / Discord / Email]
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## ⚙️ Getting Started
 
-**Use GitHub Codespaces**
+### Prerequisites
+*   Node.js (v18+)
+*   MongoDB (Compass or Atlas)
+*   GitHub Personal Access Token (for rollbacks)
+*   WhatsApp account (for alert bot)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Installation
 
-## What technologies are used for this project?
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/upbasmonitoring/upbase-monitoring-.git
+   cd upbase-monitoring-
+   ```
 
-This project is built with:
+2. **Setup Backend:**
+   ```bash
+   cd backend
+   npm install
+   cp .env.example .env
+   # Update your API keys, MongoDB URI, and GitHub tokens in .env
+   npm start
+   ```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+3. **Setup Frontend:**
+   ```bash
+   cd ../frontend
+   npm install
+   npm run dev
+   ```
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## 🌿 Branching Strategy
 
-## Can I connect a custom domain to my Lovable project?
+Our repository follows a strict internal workflow to ensure stability:
 
-Yes, you can!
+*   **`main` Branch**: Reserved for **Stable Production** releases. Only verified and tested code is merged here.
+*   **`master` Branch**: Used for **Upcoming Updates** and active development. Push your latest enhancements here first for testing.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🔐 Security
+*   **JWT Authentication**: Secure user session management across the platform.
+*   **Token Encryption**: All GitHub access tokens are encrypted using AES-256 before being stored.
+*   **Security Shield**: Implemented Helmet.js and custom RBAC (Role-Based Access Control) middleware.
+
+---
+
+## 📜 License
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+## 🤝 Contact
+**Project Link**: [https://github.com/upbasmonitoring/upbase-monitoring-](https://github.com/upbasmonitoring/upbase-monitoring-)
+**Organization**: [Upbase Monitoring](https://github.com/upbasmonitoring)
