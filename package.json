@@ -1,0 +1,12 @@
+{
+  "name": "pulsewatch-monorepo",
+  "private": true,
+  "description": "PulseWatch Monitoring Solution",
+  "scripts": {
+    "start:backend": "npm start --prefix backend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend",
+    "dev": "npm run dev:backend & npm run dev:frontend"
+  }
+}

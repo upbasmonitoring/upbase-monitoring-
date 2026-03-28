@@ -1,0 +1,22 @@
+{
+  "short_name": "Upbase",
+  "name": "Upbase | Infrastructure Monitoring",
+  "icons": [
+    {
+      "src": "upbase-v2-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "upbase-v2-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#3b82f6",
+  "background_color": "#ffffff"
+}
