@@ -174,8 +174,8 @@ const DashboardLayout = () => {
                 <div className="flex items-center gap-6 flex-1">
                     <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
                         <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" className="lg:hidden h-10 w-10 border border-border rounded-xl bg-card">
-                                <Menu className="h-5 w-5" />
+                            <Button variant="ghost" size="icon" className="lg:hidden h-9 w-9 sm:h-11 sm:w-11 border border-border rounded-xl sm:rounded-2xl bg-card">
+                                <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="left" className="p-0 border-r border-border w-72 bg-card">
@@ -212,9 +212,9 @@ const DashboardLayout = () => {
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="relative h-11 w-11 rounded-2xl bg-card border border-border hover:bg-secondary transition-all group shadow-sm">
-                                <Bell className="h-4.5 w-4.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                                <span className="absolute top-3.5 right-3.5 h-2 w-2 rounded-full bg-red-500 border-2 border-card" />
+                            <Button variant="ghost" size="icon" className="relative h-9 w-9 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-card border border-border hover:bg-secondary transition-all group shadow-sm">
+                                <Bell className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                <span className="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-red-500 border-2 border-card" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-[380px] bg-card border-border p-3 shadow-2xl rounded-3xl mt-2 animate-in slide-in-from-top-2 text-foreground">
