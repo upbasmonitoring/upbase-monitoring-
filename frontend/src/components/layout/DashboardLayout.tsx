@@ -146,6 +146,7 @@ const DashboardLayout = () => {
   const { theme, setTheme } = useTheme();
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const [scrolled, setScrolled] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -172,7 +173,7 @@ const DashboardLayout = () => {
                 scrolled ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-sm" : "bg-transparent"
             }`}>
                 <div className="flex items-center gap-6 flex-1">
-                    <Sheet>
+                    <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon" className="lg:hidden h-10 w-10 border border-border rounded-xl bg-card">
                                 <Menu className="h-5 w-5" />
@@ -182,7 +183,7 @@ const DashboardLayout = () => {
                             <SheetHeader className="sr-only">
                                 <SheetTitle>Navigation Menu</SheetTitle>
                             </SheetHeader>
-                            <SidebarContent />
+                            <SidebarContent onNavItemClick={() => setIsSidebarOpen(false)} />
                         </SheetContent>
                     </Sheet>
 
