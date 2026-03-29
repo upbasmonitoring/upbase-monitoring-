@@ -161,8 +161,16 @@ const router = createBrowserRouter([
 
 
 const App = () => {
-    // 🧠 SRE PRELOADING STRATEGY
+    // 🧠 SRE PRELOADING + PERSISTENCE STRATEGY
     useEffect(() => {
+        // 🔒 PWA-Only Persist: If running as an INSTALLED APP, jump to dashboard automatically
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+        const user = localStorage.getItem('user');
+        
+        if (isStandalone && user && window.location.pathname === '/') {
+            window.location.href = '/dashboard';
+        }
+
         const preload = () => {
             // Priority 1: Main Dashboard + AI Engine
             import("./pages/dashboard/DashboardPage");

@@ -126,6 +126,14 @@ app.use('/api', apiRoutes);
 app.get('/health', (req, res) => {
     logger.info(`[CRON] Keep-alive ping received at ${new Date().toISOString()}`);
 
+    // Cookie options - Extended to 30 days for 'Instagram-style' persistent login
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days (standard for modern apps)
+    };
+
     res.status(200).json({
         status: "ok",
         environment: process.env.NODE_ENV,
