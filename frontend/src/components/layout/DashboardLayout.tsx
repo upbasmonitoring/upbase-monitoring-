@@ -72,6 +72,7 @@ const SidebarContent = ({ onNavItemClick }: { onNavItemClick?: () => void }) => 
     localStorage.removeItem('user');
     localStorage.removeItem('selectedProjectId');
     queryClient.clear(); // 🛡️ Purge all cached monitoring data immediately
+    window.dispatchEvent(new Event('auth-change'));
     navigate('/login');
   };
 
@@ -144,33 +145,16 @@ const DashboardLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, setTheme } = useTheme();
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
-  const [scrolled, setScrolled] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  useEffect(() => {
-    if (!user) navigate('/login');
-    
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [user, navigate]);
-
-  if (!user) return null;
 
   return (
-    <div className="flex h-screen bg-background text-foreground selection:bg-primary/10 font-sans overflow-hidden transition-colors duration-300">
-        {/* Sidebar - Desktop */}
-        <aside className="hidden lg:flex w-[280px] flex-col shrink-0 z-50 border-r border-border bg-card">
+    <div className="flex h-screen bg-background overflow-hidden relative">
+        <aside className="hidden lg:flex w-72 flex-col fixed inset-y-0 z-50">
             <SidebarContent />
         </aside>
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 relative">
-            
-            {/* Top Navigation */}
-            <header className={`h-16 sm:h-20 flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0 z-40 relative transition-all duration-300 ${
-                scrolled ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-sm" : "bg-transparent"
-            }`}>
+        <div className="flex-1 flex flex-col lg:pl-72 relative">
+            <header className={`h-16 sm:h-20 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-40 transition-all`}>
                 <div className="flex items-center gap-6 flex-1">
                     <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
                         <SheetTrigger asChild>
@@ -190,13 +174,10 @@ const DashboardLayout = () => {
                         <ProjectSwitcher />
                         
                         <div className="hidden md:flex items-center gap-3 bg-card border border-border rounded-2xl px-5 py-2.5 w-full max-w-sm focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/5 transition-all group">
-                            <Search className="h-4 w-4 text-muted-foreground/40 group-focus-within:text-primary transition-all" />
-                            <label htmlFor="global-search" className="sr-only">Search Workspace</label>
-                            <Input
-                                id="global-search"
-                                name="search"
-                                placeholder="Search Workspace..."
-                                className="bg-transparent border-0 h-6 text-xs font-semibold placeholder:text-muted-foreground/30 focus-visible:ring-0 p-0 text-foreground"
+                            <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                            <Input 
+                                placeholder="Command Console..." 
+                                className="border-0 bg-transparent p-0 h-auto focus-visible:ring-0 text-xs font-bold uppercase tracking-widest placeholder:text-muted-foreground/30"
                             />
                         </div>
                     </div>

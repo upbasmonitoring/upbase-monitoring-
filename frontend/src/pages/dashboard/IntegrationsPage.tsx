@@ -454,15 +454,13 @@ const IntegrationsPage = () => {
                             />
                         </div>
 
-                        {whatsappStatus.isConnected && (
-                            <Button 
-                                onClick={handleWhatsappLogout} 
-                                variant="ghost" 
-                                className="w-full text-[9px] font-bold uppercase tracking-widest text-red-400 hover:text-red-500 hover:bg-red-50"
-                            >
-                                Disconnect Hub & Reset QR
-                            </Button>
-                        )}
+                        <Button 
+                            onClick={handleWhatsappLogout} 
+                            variant="ghost" 
+                            className="w-full text-[9px] font-bold uppercase tracking-widest text-red-400 hover:text-red-500 hover:bg-red-50"
+                        >
+                            {whatsappStatus.isConnected ? "Disconnect Hub & Reset QR" : "Force Reset Hanging Session"}
+                        </Button>
                     </div>
                 </DialogContent>
             </Dialog>

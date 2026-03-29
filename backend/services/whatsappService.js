@@ -16,7 +16,7 @@ export const initWhatsApp = (projectId = 'global') => {
         const client = new Client({
             authStrategy: new LocalAuth({
                 clientId: `sentinel-node-${projectId}`,
-                dataPath: './.wwebjs_auth'
+                dataPath: `./.wwebjs_auth/${projectId}` // Isolate data per project to avoid locks
             }),
             puppeteer: {
                 args: [
