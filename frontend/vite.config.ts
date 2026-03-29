@@ -32,5 +32,8 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
+    assetsInlineLimit: 0, // Ensure all assets are properly output to files
+    outDir: "dist", // Ensure output directory is correct
+    target: "esnext", // Ensure modern JavaScript output
   },
 }));
