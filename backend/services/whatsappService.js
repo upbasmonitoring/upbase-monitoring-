@@ -179,3 +179,12 @@ export const sendWhatsAppAlert = async (projectId = 'global', to, message) => {
         console.error(`[WHATSAPP-DISPATCH-ERR-${projectId}]`, err.message);
     }
 };
+
+export const getWhatsAppStatus = (projectId = 'global') => {
+    const session = clients.get(projectId);
+    if (!session) return { isConnected: false, qrCode: null };
+    return {
+        isConnected: session.isConnected,
+        qrCode: session.qrCodeData
+    };
+};
