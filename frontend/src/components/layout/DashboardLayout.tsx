@@ -147,7 +147,6 @@ const DashboardLayout = () => {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const [scrolled, setScrolled] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   useEffect(() => {
     if (!user) navigate('/login');
     
@@ -187,7 +186,7 @@ const DashboardLayout = () => {
                         </SheetContent>
                     </Sheet>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 sm:gap-4">
                         <ProjectSwitcher />
                         
                         <div className="hidden md:flex items-center gap-3 bg-card border border-border rounded-2xl px-5 py-2.5 w-full max-w-sm focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/5 transition-all group">
@@ -203,13 +202,13 @@ const DashboardLayout = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5 sm:gap-4">
                     <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-2xl text-[10px] font-bold text-muted-foreground uppercase tracking-widest shadow-sm">
                         <ShieldCheck className="h-3.5 w-3.5 text-green-500" />
                         System Protected
                     </div>
 
-                    <div className="h-4 w-px bg-slate-200 mx-2 hidden lg:block" />
+                    <div className="h-4 w-px bg-slate-200 mx-1 hidden lg:block" />
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -240,19 +239,19 @@ const DashboardLayout = () => {
                     <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-11 w-11 rounded-2xl bg-card border border-border shadow-sm text-muted-foreground hover:text-primary transition-all group" 
+                        className="h-9 w-9 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-card border border-border shadow-sm text-muted-foreground hover:text-primary transition-all group" 
                         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                         title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
                     >
                         {theme === "dark" ? (
-                            <Sun className="h-4.5 w-4.5 text-yellow-500 group-hover:scale-110 transition-transform" />
+                            <Sun className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-yellow-500 group-hover:scale-110 transition-transform" />
                         ) : (
-                            <Moon className="h-4.5 w-4.5 text-slate-400 group-hover:text-primary group-hover:scale-110 transition-transform" />
+                            <Moon className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-slate-400 group-hover:text-primary group-hover:scale-110 transition-transform" />
                         )}
                     </Button>
 
-                    <Button variant="ghost" size="icon" className="h-11 w-11 rounded-2xl bg-card border border-border shadow-sm text-muted-foreground hover:text-primary transition-colors" onClick={() => navigate('/dashboard/settings')}>
-                        <User className="h-4.5 w-4.5" />
+                    <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-card border border-border shadow-sm text-muted-foreground hover:text-primary transition-colors" onClick={() => navigate('/dashboard/settings')}>
+                        <User className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
                     </Button>
                 </div>
             </header>

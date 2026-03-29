@@ -22,17 +22,12 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        format: 'es',
-        entryFileNames: 'assets/[name]-[hash].js',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]',
-        manualChunks: {
-          'ui-icons': ['lucide-react'],
-          'charts': ['recharts'],
-          'globe-engine': ['@amcharts/amcharts5', '@amcharts/amcharts5/map', '@amcharts/amcharts5/themes/Animated', '@amcharts/amcharts5-geodata/worldLow'],
-          'animations': ['framer-motion'],
-          'query-stack': ['@tanstack/react-query'],
-          'vendor': ['react', 'react-dom', 'react-router-dom'],
+        manualChunks: (id) => {
+          if (id.includes('@amcharts')) return 'globe-engine';
+          if (id.includes('framer-motion')) return 'animations';
+          if (id.includes('lucide-react')) return 'ui-icons';
+          if (id.includes('recharts')) return 'charts';
+          if (id.includes('node_modules')) return 'vendor';
         },
       },
     },

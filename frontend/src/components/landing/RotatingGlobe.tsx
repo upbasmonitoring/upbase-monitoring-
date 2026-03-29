@@ -10,11 +10,15 @@ const RotatingGlobe = () => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Priority: Give immediate bandwidth to text & layouts, then mount heavy logic
-    const timer = setTimeout(() => {
+    // Priority: Wait for the main thread to be COMPLETELY free before loading 3D
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(() => {
         setMounted(true);
-    }, 50);
-    return () => clearTimeout(timer);
+      }, { timeout: 2000 });
+    } else {
+      const timer = setTimeout(() => setMounted(true), 150);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   useLayoutEffect(() => {
