@@ -18,15 +18,21 @@ export const initWhatsApp = (projectId = 'global') => {
                 clientId: `sentinel-node-${projectId}`,
                 dataPath: `./.wwebjs_auth/${projectId}` // Isolate data per project to avoid locks
             }),
+            webVersion: '2.3000.1018905106-alpha', // 🛡️ HIGH STABILITY: Fixed web version to prevent scraper breaks
+            webVersionCache: {
+                type: 'remote',
+                remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-js/main/dist/wppconnect-wa.js'
+            },
             puppeteer: {
                 args: [
                     '--no-sandbox',
                     '--disable-setuid-sandbox',
                     '--disable-dev-shm-usage',
-                    '--disable-accelerated-2d-canvas',
+                    '--disable-extensions',
+                    '--disable-gpu',
                     '--no-first-run',
                     '--no-zygote',
-                    '--disable-gpu'
+                    '--single-process'
                 ],
                 headless: true
             }
