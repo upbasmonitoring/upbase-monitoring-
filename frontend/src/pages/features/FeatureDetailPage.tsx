@@ -77,7 +77,7 @@ const FeatureDetailPage = () => {
   useEffect(() => {
     if (feature) {
       // Dynamic Title
-      document.title = `${feature.title} | Sentinel IQ`;
+      document.title = `${feature.title} | Upbase Monitoring`;
       
       // Dynamic Description Meta
       const metaDescription = document.querySelector('meta[name="description"]');

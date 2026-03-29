@@ -9,10 +9,12 @@ export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     user = {};
   }
   const token = user?.token;
+  const selectedProjectId = localStorage.getItem('selectedProjectId');
 
   const headers = {
     'Content-Type': 'application/json',
     ...(token && token !== 'undefined' ? { Authorization: `Bearer ${token}` } : {}),
+    ...(selectedProjectId ? { 'X-Project-Id': selectedProjectId } : {}),
     ...options.headers,
   };
 

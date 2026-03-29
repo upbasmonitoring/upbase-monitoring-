@@ -109,6 +109,21 @@ function switchToMock() {
       return tx;
   };
 
+  // --- 🧱 Rate Limiter Support (Fix for rlflxIncr error) ---
+  mock.defineCommand = (name, opts) => {
+      // Mock defining a command (no-op)
+      return mock;
+  };
+  
+  mock.rlflxIncr = async (...args) => {
+      // Basic simulation of the rate-limiter-flexible Lua script
+      const key = args[0];
+      const now = Date.now();
+      const val = (store.get(key) || 0) + 1;
+      store.set(key, val);
+      return val;
+  };
+
   mock.status = 'ready';
   mock.options = REDIS_CONFIG;
   mock.quit = async () => true;

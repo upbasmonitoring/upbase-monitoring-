@@ -248,8 +248,12 @@ export const getMonitorStats = asyncHandler(async (req, res) => {
 
     const monitors = await Monitor.find(query);
     
+    // --- 💎 SMART HEALTH AGGREAGTION ---
+    // We recognize 'GOOD', 'OK', 'DEGRADED', and 'PROTECTED' as 'Active' states, not just 'UP'.
+    const activeStatuses = ['UP', 'GOOD', 'OK', 'DEGRADED', 'PROTECTED'];
+    
     const total = monitors.length;
-    const active = monitors.filter(m => m.status === 'UP').length;
+    const active = monitors.filter(m => activeStatuses.includes(m.status)).length;
     const down = monitors.filter(m => m.status === 'DOWN').length;
     
     // Average response time across all monitors
@@ -278,9 +282,10 @@ export const getRecentEvents = asyncHandler(async (req, res) => {
     const userMonitors = await Monitor.find(queryMonitors).select('_id');
     const ids = userMonitors.map(m => m._id);
 
+    const activeStatuses = ['UP', 'GOOD', 'OK', 'DEGRADED', 'PROTECTED'];
     const logs = await MonitorLog.find({ 
         monitor: { $in: ids },
-        status: { $ne: 'UP' } // Focus on DOWN/SLOW
+        status: { $nin: activeStatuses } // Focus on DOWN/SLOW/FAILURE
     })
     .populate('monitor', 'name url')
     .sort({ checkedAt: -1 })

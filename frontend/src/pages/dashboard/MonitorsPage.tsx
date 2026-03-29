@@ -504,7 +504,7 @@ const MonitorDisplayCard = ({ monitor }: { monitor: any }) => {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label htmlFor={`editFailureKeywords-${monitor._id}`} className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Custom Failure Rules (Sentinel IQ)</label>
+                                        <label htmlFor={`editFailureKeywords-${monitor._id}`} className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Custom Failure Rules (Upbase Monitoring)</label>
                                         <InputField 
                                             id={`editFailureKeywords-${monitor._id}`}
                                             name="failureKeywords"

@@ -23,11 +23,18 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [loading, setLoading] = useState(true);
 
   const fetchProjects = async () => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+        setProjects([]);
+        setSelectedProjectState(null);
+        setLoading(false);
+        return;
+    }
+
     try {
       const data = await apiFetch('/projects');
-      setProjects(data);
+      setProjects(data || []);
       
-      // Select first project by default or use stored choice
       const storedId = localStorage.getItem('selectedProjectId');
       const found = (data || []).find((p: Project) => p._id === storedId);
       
@@ -49,7 +56,37 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+
+    // ⚡️ INSTANT SYNC on User Switch/Logout
+    const checkUserInterval = setInterval(() => {
+        const currentUser = localStorage.getItem('user');
+        if (!currentUser && selectedProject) {
+            setSelectedProjectState(null);
+            setProjects([]);
+        }
+    }, 2000);
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user') {
+        fetchProjects(); // Clear/Update instantly on change
+      }
+    };
+
+    const handleAuthChange = () => {
+        fetchProjects(); // 🔥 Immediate trigger on login signal
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('auth-change', handleAuthChange);
+    window.addEventListener('focus', fetchProjects); // Sync on tab return
+
+    return () => {
+        clearInterval(checkUserInterval);
+        window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('auth-change', handleAuthChange);
+        window.removeEventListener('focus', fetchProjects);
+    };
+  }, [selectedProject?._id]);
 
   const setSelectedProject = (project: Project | null) => {
     setSelectedProjectState(project);

@@ -24,7 +24,8 @@ const GlobalNetwork = () => {
     const accentColor = am5.color(isDark ? 0xffffff : 0x000000);
 
     const root = am5.Root.new(chartRef.current);
-    root.setThemes([am5themes_Animated.new(root)]);
+    // Removed Animated theme to fix requestAnimationFrame performance warnings
+    // root.setThemes([am5themes_Animated.new(root)]);
 
     const chart = root.container.children.push(
       am5map.MapChart.new(root, {
@@ -123,7 +124,8 @@ const GlobalNetwork = () => {
       from: 0,
       to: 360,
       duration: 60000,
-      loops: Infinity
+      loops: Infinity,
+      easing: am5.ease.linear
     });
 
     return () => root.dispose();

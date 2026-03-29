@@ -60,30 +60,30 @@ const IntegrationsPage = () => {
   useEffect(() => {
     const fetchStatus = async () => {
         try {
-            const data = await apiFetch('/auth/whatsapp/status');
+            // Using project-aware isolation for WhatsApp
+            const data = await apiFetch('/integrations/status/whatsapp');
             if (data) setWhatsappStatus(data);
         } catch (err) {
             console.error(err);
         }
     };
     fetchStatus();
-    const interval = setInterval(fetchStatus, 5000);
+    const interval = setInterval(fetchStatus, 3000);
     return () => clearInterval(interval);
   }, []);
 
   const fetchIntegrations = async () => {
     try {
         setLoading(true);
-        // --- 🔎 LIVE SYNC: Pull latest settings from Cloud ---
-        const user = await apiFetch('/auth/profile');
-        if (user) {
-            syncUserState(user);
+        // --- 🔎 PROJECT SYNC: Pull settings for THIS project only ---
+        const data = await apiFetch('/integrations');
+        if (data && data.integrations) {
+            setIntegrations(data.integrations);
+            setDiscordWebhook(data.integrations.discordWebhook || "");
+            setGithubUser(data.integrations.githubRepo || "");
         }
     } catch (err) {
-        console.error("[SYNC-ERR] Failed to pull live profile:", err);
-        // Fallback to local
-        const local = JSON.parse(localStorage.getItem("user") || "{}");
-        syncUserState(local);
+        console.error("[SYNC-ERR] Failed to pull project settings:", err);
     } finally {
         setLoading(false);
     }
@@ -93,71 +93,70 @@ const IntegrationsPage = () => {
     fetchIntegrations();
   }, []);
 
-  const handleUpdateIntegrations = async (payload: any) => {
+  const handleUpdateIntegrations = async (provider: string, payload: any) => {
     try {
-      const data = await apiFetch(`/auth/integrations`, {
-        method: 'PUT',
+      const data = await apiFetch(`/integrations/${provider}`, {
+        method: 'POST', // Backend uses POST for project integration updates
         body: JSON.stringify(payload)
       });
-      syncUserState(data);
-      toast.success("Integrations updated successfully");
+      if (data && data.integrations) {
+          setIntegrations(data.integrations);
+      }
+      toast.success(`${provider} configuration saved`);
     } catch (err: any) {
-      toast.error(err.message || "Failed to update integrations");
+      toast.error(err.message || "Failed to save configuration");
     }
   };
 
   const handleWhatsappLogout = async () => {
     try {
-        await apiFetch('/auth/whatsapp/logout', { method: 'POST' });
+        await apiFetch('/integrations/whatsapp', { 
+            method: 'DELETE' 
+        });
         setWhatsappStatus({ isConnected: false, qrCode: null });
-        toast.success("WhatsApp Hub Disconnected Successfully");
+        toast.success("WhatsApp disconnected for this project");
     } catch (err: any) {
-        toast.error("Failed to disconnect WhatsApp Hub");
+        toast.error("Failed to disconnect WhatsApp");
     }
   };
 
   const handleSaveDiscord = async () => {
-      await handleUpdateIntegrations({ discordWebhook });
+      await handleUpdateIntegrations('discord', { webhookUrl: discordWebhook });
       setIsDiscordOpen(false);
   };
 
+  const [isVerifyingGithub, setIsVerifyingGithub] = useState(false);
   const handleUpdateGithub = async () => {
-    try {
-        if (!githubToken) {
-            toast.error("VCS Token required for verification");
-            return;
-        }
-
-        // --- 🔎 LIVE VERIFICATION: Test token against GitHub ---
-        try {
-            await axios.get('https://api.github.com/user', {
-                headers: { Authorization: `Bearer ${githubToken}` }
-            });
-        } catch (err: any) {
-             const errorMsg = err.response?.status === 401 ? "Unauthorized: Your GitHub Token is invalid." : "GitHub API Handshake Failed.";
-             toast.error(errorMsg);
-             return;
-        }
-
-        const data = await apiFetch(`/auth/github`, {
-            method: 'PUT',
+      if (!githubUser || !githubToken) {
+        toast.error("Please provide both Repository Path (owner/repo) and PAT");
+        return;
+      }
+      
+      try {
+        setIsVerifyingGithub(true);
+        const data = await apiFetch(`/integrations/github`, {
+            method: 'POST',
             body: JSON.stringify({
                 accessToken: githubToken,
-                username: githubUser
+                repo: githubUser
             })
         });
         
-        syncUserState(data);
-        toast.success("VCS Handshake Verified & Saved");
-        setIsGithubOpen(false);
-        setGithubToken("");
+        if (data && data.integrations) {
+            setIntegrations(data.integrations);
+            toast.success("VCS Handshake Verified & Saved to Project");
+            setIsGithubOpen(false);
+            setGithubToken("");
+        }
       } catch (err: any) {
         toast.error(err.message || "Failed to link GitHub Node");
+      } finally {
+        setIsVerifyingGithub(false);
       }
   };
 
   const toggleEmail = () => {
-      handleUpdateIntegrations({ emailAlerts: !integrations.emailAlerts });
+      handleUpdateIntegrations('email', { enabled: !integrations.emailAlerts });
   };
 
   return (
@@ -284,11 +283,11 @@ const IntegrationsPage = () => {
                                 placeholder="alerts@yourteam.com" 
                                 defaultValue={integrations.alertEmail}
                                 onBlur={(e) => {
-                                    handleUpdateIntegrations({ alertEmail: e.target.value });
+                                    handleUpdateIntegrations('email', { alertEmail: e.target.value });
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
-                                        handleUpdateIntegrations({ alertEmail: (e.target as HTMLInputElement).value });
+                                        handleUpdateIntegrations('email', { alertEmail: (e.target as HTMLInputElement).value });
                                     }
                                 }}
                                 className="h-14 text-xs font-bold rounded-2xl text-foreground placeholder:text-muted-foreground/20"
@@ -339,16 +338,18 @@ const IntegrationsPage = () => {
                     </DialogHeader>
                     <div className="py-8 space-y-5">
                         <div className="space-y-2">
+                            <label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/40 ml-1">Repository Path</label>
                             <InputField
                                 id="githubUser"
                                 name="githubUser"
-                                placeholder="octocat" 
+                                placeholder="octocat/my-monitoring-repo" 
                                 value={githubUser}
                                 onChange={(e) => setGithubUser(e.target.value)}
                                 className="h-14 text-xs font-bold rounded-2xl text-foreground placeholder:text-muted-foreground/20"
                             />
                         </div>
                         <div className="space-y-2">
+                            <label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/40 ml-1">Personal Access Token</label>
                             <InputField
                                 id="githubToken"
                                 name="githubToken"
@@ -361,7 +362,13 @@ const IntegrationsPage = () => {
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button onClick={handleUpdateGithub} className="w-full h-16 bg-foreground text-card hover:opacity-90 font-bold uppercase tracking-widest text-[11px] rounded-2xl shadow-xl transition-all">Securely Link Node</Button>
+                        <Button 
+                            onClick={handleUpdateGithub} 
+                            disabled={isVerifyingGithub}
+                            className="w-full h-16 bg-foreground text-card hover:opacity-90 font-bold uppercase tracking-widest text-[11px] rounded-2xl shadow-xl transition-all"
+                        >
+                            {isVerifyingGithub ? 'Verifying VCS Handshake...' : 'Securely Link Node'}
+                        </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
@@ -436,11 +443,11 @@ const IntegrationsPage = () => {
                                 placeholder="+91 999.." 
                                 defaultValue={integrations.phone}
                                 onBlur={(e) => {
-                                    if (e.target.value) handleUpdateIntegrations({ phone: e.target.value });
+                                    if (e.target.value) handleUpdateIntegrations('whatsapp', { whatsapp: e.target.value });
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
-                                        handleUpdateIntegrations({ phone: (e.target as HTMLInputElement).value });
+                                        handleUpdateIntegrations('whatsapp', { whatsapp: (e.target as HTMLInputElement).value });
                                     }
                                 }}
                                 className="h-14 text-xs font-bold rounded-2xl text-foreground placeholder:text-muted-foreground/20"

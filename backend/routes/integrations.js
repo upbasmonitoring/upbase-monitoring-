@@ -4,7 +4,24 @@ import User from '../models/User.js';
 import Integration from '../models/Integration.js';
 import axios from 'axios';
 import { sendAlertEmail } from '../utils/mailer.js';
-import { getStatus as getWAStatus } from '../whatsappService.js';
+import { getWhatsAppStatus, disconnectWhatsApp } from '../services/whatsappService.js';
+
+import Project from '../models/Project.js';
+
+// Helper to find authorized project
+const getProject = async (req, res) => {
+    const projectId = req.headers['x-project-id'] || req.query.projectId || req.body.projectId;
+    if (!projectId) {
+        res.status(400).json({ message: 'Project ID is required' });
+        return null;
+    }
+    const project = await Project.findOne({ _id: projectId, user: req.user.id });
+    if (!project) {
+        res.status(404).json({ message: 'Project not found or unauthorized' });
+        return null;
+    }
+    return project;
+};
 
 const router = express.Router();
 
@@ -14,13 +31,18 @@ const router = express.Router();
 
 // @desc    Initiate GitHub OAuth
 // @route   GET /api/integrations/github/auth
-router.get('/github/auth', protect, (req, res) => {
+router.get('/github/auth', protect, async (req, res) => {
+  const { projectId } = req.query;
+  if (!projectId) {
+      return res.status(400).json({ message: 'Project ID is required for GitHub auth' });
+  }
+
   const rootUrl = 'https://github.com/login/oauth/authorize';
   const options = {
     client_id: process.env.GITHUB_CLIENT_ID,
     redirect_uri: `${process.env.BACKEND_URL}/api/integrations/github/callback`,
     scope: 'repo,admin:repo_hook',
-    state: req.user.id, // Pass user ID as state for verification
+    state: `${req.user.id}:${projectId}`, // Pass both to callback
   };
 
   const qs = new URLSearchParams(options).toString();
@@ -28,12 +50,12 @@ router.get('/github/auth', protect, (req, res) => {
 });
 
 // @desc    GitHub OAuth Callback
-// @route   GET /api/integrations/github/callback
 router.get('/github/callback', async (req, res) => {
   const { code, state } = req.query;
+  const [userId, projectId] = (state || '').split(':');
 
-  if (!code) {
-    return res.status(400).json({ message: 'Authorization code missing' });
+  if (!code || !userId || !projectId) {
+    return res.status(400).json({ message: 'Authorization code or project context missing' });
   }
 
   try {
@@ -44,27 +66,22 @@ router.get('/github/callback', async (req, res) => {
         client_secret: process.env.GITHUB_CLIENT_SECRET,
         code,
       },
-      {
-        headers: { Accept: 'application/json' },
-      }
+      { headers: { Accept: 'application/json' } }
     );
 
     const { access_token } = response.data;
+    if (!access_token) return res.status(400).json({ message: 'Failed to obtain access token' });
 
-    if (!access_token) {
-      return res.status(400).json({ message: 'Failed to obtain access token' });
+    // Save token to PROJECT integrations
+    const project = await Project.findOne({ _id: projectId, user: userId });
+    if (project) {
+      if (!project.integrations) project.integrations = {};
+      project.integrations.githubToken = access_token;
+      project.markModified('integrations');
+      await project.save();
     }
 
-    // Save token to user's integration (Simplified for now, should use Integration model)
-    const user = await User.findById(state);
-    if (user) {
-      if (!user.integrations) user.integrations = {};
-      user.integrations.githubToken = access_token;
-      await user.save();
-    }
-
-    // Redirect back to dashboard integrations page
-    res.redirect(`${process.env.FRONTEND_URL}/dashboard/integrations?success=github`);
+    res.redirect(`${process.env.FRONTEND_URL}/dashboard/integrations?success=github&projectId=${projectId}`);
   } catch (error) {
     console.error('GitHub Auth Error:', error.message);
     res.redirect(`${process.env.FRONTEND_URL}/dashboard/integrations?error=github_auth_failed`);
@@ -76,97 +93,161 @@ router.get('/github/callback', async (req, res) => {
 // ==========================================
 
 // @desc    Get WhatsApp engine status & QR
-// @route   GET /api/integrations/status/whatsapp
-// @access  Private
-router.get('/status/whatsapp', protect, (req, res) => {
-  res.json(getWAStatus());
+router.get('/status/whatsapp', protect, async (req, res) => {
+  const project = await getProject(req, res);
+  if (!project) return;
+
+  const status = getWhatsAppStatus(project._id.toString());
+  
+  res.json({
+      ...status
+  });
 });
 
-// @desc    Get all active integrations for the current user
-// @route   GET /api/integrations
-// @access  Private
+// @desc    Get all active integrations for a specific project
 router.get('/', protect, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.json({ integrations: user.integrations || {} });
+    const project = await getProject(req, res);
+    if (!project) return;
+    
+    res.json({ integrations: project.integrations || {} });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// @desc    Update or create an integration
-// @route   POST /api/integrations/:provider
-// @access  Private
+// @desc    Update or create an integration for a project
 router.post('/:provider', protect, async (req, res) => {
   try {
     const { provider } = req.params;
     const { webhookUrl, enabled, config, phone, whatsapp } = req.body;
     
-    const validProviders = ['discord', 'slack', 'webhook', 'email', 'kerberos', 'pagerduty', 'sms', 'call', 'whatsapp'];
-    if (!validProviders.includes(provider.toLowerCase())) {
-        return res.status(400).json({ message: 'Invalid provider' });
-    }
+    const project = await getProject(req, res);
+    if (!project) return;
 
-    const user = await User.findById(req.user.id);
-    
-    if (!user.integrations) {
-        user.integrations = {};
-    }
-
+    if (!project.integrations) project.integrations = {};
     const p = provider.toLowerCase();
 
-    if (p === 'discord') {
-         user.integrations.discordWebhook = webhookUrl;
-    } else if (p === 'slack') {
-         user.integrations.slackWebhook = webhookUrl;
-    } else if (p === 'webhook') {
-         user.integrations.customWebhook = webhookUrl;
-    } else if (p === 'pagerduty') {
-         user.integrations.pagerdutyWebhook = webhookUrl;
-    } else if (p === 'email') {
-         user.integrations.emailAlerts = enabled !== undefined ? enabled : true;
-    } else if (p === 'sms') {
-         user.integrations.smsAlerts = enabled !== undefined ? enabled : true;
-         if (phone) user.integrations.phone = phone;
+    if (p === 'github') {
+        const { accessToken, username, repo } = req.body;
+        const rawRepo = repo || username;
+        // 🧱 ANTI-SPACE SANITIZATION: Remove ALL whitespace from the path
+        const targetRepo = rawRepo?.replace(/\s+/g, "")?.replace(/\/$/, ""); 
+        const token = accessToken?.trim();
+        
+        if (!token || !targetRepo) {
+            return res.status(400).json({ message: 'GitHub Token and Repository (owner/repo) are required' });
+        }
+
+        try {
+            console.log(`[GITHUB-VCS] 🛡️ VERIFYING TOKEN VALIDITY...`);
+            // 🛡️ PHASE 1: Verify TOKEN is real
+            const tokenCheck = await axios.get(`https://api.github.com/user`, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'User-Agent': 'Upbase-Monitoring-Engine'
+                }
+            });
+
+            if (!tokenCheck.data.login) {
+                return res.status(401).json({ message: "GitHub Error: Token is invalid or expired." });
+            }
+
+            console.log(`[GITHUB-VCS] 👤 Token belongs to: ${tokenCheck.data.login}. Proceeding to Repo lookup...`);
+
+            // 🛡️ PHASE 2: Verify REPO & PERMISSIONS
+            console.log(`[GITHUB-VCS] 🛡️ Looking for: ${targetRepo}`);
+            const repoCheck = await axios.get(`https://api.github.com/repos/${targetRepo}`, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'User-Agent': 'Upbase-Monitoring-Engine'
+                }
+            });
+
+            if (repoCheck.status === 200) {
+                if (!project.integrations) project.integrations = {};
+                project.integrations.githubToken = token;
+                project.integrations.githubRepo = targetRepo;
+                project.integrations.githubEnabled = true;
+
+                project.markModified('integrations');
+                await project.save();
+                
+                console.log(`[GITHUB-VCS] ✅ Verified & Linked: ${targetRepo} to Project: ${project._id}`);
+                return res.json({ 
+                    success: true, 
+                    message: `Verified: Connected to @${tokenCheck.data.login} | ${targetRepo}`, 
+                    integrations: project.integrations 
+                });
+            }
+        } catch (err) {
+            console.error(`[GITHUB-VCS] ❌ Handshake Failed:`, err.response?.data || err.message);
+            const status = err.response?.status;
+            
+            // If we got here during PHASE 1 (User endpoint)
+            if (err.config?.url?.includes('/user')) {
+                return res.status(401).json({ message: "GitHub Error: Provided Personal Access Token (PAT) is invalid." });
+            }
+
+            // If we got here during PHASE 2 (Repo endpoint)
+            if (status === 404) {
+                return res.status(400).json({ 
+                    message: `GitHub Error: Repo '${targetRepo}' not found. Ensure it is correct and your Token has the 'repo' scope checked in GitHub Settings.` 
+                });
+            }
+            if (status === 401) return res.status(401).json({ message: "GitHub Error: Token authentication failed." });
+            
+            return res.status(status || 500).json({ 
+                message: `GitHub Handshake Error: ${err.response?.data?.message || err.message}` 
+            });
+        }
+    }
+
+    if (p === 'discord') project.integrations.discordWebhook = webhookUrl;
+    else if (p === 'slack') project.integrations.slackWebhook = webhookUrl;
+    else if (p === 'webhook') project.integrations.customWebhook = webhookUrl;
+    else if (p === 'pagerduty') project.integrations.pagerdutyWebhook = webhookUrl;
+    else if (p === 'email') project.integrations.emailAlerts = enabled !== undefined ? enabled : true;
+    else if (p === 'sms') {
+         project.integrations.smsAlerts = enabled !== undefined ? enabled : true;
+         if (phone) project.integrations.phone = phone;
     } else if (p === 'call') {
-         user.integrations.callAlerts = enabled !== undefined ? enabled : true;
-         if (phone) user.integrations.phone = phone;
+         project.integrations.callAlerts = enabled !== undefined ? enabled : true;
+         if (phone) project.integrations.phone = phone;
     } else if (p === 'whatsapp') {
-         user.integrations.whatsappAlerts = enabled !== undefined ? enabled : true;
-         if (whatsapp) user.integrations.whatsapp = whatsapp;
+         project.integrations.whatsappAlerts = enabled !== undefined ? enabled : true;
+         if (whatsapp) project.integrations.whatsapp = whatsapp;
     } else if (p === 'kerberos') {
-         user.integrations.kerberosConfig = {
+         project.integrations.kerberosConfig = {
              enabled: enabled !== undefined ? enabled : true,
              realm: config?.realm || 'KRB5.ENTERPRISE.INTERNAL',
              kdc: config?.kdc || 'kdc.enterprise.internal'
          };
     }
 
-    await user.save();
+    project.markModified('integrations');
+    await project.save();
 
     res.json({ 
         success: true,
-        message: `${provider} integration successfully ${enabled === false ? 'disabled' : 'enabled'}`, 
-        integrations: user.integrations 
+        message: `${provider} integration saved to project`, 
+        integrations: project.integrations 
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// @desc    Test an active integration
-// @route   POST /api/integrations/:provider/test
-// @access  Private
+// @desc    Test an active integration for a project
 router.post('/:provider/test', protect, async (req, res) => {
   try {
     const { provider } = req.params;
-    const user = await User.findById(req.user.id);
+    const project = await getProject(req, res);
+    if (!project) return;
 
-    if (!user.integrations) {
-        return res.status(400).json({ message: 'No integrations configured' });
+    if (!project.integrations) {
+        return res.status(400).json({ message: 'No integrations configured for this project' });
     }
 
     const p = provider.toLowerCase();
@@ -174,35 +255,32 @@ router.post('/:provider/test', protect, async (req, res) => {
     let payload;
 
     if (p === 'discord') {
-        url = user.integrations.discordWebhook;
+        url = project.integrations.discordWebhook;
         payload = {
-            content: "🔔 **PulseWatch Monitoring Test**\nThis is a test alert from your dashboard. Your Discord integration is properly configured and ready for production!",
+            content: "🔔 **Upbase Monitoring Test**\nThis is a test alert from your dashboard. Your Discord integration is properly configured for this project!",
         };
     } else if (p === 'slack') {
-        url = user.integrations.slackWebhook;
+        url = project.integrations.slackWebhook;
         payload = {
-            text: "🔔 *PulseWatch Monitoring Test*\nThis is a test alert from your dashboard. Your Slack integration is ready for production traffic!",
+            text: "🔔 *Upbase Monitoring Test*\nThis is a test alert from your dashboard. Your Slack integration is ready!",
         };
     } else if (p === 'webhook' || p === 'pagerduty') {
-        url = p === 'webhook' ? user.integrations.customWebhook : user.integrations.pagerdutyWebhook;
+        url = p === 'webhook' ? project.integrations.customWebhook : project.integrations.pagerdutyWebhook;
         payload = {
             event: "test_heartbeat",
-            source: "PulseWatch Dashboard",
+            source: "Upbase Dashboard",
             message: `External ${p} test successful.`,
             timestamp: new Date().toISOString()
         };
     } else if (p === 'email') {
+        // Fallback to user email for destination
+        const user = await User.findById(req.user.id);
         await sendAlertEmail(
             user.email, 
-            "PulseWatch: Integration Test Successful", 
-            "This is a test email from your PulseWatch dashboard. Your email alert system is active."
+            "Upbase: Integration Test Successful", 
+            "This is a test email from your Upbase dashboard. Your project alert system is active."
         );
         return res.json({ message: `Test email sent to ${user.email} successfully!` });
-    } else if (p === 'kerberos') {
-        // Kerberos is a config-based integration, "testing" verifies connectivity logic
-        return res.json({ 
-            message: `Kerberos configuration verified for Realm: ${user.integrations.kerberosConfig.realm}. Handshake simulation successful!` 
-        });
     }
 
     if (!url && p !== 'email' && p !== 'kerberos') {
@@ -215,7 +293,7 @@ router.post('/:provider/test', protect, async (req, res) => {
         } catch(err) {
             return res.status(400).json({ 
                 success: false,
-                message: `${provider} test failed. API returned: ${err.response?.status || 'Connection Error'}. Please check your Webhook URL.` 
+                message: `${provider} test failed. API returned: ${err.response?.status || 'Connection Error'}.` 
             });
         }
     }
@@ -226,28 +304,32 @@ router.post('/:provider/test', protect, async (req, res) => {
   }
 });
 
-// @desc    Delete/Disconnect an integration
-// @route   DELETE /api/integrations/:provider
-// @access  Private
+// @desc    Delete/Disconnect an integration from a project
 router.delete('/:provider', protect, async (req, res) => {
   try {
     const { provider } = req.params;
-    const user = await User.findById(req.user.id);
+    const project = await getProject(req, res);
+    if (!project) return;
     
-    if (user.integrations) {
+    if (project.integrations) {
         const p = provider.toLowerCase();
-        if (p === 'discord') user.integrations.discordWebhook = null;
-        else if (p === 'slack') user.integrations.slackWebhook = null;
-        else if (p === 'webhook') user.integrations.customWebhook = null;
-        else if (p === 'pagerduty') user.integrations.pagerdutyWebhook = null;
-        else if (p === 'email') user.integrations.emailAlerts = false;
-        else if (p === 'kerberos') {
-            user.integrations.kerberosConfig = { enabled: false, realm: null, kdc: null };
+        if (p === 'discord') project.integrations.discordWebhook = null;
+        else if (p === 'slack') project.integrations.slackWebhook = null;
+        else if (p === 'webhook') project.integrations.customWebhook = null;
+        else if (p === 'pagerduty') project.integrations.pagerdutyWebhook = null;
+        else if (p === 'email') project.integrations.emailAlerts = false;
+        else if (p === 'whatsapp') {
+            project.integrations.whatsappAlerts = false;
+            // Actually destroy the session & reset QR globally
+            await disconnectWhatsApp(project._id.toString());
+            console.log(`[WHATSAPP-DISCONNECT] Hub link severed by project: ${project._id}`);
         }
-        await user.save();
+        
+        project.markModified('integrations');
+        await project.save();
     }
 
-    res.json({ message: `${provider} integration disconnected successfully`, integrations: user.integrations });
+    res.json({ message: `${provider} integration disconnected from project`, integrations: project.integrations });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

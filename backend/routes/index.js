@@ -9,6 +9,7 @@ import deploymentRoutes from './deployments.js';
 import externalRoutes from './external.js';
 import fixRoutes from './fixRoutes.js';
 import statsRoutes from './stats.js';
+import integrationsRoutes from './integrations.js';
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.use('/incidents', incidentRoutes);
 router.use('/deployments', deploymentRoutes);
 router.use('/fixes', fixRoutes);
 router.use('/stats', statsRoutes);
+router.use('/integrations', integrationsRoutes);
 
 export default router;

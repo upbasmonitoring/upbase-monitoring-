@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState, Suspense } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import {
   LayoutDashboard,
@@ -64,11 +65,14 @@ const navItems = [
 const SidebarContent = ({ onNavItemClick }: { onNavItemClick?: () => void }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const user = JSON.parse(localStorage.getItem('user') || 'null');
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    navigate('/');
+    localStorage.removeItem('selectedProjectId');
+    queryClient.clear(); // 🛡️ Purge all cached monitoring data immediately
+    navigate('/login');
   };
 
   return (

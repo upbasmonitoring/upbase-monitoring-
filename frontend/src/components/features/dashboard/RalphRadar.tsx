@@ -49,12 +49,12 @@ const RalphRadar: React.FC<RalphRadarProps> = ({ monitors, incidents }) => {
                             <div className="absolute w-full h-[1px] bg-slate-500" />
                         </div>
 
-                        {/* Scanning Effect */}
+                        {/* Scanning Effect - Optimized with x (translateX) */}
                         <motion.div 
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent"
-                            style={{ width: '50%', left: '-25%' }}
+                            className="absolute inset-y-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent"
+                            style={{ width: '50%' }}
                             animate={{ 
-                                left: ['-50%', '150%'],
+                                x: ['-100%', '300%'],
                             }}
                             transition={{ 
                                 duration: 3, 
@@ -63,10 +63,10 @@ const RalphRadar: React.FC<RalphRadarProps> = ({ monitors, incidents }) => {
                             }}
                         />
 
-                        {/* Radar Sweep */}
+                        {/* Radar Sweep - Optimized Transform */}
                         <motion.div 
                             className="absolute top-1/2 left-1/2 w-full h-[2px] bg-primary/40 origin-left"
-                            style={{ top: '50%', left: '50%', width: '100%', marginLeft: '0' }}
+                            style={{ top: '50%', left: '50%', width: '100%' }}
                             animate={{ rotate: 360 }}
                             transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                         />

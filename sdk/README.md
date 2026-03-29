@@ -50,11 +50,11 @@ try {
 ```
 
 ## 🛡️ Self-Healing Integration
-When an error is reported via the SDK, Sentinel's backend automatically:
+When an error is reported via the SDK, Upbase Monitoring's backend automatically:
 1. Analyzes the stack trace and context.
 2. Cross-references it with your linked GitHub repository.
 3. Decides if a **PM2 restart**, **Git Rollback**, or **AI Autocorrection** is needed.
 4. Triggers the healing flow according to your project's `healingSettings`.
 
 ---
-© 2026 Sentinel Monitoring. All rights reserved.
+© 2026 Upbase Monitoring. All rights reserved.

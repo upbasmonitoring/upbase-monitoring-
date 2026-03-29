@@ -13,7 +13,6 @@ import mcpRoutes from './routes/mcp.js';
 import webhookRoutes from './routes/webhooks.js';
 import { startMonitoringEngine } from './services/monitorService.js';
 import { securityShield } from './middleware/securityShield.js';
-import { initWhatsApp } from './services/whatsappService.js';
 import cookieParser from 'cookie-parser';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import authRoutes from './routes/auth.js';
@@ -25,7 +24,6 @@ import logger from './utils/logger.js';
 await connectDB();
 
 // Initialize services
-initWhatsApp();
 startMonitoringEngine();
 
 const app = express();
@@ -47,6 +45,23 @@ const allowedOrigins = [
     'https://your-frontend.pages.dev' 
 ];
 
+// --- 🛡️ EMERGENCY CORS OVERRIDE (For Smart Sync Isolation) ---
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-key, x-project-id');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    
+    // Handle Preflight Handshake
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
+
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
@@ -59,7 +74,7 @@ app.use(cors({
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'x-project-id']
 }));
 
 app.use(cookieParser());

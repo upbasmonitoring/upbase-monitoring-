@@ -172,7 +172,7 @@ export const sendRecoveryAlert = async (user, monitor) => {
                             `*Status:* BACK UP / STABLE\n` +
                             `*Resolution:* Resolved after ${duration} mins\n` +
                             `*URL:* ${monitor.url}`;
-        await sendWhatsAppAlert(user.integrations.phone, recoveryMsg);
+        await sendWhatsAppAlert(monitor.project.toString(), user.integrations.phone, recoveryMsg);
     }
 
     // Email Recovery
@@ -233,7 +233,7 @@ export const processAlertingTier = async (monitor) => {
                             `*Error:* ${monitor.lastError || 'Service Connectivity Failure'}\n\n` +
                             `_Ralph AI Autopilot is scanning for root cause..._`;
 
-            await sendWhatsAppAlert(user.integrations.phone, message);
+            await sendWhatsAppAlert(monitor.project.toString(), user.integrations.phone, message);
         }
         
         // --- Ralph Loop Integration (Autopilot Radar) ---
@@ -270,7 +270,7 @@ export const processAlertingTier = async (monitor) => {
                             `*CRITICAL:* Site *${monitor.name}* still DOWN after ${Math.round(failureDurationMins)} minutes.\n\n` +
                             `*Action Required:* Automated recovery failover failed. Manual intervention requested for ${monitor.url}.\n\n` +
                             `_Status: Engineering Escalation Tier 4_`;
-            await sendWhatsAppAlert(user.integrations.phone, message);
+            await sendWhatsAppAlert(monitor.project.toString(), user.integrations.phone, message);
         }
         
         // Log escalation

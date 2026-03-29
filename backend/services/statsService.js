@@ -1,14 +1,17 @@
 import MonitorLog from '../models/MonitorLog.js';
 import Monitor from '../models/Monitor.js';
-import { getRedisClient } from '../config/redis.js';
+import redis from '../config/redis.js';
 import logger from '../utils/logger.js';
 
 const STATS_CACHE_KEY = 'global_sentinel_stats';
 const CACHE_TTL = 300; // 5 minutes
 
+/**
+ * Aggregates global monitoring statistics across all projects and nodes.
+ * Uses Redis for high-performance caching.
+ */
 export const getGlobalStats = async () => {
     try {
-        const redis = getRedisClient();
         
         // 1. Try to get from cache
         const cached = await redis.get(STATS_CACHE_KEY);

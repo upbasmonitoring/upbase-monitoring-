@@ -1,44 +1,21 @@
 import pkg from 'whatsapp-web.js';
 const { Client, LocalAuth } = pkg;
 import qrcode from 'qrcode';
-import Monitor from '../models/Monitor.js';
-import User from '../models/User.js';
 
 // --- ANTI-BAN HUMAN SIMULATION ENGINE ---
 const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
-let client;
-let qrCodeData = null;
-let isConnected = false;
+const clients = new Map();
 
-const sendHumanLikeMessage = async (chatId, content) => {
-    if (!isConnected || !client) {
-        console.warn(`[WHATSAPP] Skipping send. Client disconnected.`);
-        return;
-    }
+export const initWhatsApp = (projectId = 'global') => {
+    if (clients.has(projectId)) return;
+
     try {
-        console.log(`[WHATSAPP] Sending Alert to ${chatId}...`);
+        console.log(`[UPBASE] Initializing WhatsApp Sentinel for Project ${projectId}...`);
         
-        // --- INSTANT DISPATCH (Ultra-Reliable Mode) ---
-        // Bypassing human-like latency for critical monitoring signals.
-        const jitterMarkers = ['*', '#', '-', '+', '.', '~'];
-        const randomMarker = jitterMarkers[Math.floor(Math.random() * jitterMarkers.length)];
-        const uniqueId = Math.random().toString(36).substring(7);
-        const finalContent = `${content}\n\n_Ref: [${uniqueId}] ${randomMarker}_`;
-
-        await client.sendMessage(chatId, finalContent);
-        console.log(`[WHATSAPP] Message sent to ${chatId}`);
-    } catch (err) {
-        console.error('[WHATSAPP-DISPATCH-ERR] Final failure:', err.message);
-    }
-};
-
-export const initWhatsApp = () => {
-    try {
-        console.log('[UPBASE] Initializing Upbase Monitoring (Anti-Ban Pro Active)...');
-        client = new Client({
+        const client = new Client({
             authStrategy: new LocalAuth({
-                clientId: 'sentinel-node',
+                clientId: `sentinel-node-${projectId}`,
                 dataPath: './.wwebjs_auth'
             }),
             puppeteer: {
@@ -55,58 +32,60 @@ export const initWhatsApp = () => {
             }
         });
 
+        const session = {
+            client,
+            qrCodeData: null,
+            isConnected: false
+        };
+        clients.set(projectId, session);
+
         client.on('qr', (qr) => {
             try {
-                console.log('[WHATSAPP] New QR Received. Generating Uplink Image...');
+                console.log(`[WHATSAPP-${projectId}] New QR Received. Generating Uplink Image...`);
                 qrcode.toDataURL(qr, (err, url) => {
-                    if (err) {
-                        console.error('[WHATSAPP-QR-GEN-ERR]', err);
-                    } else {
-                        qrCodeData = url;
-                        console.log('[WHATSAPP] Uplink Image Ready in Memory.');
+                    if (!err) {
+                        const s = clients.get(projectId);
+                        if (s) s.qrCodeData = url;
+                        console.log(`[WHATSAPP-${projectId}] Uplink Image Ready in Memory.`);
                     }
                 });
-            } catch (err) {
-                console.error('[WHATSAPP-QR-ERROR]', err.message);
-            }
+            } catch (err) {}
         });
 
         client.on('ready', () => {
-            console.log('[WHATSAPP] Anti-Ban Uplink Ready!');
-            isConnected = true;
-            qrCodeData = null;
-        });
-
-        client.on('authenticated', () => {
-            console.log('[WHATSAPP] Authenticated');
+            console.log(`[WHATSAPP-${projectId}] Anti-Ban Uplink Ready!`);
+            const s = clients.get(projectId);
+            if (s) {
+                s.isConnected = true;
+                s.qrCodeData = null;
+            }
         });
 
         client.on('auth_failure', (msg) => {
-            console.error('[WHATSAPP] Auth failure:', msg);
-            isConnected = false;
+            console.error(`[WHATSAPP-${projectId}] Auth failure:`, msg);
+            const s = clients.get(projectId);
+            if (s) s.isConnected = false;
         });
 
         client.on('disconnected', (reason) => {
-            console.log('[WHATSAPP] Disconnected:', reason);
-            isConnected = false;
+            console.log(`[WHATSAPP-${projectId}] Disconnected:`, reason);
+            const s = clients.get(projectId);
+            if (s) s.isConnected = false;
         });
 
-        // Message listener removed as per user request (Only alerts now)
-
         client.initialize().catch(err => {
-            console.error('[WHATSAPP-INIT-FAILED] Initial hook failed, but engine will remain active:', err.message);
+            console.error(`[WHATSAPP-INIT-FAILED-${projectId}]`, err.message);
         });
 
     } catch (err) {
-        console.error('[WHATSAPP-FATAL] Initialization Sequence Crashed:', err.stack || err.message);
-        // Ensure we don't bring down the whole node process
-        isConnected = false;
+        console.error(`[WHATSAPP-FATAL-${projectId}]`, err.stack || err.message);
     }
 };
 
-export const sendWhatsAppAlert = async (to, message) => {
-    if (!isConnected || !client) {
-        console.warn(`[WHATSAPP-ALERT] Skipping send. Connected: ${isConnected}`);
+export const sendWhatsAppAlert = async (projectId = 'global', to, message) => {
+    const session = clients.get(projectId);
+    if (!session || !session.isConnected || !session.client) {
+        console.warn(`[WHATSAPP-ALERT] Skipping send for ${projectId}. Connected: ${session?.isConnected}`);
         return;
     }
     
@@ -117,34 +96,49 @@ export const sendWhatsAppAlert = async (to, message) => {
     }
     
     const sanitizedTo = cleanNumber + '@c.us';
-    console.log(`[WHATSAPP-ALERT] Dispatching to sanitized ID: ${sanitizedTo}`);
-    await sendHumanLikeMessage(sanitizedTo, message);
+    console.log(`[WHATSAPP-ALERT-${projectId}] Dispatching to ID: ${sanitizedTo}`);
+    
+    try {
+        const jitterMarkers = ['*', '#', '-', '+', '.', '~'];
+        const randomMarker = jitterMarkers[Math.floor(Math.random() * jitterMarkers.length)];
+        const uniqueId = Math.random().toString(36).substring(7);
+        const finalContent = `${message}\n\n_Ref: [${uniqueId}] ${randomMarker}_`;
+
+        await session.client.sendMessage(sanitizedTo, finalContent);
+        console.log(`[WHATSAPP-${projectId}] Message sent to ${sanitizedTo}`);
+    } catch (err) {
+        console.error(`[WHATSAPP-DISPATCH-ERR-${projectId}] Final failure:`, err.message);
+    }
 };
 
-export const disconnectWhatsApp = async () => {
+export const disconnectWhatsApp = async (projectId = 'global') => {
     try {
-        if (client) {
-            console.log('[WHATSAPP] Initiating Logout/Disconnect Sequence...');
-            await client.logout();
-            await client.destroy();
-            isConnected = false;
-            qrCodeData = null;
+        const session = clients.get(projectId);
+        if (session && session.client) {
+            console.log(`[WHATSAPP-${projectId}] Initiating Logout/Disconnect Sequence...`);
+            await session.client.logout();
+            await session.client.destroy();
+            clients.delete(projectId);
             
             // Re-initialize to generate a fresh QR
-            console.log('[WHATSAPP] Re-initializing clean session...');
-            initWhatsApp();
+            console.log(`[WHATSAPP-${projectId}] Re-initializing clean session...`);
+            initWhatsApp(projectId);
             return { success: true, message: 'Disconnected' };
         }
         return { success: false, message: 'No active client' };
     } catch (err) {
-        console.error('[WHATSAPP-LOGOUT-ERR]', err.message);
+        console.error(`[WHATSAPP-LOGOUT-ERR-${projectId}]`, err.message);
         return { success: false, error: err.message };
     }
 };
 
-export const getWhatsAppStatus = () => {
+export const getWhatsAppStatus = (projectId = 'global') => {
+    if (!clients.has(projectId)) {
+        initWhatsApp(projectId);
+    }
+    const session = clients.get(projectId);
     return {
-        isConnected,
-        qrCode: qrCodeData
+        isConnected: session ? session.isConnected : false,
+        qrCode: session ? session.qrCodeData : null
     };
 };

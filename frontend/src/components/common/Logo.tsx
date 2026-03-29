@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -10,6 +11,8 @@ interface LogoProps {
 }
 
 const Logo = ({ className = "", size = "md", withText = true, variant = "auto", to }: LogoProps) => {
+  const uniqueId = useId().replace(/:/g, ""); // Safe ID for SVG defs
+  
   const sizes = {
     sm: "h-8 w-8",
     md: "h-9 w-9",
@@ -28,12 +31,11 @@ const Logo = ({ className = "", size = "md", withText = true, variant = "auto", 
     lg: "gap-4",
   };
 
-  // Explicit white for light variant (on dark backgrounds)
-  // Vibrant logic: Orange "up"
+  // Improved Adaptive Logic
   const upTextColor = 
     variant === "light" ? "text-white" : 
     variant === "vibrant" ? "text-amber-500" : 
-    "text-muted-foreground";
+    "text-foreground"; // Changed from text-muted-foreground
 
   const content = (
     <div className={`flex items-center ${gaps[size]} ${className}`}>
@@ -55,11 +57,11 @@ const Logo = ({ className = "", size = "md", withText = true, variant = "auto", 
 
           <svg viewBox="0 0 120 120" className="w-full h-full relative z-10 overflow-visible">
             <defs>
-              <linearGradient id="bladeLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+              <linearGradient id={`bladeLeft-${uniqueId}`} x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.9" />
                 <stop offset="100%" stopColor="#2563EB" stopOpacity="1" />
               </linearGradient>
-              <linearGradient id="bladeRight" x1="100%" y1="0%" x2="0%" y2="100%">
+              <linearGradient id={`bladeRight-${uniqueId}`} x1="100%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stopColor="#60A5FA" stopOpacity="0.8" />
                 <stop offset="100%" stopColor="#3B82F6" stopOpacity="1" />
               </linearGradient>
@@ -69,15 +71,15 @@ const Logo = ({ className = "", size = "md", withText = true, variant = "auto", 
             <motion.path
               d="M30 40 L90 40 L75 90 L45 90 Z"
               fill="currentColor"
-              className="text-primary/10"
-              animate={{ opacity: [0.1, 0.4, 0.1] }}
+              className="text-primary/20"
+              animate={{ opacity: [0.2, 0.5, 0.2] }}
               transition={{ duration: 4, repeat: Infinity }}
             />
 
             {/* Left Prism Blade - "Performance" */}
             <motion.path
               d="M20 20 L65 20 L45 100 L10 100 Z"
-              fill="url(#bladeLeft)"
+              fill={`url(#bladeLeft-${uniqueId})`}
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 1.5, ease: "easeOut" }}
@@ -86,7 +88,7 @@ const Logo = ({ className = "", size = "md", withText = true, variant = "auto", 
             {/* Right Prism Blade - "Security" */}
             <motion.path
               d="M100 20 L55 20 L75 100 L110 100 Z"
-              fill="url(#bladeRight)"
+              fill={`url(#bladeRight-${uniqueId})`}
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 1.5, delay: 0.2, ease: "easeOut" }}
@@ -96,9 +98,9 @@ const Logo = ({ className = "", size = "md", withText = true, variant = "auto", 
             <motion.path
               d="M55 20 L65 20 L75 60 L65 60 Z"
               fill="white"
-              fillOpacity="0.6"
+              fillOpacity="0.8"
               animate={{
-                opacity: [0, 0.8, 0],
+                opacity: [0, 1, 0],
                 y: [-10, 80, -10]
               }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -108,7 +110,7 @@ const Logo = ({ className = "", size = "md", withText = true, variant = "auto", 
             <motion.path
               d="M20 20 L65 20"
               stroke="white"
-              strokeWidth="3"
+              strokeWidth="4"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
@@ -117,11 +119,11 @@ const Logo = ({ className = "", size = "md", withText = true, variant = "auto", 
 
             {/* The Central Nerve Node */}
             <motion.circle
-              cx="60" cy="45" r="5"
-              className="fill-white"
+              cx="60" cy="45" r="7"
+              className="fill-white drop-shadow-[0_0_8px_white]"
               animate={{
-                scale: [1, 1.5, 1],
-                opacity: [0.7, 1, 0.7]
+                scale: [1, 1.4, 1],
+                opacity: [0.8, 1, 0.8]
               }}
               transition={{ duration: 2, repeat: Infinity }}
             />
@@ -150,7 +152,7 @@ const Logo = ({ className = "", size = "md", withText = true, variant = "auto", 
                 transition={{ delay: 0.8 }}
               />
               <motion.span
-                className="text-[10px] font-bold tracking-[0.3em] text-slate-400/80 uppercase"
+                className="text-[10px] font-bold tracking-[0.3em] text-muted-foreground/40 uppercase"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}

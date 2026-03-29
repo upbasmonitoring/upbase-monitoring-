@@ -30,7 +30,7 @@ const FooterSection = () => {
         {
             title: "Company",
             links: [
-                { name: "About Sentinel IQ", href: "/features/about-sentinel-iq", desc: "AI-powered platform combining monitoring and blockchain integrity." },
+                { name: "About Upbase Monitoring", href: "/features/about-upbase-monitoring", desc: "AI-powered platform combining monitoring and blockchain integrity." },
                 { name: "Enterprise SLA", href: "/features/enterprise-sla", desc: "Guarantees covering uptime, performance, and support." },
                 { name: "Contact Operations", href: "/features/contact-operations", desc: "Support for technical issues and enterprise queries." },
                 { name: "Privacy Policy", href: "/privacy", desc: "How user data is collected, used, and protected." },
@@ -56,7 +56,7 @@ const FooterSection = () => {
                                 <Logo variant="light" size="md" />
                             </Link>
                             <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-sm">
-                                The next generation of observability. Sentinel IQ connects your entire stack with AI-driven intelligence and blockchain-verified integrity.
+                                The next generation of observability. Upbase Monitoring connects your entire stack with AI-driven intelligence and blockchain-verified integrity.
                             </p>
                             <div className="flex items-center gap-4 pt-2">
                                 <SocialIcon href="https://wa.me/919359570497" icon={<MessageCircle className="h-4 w-4" />} />

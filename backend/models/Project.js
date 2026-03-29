@@ -30,6 +30,10 @@ const projectSchema = new mongoose.Schema({
       default: 'manual_approval',
     },
   },
+  integrations: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {},
+  },
   createdAt: {
     type: Date,
     default: Date.now,

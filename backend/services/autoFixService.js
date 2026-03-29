@@ -140,7 +140,7 @@ export const triggerAutoFix = async (monitorId, errorMessage, htmlSample) => {
                 const phone = user.integrations?.phone || user.phone;
                 if (phone) {
                     const notifyMsg = `PULSEWATCH: FIX VALIDATED ✅\n\nRalph has generated and VALIDATED a fix for *${monitor.name}*.\n\nBranch: ${fixBranch}\nPreview: ${previewUrl}\n\nManual review required before merge.`;
-                    await sendWhatsAppAlert(phone, notifyMsg);
+                    await sendWhatsAppAlert(monitor.project.toString(), phone, notifyMsg);
                 }
 
                 return { 

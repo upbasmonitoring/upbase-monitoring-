@@ -43,6 +43,7 @@ const LoginPage = () => {
                 });
                 
                 localStorage.setItem("user", JSON.stringify(data));
+                window.dispatchEvent(new Event('auth-change')); // 🔔 Signal the whole app to refresh contexts
                 toast.success("Welcome back to upBASE");
                 navigate("/dashboard");
             } catch (error: any) {
@@ -66,6 +67,7 @@ const LoginPage = () => {
             
             if (data) {
                 localStorage.setItem("user", JSON.stringify(data));
+                window.dispatchEvent(new Event('auth-change')); // 🔔 Signal the whole app to refresh contexts
                 toast.success("Login successful");
                 navigate("/dashboard");
             }

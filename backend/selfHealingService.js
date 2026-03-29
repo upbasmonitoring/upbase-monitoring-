@@ -186,7 +186,7 @@ export const triggerGitHubHealing = async (input, eventData = { type: 'uptime_fa
                     
                     if (phone) {
                         const approvalMsg = `PULSEWATCH: APPROVAL REQUIRED\n\nSite *${monitor.name}* is still DOWN. The automatic 1st-rollback limit has been reached.\n\nManual authorization required via dashboard.`;
-                        await sendWhatsAppAlert(phone, approvalMsg);
+                        await sendWhatsAppAlert(monitor.project.toString(), phone, approvalMsg);
                     }
 
                     healingLog.outcome = 'awaiting_user_approval';

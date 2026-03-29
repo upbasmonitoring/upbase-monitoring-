@@ -23,8 +23,8 @@ const RotatingGlobe = () => {
     // Create root element
     const root = am5.Root.new(chartRef.current);
 
-    // Set themes
-    root.setThemes([am5themes_Animated.new(root)]);
+    // Set themes (Removed am5themes_Animated to fix requestAnimationFrame violations)
+    // root.setThemes([am5themes_Animated.new(root)]);
 
     // Create the map chart
     const chart = root.container.children.push(
@@ -156,7 +156,6 @@ const RotatingGlobe = () => {
     });
 
     chart.seriesContainer.events.on("dragstart", () => animation.pause());
-    chart.appear(2000, 500);
 
     return () => { root.dispose(); };
   }, [mounted]);
