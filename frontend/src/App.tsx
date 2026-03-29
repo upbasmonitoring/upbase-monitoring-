@@ -159,7 +159,6 @@ const router = createBrowserRouter([
   } as any,
 });
 
-import { ProjectProvider } from "./context/ProjectContext";
 
 const App = () => {
     // 🧠 SRE PRELOADING STRATEGY
@@ -183,20 +182,18 @@ const App = () => {
     return (
         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || "1234567890-mockclientid.apps.googleusercontent.com"}>
             <QueryClientProvider client={queryClient}>
-                <ProjectProvider>
-                    <TooltipProvider>
-                        <Toaster />
-                        <Sonner />
-                        <Suspense fallback={<PremiumLoader />}>
-                            <RouterProvider 
-                                router={router} 
-                                future={{
-                                    v7_startTransition: true,
-                                }}
-                            />
-                        </Suspense>
-                    </TooltipProvider>
-                </ProjectProvider>
+                <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <Suspense fallback={<PremiumLoader />}>
+                        <RouterProvider 
+                            router={router} 
+                            future={{
+                                v7_startTransition: true,
+                            }}
+                        />
+                    </Suspense>
+                </TooltipProvider>
             </QueryClientProvider>
         </GoogleOAuthProvider>
     );
