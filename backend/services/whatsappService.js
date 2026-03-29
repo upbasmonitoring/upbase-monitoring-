@@ -121,19 +121,32 @@ export const disconnectWhatsApp = async (projectId = 'global') => {
     try {
         const session = clients.get(projectId);
         if (session && session.client) {
-            console.log(`[WHATSAPP-${projectId}] Initiating Logout/Disconnect Sequence...`);
-            await session.client.logout();
-            await session.client.destroy();
+            console.log(`[WHATSAPP-${projectId}] Initiating Emergency Disconnect Sequence...`);
+            
+            // 🔥 ZOMBIE-KILLER: Try to logout/destroy, but ALWAYS purge the local session
+            try {
+                await session.client.logout();
+            } catch (e) {}
+
+            try {
+                await session.client.destroy();
+            } catch (e) {}
+
             clients.delete(projectId);
             
-            // Re-initialize to generate a fresh QR
-            console.log(`[WHATSAPP-${projectId}] Re-initializing clean session...`);
+            // Re-initialize a 100% clean session
+            console.log(`[WHATSAPP-${projectId}] Purge Complete. Re-initializing clean node...`);
             initWhatsApp(projectId);
-            return { success: true, message: 'Disconnected' };
+            return { success: true, message: 'Clean session restarted' };
         }
-        return { success: false, message: 'No active client' };
+        
+        // If no session but we want to reset anyway (cleanup orphan data)
+        clients.delete(projectId);
+        initWhatsApp(projectId);
+        return { success: true, message: 'Orphan state cleared' };
     } catch (err) {
-        console.error(`[WHATSAPP-LOGOUT-ERR-${projectId}]`, err.message);
+        console.error(`[WHATSAPP-DISCONNECT-FATAL-${projectId}]`, err.message);
+        clients.delete(projectId); // Fallback: Delete anyway
         return { success: false, error: err.message };
     }
 };
