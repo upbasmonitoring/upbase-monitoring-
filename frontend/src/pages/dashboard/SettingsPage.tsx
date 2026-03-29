@@ -6,8 +6,7 @@ import {
     User, 
     Lock, 
     ShieldCheck, 
-    Save,
-    AlertCircle
+    Save
 } from "lucide-react";
 import { toast } from "sonner";
 import { apiFetch } from "@/lib/api";
@@ -84,26 +83,26 @@ const SettingsPage = () => {
         {/* --- 🚀 HEADER --- */}
         <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
-                <div className="h-2 w-2 rounded-full border-2 border-primary" />
-                <h2 className="text-[10px] font-bold uppercase tracking-[.4em] text-slate-400">Account Management</h2>
+                <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_10px_rgba(0,163,255,0.4)]" />
+                <h2 className="text-[10px] font-bold uppercase tracking-[.4em] text-muted-foreground/60">Account Management</h2>
             </div>
-            <h1 className="text-4xl font-bold uppercase tracking-tighter text-slate-900 leading-none">
+            <h1 className="text-4xl font-bold uppercase tracking-tighter text-foreground leading-none">
                 User <span className="text-primary">Details</span>
             </h1>
-            <p className="text-sm font-semibold text-slate-400 uppercase tracking-widest leading-relaxed max-w-xl">
+            <p className="text-sm font-semibold text-muted-foreground/60 uppercase tracking-widest leading-relaxed max-w-xl">
                 Manage your personal identity, email preferences, and secure credentials for access.
             </p>
         </div>
 
         {/* --- 🧑‍💻 PROFILE SETTINGS --- */}
-        <div className="bg-white p-8 md:p-10 rounded-[40px] border border-slate-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.06)] transition-all group">
+        <div className="bg-card p-8 md:p-10 rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group">
             <div className="flex items-center gap-4 mb-8">
                 <div className="h-14 w-14 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
                     <User className="h-6 w-6" />
                 </div>
                 <div>
-                    <h3 className="text-xl font-bold uppercase tracking-tighter text-slate-900">Personal Information</h3>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Update your display name and email address</p>
+                    <h3 className="text-xl font-bold uppercase tracking-tighter text-foreground">Personal Information</h3>
+                    <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">Update your display name and email address</p>
                 </div>
             </div>
 
@@ -130,13 +129,13 @@ const SettingsPage = () => {
                     />
                 </div>
 
-                <div className="pt-4 border-t border-slate-50 flex justify-end">
+                <div className="pt-4 border-t border-border flex justify-end">
                     <Button 
                         id="submit-profile-form"
                         name="submit-profile-form"
                         type="submit" 
                         disabled={loadingProfile}
-                        className="h-12 px-8 bg-slate-900 hover:bg-black text-white font-bold uppercase tracking-widest text-[10px] rounded-2xl shadow-lg transition-all"
+                        className="h-12 px-8 bg-foreground text-background hover:bg-foreground/90 font-bold uppercase tracking-widest text-[10px] rounded-2xl shadow-lg transition-all"
                     >
                         {loadingProfile ? "Saving..." : <><Save className="mr-2 h-4 w-4" /> Save Profile</>}
                     </Button>
@@ -145,20 +144,23 @@ const SettingsPage = () => {
         </div>
 
         {/* --- 🔐 PASSWORD SETTINGS --- */}
-        <div className="bg-white p-8 md:p-10 rounded-[40px] border border-slate-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.06)] transition-all group relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1.5 h-full opacity-60 bg-slate-900" />
+        <div className="bg-card p-8 md:p-10 rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1.5 h-full opacity-60 bg-primary/40" />
             
             <div className="flex items-center gap-4 mb-8">
-                <div className="h-14 w-14 rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
+                <div className="h-14 w-14 rounded-2xl bg-secondary/50 border border-border text-muted-foreground flex items-center justify-center shrink-0">
                     <Lock className="h-6 w-6" />
                 </div>
                 <div>
-                    <h3 className="text-xl font-bold uppercase tracking-tighter text-slate-900">Security Credentials</h3>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Update your master security key</p>
+                    <h3 className="text-xl font-bold uppercase tracking-tighter text-foreground">Security Credentials</h3>
+                    <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">Update your master security key</p>
                 </div>
             </div>
 
             <form id="password-form" name="password-form" autoComplete="on" onSubmit={handleUpdatePassword} className="space-y-6 max-w-lg">
+                {/* 🛡️ Accessibility: Hidden username field for password managers */}
+                <input type="text" name="username" value={email} readOnly className="hidden" autoComplete="username" />
+                
                 <div className="space-y-4">
                     <InputField 
                         id="currentPassword"
@@ -194,7 +196,7 @@ const SettingsPage = () => {
                     />
                 </div>
 
-                <div className="pt-4 border-t border-slate-50 flex justify-start">
+                <div className="pt-4 border-t border-border flex justify-start">
                     <Button 
                         id="submit-password-form"
                         name="submit-password-form"

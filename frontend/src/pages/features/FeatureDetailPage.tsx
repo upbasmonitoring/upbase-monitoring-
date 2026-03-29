@@ -50,19 +50,19 @@ const IconMapper = ({ name, className }: { name: string; className?: string }) =
 const SkeletonLoader = () => (
   <div className="animate-pulse space-y-12">
     <div className="space-y-4">
-      <div className="h-4 w-24 bg-slate-200 rounded" />
-      <div className="h-12 w-3/4 bg-slate-200 rounded-2xl" />
-      <div className="h-6 w-1/2 bg-slate-100 rounded-lg" />
+      <div className="h-4 w-24 bg-secondary rounded" />
+      <div className="h-12 w-3/4 bg-secondary rounded-2xl" />
+      <div className="h-6 w-1/2 bg-secondary/50 rounded-lg" />
     </div>
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
       <div className="lg:col-span-2 space-y-12">
-        <div className="h-64 bg-slate-50 rounded-[32px]" />
+        <div className="h-64 bg-secondary/30 rounded-[32px]" />
         <div className="grid grid-cols-2 gap-8">
-          <div className="h-48 bg-slate-50 rounded-2xl" />
-          <div className="h-48 bg-slate-50 rounded-2xl" />
+          <div className="h-48 bg-secondary/30 rounded-2xl" />
+          <div className="h-48 bg-secondary/30 rounded-2xl" />
         </div>
       </div>
-      <div className="h-[400px] bg-slate-900 rounded-[40px]" />
+      <div className="h-[400px] bg-card rounded-[40px] border border-border" />
     </div>
   </div>
 );
@@ -138,16 +138,16 @@ const FeatureDetailPage = () => {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                    <button 
                     onClick={() => navigate(-1)}
-                    className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-[.25em] text-slate-400 hover:text-primary transition-all pr-4"
+                    className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-[.25em] text-muted-foreground/40 hover:text-primary transition-all pr-4"
                   >
                     <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
                     Back to previous
                   </button>
 
-                  <nav className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 bg-slate-50/50 px-4 py-2 rounded-full border border-slate-100">
+                  <nav className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 bg-secondary/30 px-4 py-2 rounded-full border border-border">
                     <Link to="/" className="hover:text-primary transition-colors">Home</Link>
                     <ChevronRight className="h-3 w-3" />
-                    <span className="text-slate-900">{feature?.title}</span>
+                    <span className="text-foreground">{feature?.title}</span>
                   </nav>
                 </div>
 
@@ -161,31 +161,31 @@ const FeatureDetailPage = () => {
                         className="space-y-6"
                       >
                          {/* Task 4: Icon Mapping */}
-                        <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-[10px] font-black uppercase tracking-widest text-primary shadow-sm hover:scale-[1.02] transition-transform cursor-default">
+                        <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-secondary/50 border border-border shadow-sm text-[10px] font-black uppercase tracking-widest text-primary shadow-sm hover:scale-[1.02] transition-transform cursor-default">
                           <IconMapper name={feature?.iconName || ''} className="h-3.5 w-3.5" />
                           {feature?.category} capability
                         </div>
 
-                        <h1 className="text-5xl md:text-6xl font-black tracking-tight text-slate-900 leading-[1.05]">
+                        <h1 className="text-5xl md:text-6xl font-black tracking-tight text-foreground leading-[1.05]">
                           {feature?.title}
                         </h1>
-                        <p className="text-xl md:text-2xl text-slate-500 font-medium leading-relaxed max-w-2xl italic opacity-80">
+                        <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-2xl italic opacity-80">
                           {feature?.description}
                         </p>
                       </motion.div>
 
                       {/* How It Works Container */}
-                      <div className="relative group p-[2px] rounded-[40px] bg-gradient-to-br from-slate-200 via-transparent to-slate-200 overflow-hidden mt-12">
-                        <div className="bg-white rounded-[38px] p-8 md:p-12 relative z-10">
+                      <div className="relative group p-[2px] rounded-[40px] bg-gradient-to-br from-border via-transparent to-border overflow-hidden mt-12">
+                        <div className="bg-card rounded-[38px] p-8 md:p-12 relative z-10 border border-border">
                           <h2 className="text-[12px] font-black uppercase tracking-[.4em] text-primary mb-8 flex items-center gap-3">
                             <Sparkles className="h-4 w-4" />
                             Operational Intelligence
                           </h2>
-                          <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">
+                          <p className="text-lg md:text-xl text-foreground/80 leading-relaxed font-medium transition-colors hover:text-foreground">
                             {feature?.howItWorks}
                           </p>
                           <div className="absolute bottom-0 right-0 p-12 opacity-[0.03] rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none">
-                            <IconMapper name={feature?.iconName || ''} className="h-48 w-48" />
+                            <IconMapper name={feature?.iconName || ''} className="h-48 w-48 text-primary" />
                           </div>
                         </div>
                       </div>
@@ -194,7 +194,7 @@ const FeatureDetailPage = () => {
                     <section className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8">
                        {/* Task 10: Lists Spacing & Hierarchy */}
                       <div className="space-y-8">
-                        <h2 className="text-[11px] font-black uppercase tracking-[.4em] text-slate-400 border-l-4 border-slate-200 pl-4">
+                        <h2 className="text-[11px] font-black uppercase tracking-[.4em] text-muted-foreground/60 border-l-4 border-border pl-4">
                           Technical Features
                         </h2>
                         <ul className="space-y-5">
@@ -203,23 +203,23 @@ const FeatureDetailPage = () => {
                               <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
                                 <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
                               </div>
-                              <span className="text-slate-600 font-bold text-[14px]">{f}</span>
+                              <span className="text-foreground/70 font-bold text-[14px]">{f}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
 
                       <div className="space-y-8">
-                        <h2 className="text-[11px] font-black uppercase tracking-[.4em] text-slate-400 border-l-4 border-green-400 pl-4">
+                        <h2 className="text-[11px] font-black uppercase tracking-[.4em] text-muted-foreground/60 border-l-4 border-emerald-500/40 pl-4">
                           Measurable ROI
                         </h2>
                         <ul className="space-y-5">
                           {feature?.benefits.map((b, i) => (
-                            <li key={i} className="flex items-start gap-4 group">
-                              <div className="h-6 w-6 rounded-full bg-green-50 flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
-                                <BadgeCheck className="h-3.5 w-3.5 text-green-500" />
+                            <li key={i} className="flex items-start gap-4 group relative">
+                              <div className="h-6 w-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
+                                <BadgeCheck className="h-3.5 w-3.5 text-emerald-500" />
                               </div>
-                              <span className="text-slate-600 font-bold italic text-[14px]">{b}</span>
+                              <span className="text-foreground/70 font-bold italic text-[14px]">{b}</span>
                             </li>
                           ))}
                         </ul>
@@ -232,27 +232,27 @@ const FeatureDetailPage = () => {
                     <aside className="sticky top-32 space-y-10">
                       
                       {/* Task 8: CTA Polish */}
-                      <div className="bg-slate-950 rounded-[48px] p-10 text-white shadow-[0_48px_80px_-24px_rgba(0,0,0,0.3)] relative overflow-hidden border border-slate-800 group">
+                      <div className="bg-card rounded-[48px] p-10 text-foreground shadow-[0_48px_80px_-24px_rgba(0,0,0,0.3)] relative overflow-hidden border border-border group">
                         <div className="absolute top-0 right-0 w-full h-[300px] bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
                         
                         <div className="relative z-10 space-y-8">
                           <div className="space-y-2">
                              <h3 className="text-3xl font-black tracking-tight italic">Scale Securely.</h3>
-                             <p className="text-slate-400 text-sm leading-relaxed font-bold tracking-tight opacity-70">
-                               Deploy {feature?.title} in minutes. Enterprise support available 24/7.
+                             <p className="text-muted-foreground/60 text-sm leading-relaxed font-bold tracking-tight">
+                                Deploy {feature?.title} in minutes. Enterprise support available 24/7.
                              </p>
                           </div>
                           
                           <div className="space-y-3">
                             <Link to="/signup" className="block">
-                              <button className="w-full bg-white text-slate-950 font-black uppercase tracking-[.15em] py-5 rounded-2xl flex items-center justify-center gap-3 transition-all hover:bg-slate-50 active:scale-95 text-[11px] group">
+                              <button className="w-full bg-primary text-white font-black uppercase tracking-[.15em] py-5 rounded-2xl flex items-center justify-center gap-3 transition-all hover:bg-primary/90 active:scale-95 text-[11px] group shadow-xl shadow-primary/20">
                                 Start Monitoring
                                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                               </button>
                             </Link>
                             
                             <Link to="/dashboard" className="block">
-                              <button className="w-full bg-slate-900/50 hover:bg-slate-900 border border-slate-800 text-white font-black uppercase tracking-[.15em] py-5 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 text-[11px]">
+                              <button className="w-full bg-secondary hover:bg-secondary/80 border border-border text-foreground font-black uppercase tracking-[.15em] py-5 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 text-[11px]">
                                 <LayoutDashboard className="h-4 w-4" />
                                 View Dashboard
                               </button>
@@ -267,12 +267,12 @@ const FeatureDetailPage = () => {
                       </div>
 
                       {/* Task 9: Categorized Related Features */}
-                      <div className="bg-white rounded-[40px] p-10 border border-slate-100 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.05)] space-y-8">
+                      <div className="bg-card rounded-[40px] p-10 border border-border shadow-[0_20px_40px_-12px_rgba(0,0,0,0.2)] space-y-8">
                         <div className="space-y-1">
                           <h4 className="text-[10px] font-black uppercase tracking-[.3em] text-primary">
                             In this Category
                           </h4>
-                          <p className="text-[12px] font-extrabold text-slate-400 uppercase tracking-tighter">More {feature?.category}</p>
+                          <p className="text-[12px] font-extrabold text-muted-foreground/60 uppercase tracking-tighter">More {feature?.category}</p>
                         </div>
                         
                         <div className="space-y-3">
@@ -280,15 +280,15 @@ const FeatureDetailPage = () => {
                             <Link 
                               key={key} 
                               to={`/features/${key}`}
-                              className="group flex flex-col p-5 rounded-3xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all duration-300"
+                              className="group flex flex-col p-5 rounded-3xl hover:bg-secondary/50 border border-transparent hover:border-border transition-all duration-300"
                             >
                               <div className="flex items-center justify-between mb-1">
-                                <span className="text-[13px] font-bold text-slate-900 group-hover:text-primary transition-colors">
+                                <span className="text-[13px] font-bold text-foreground group-hover:text-primary transition-colors">
                                   {data.title}
                                 </span>
-                                <ChevronRight className="h-3 w-3 text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                                <ChevronRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-1 transition-all" />
                               </div>
-                              <p className="text-[11px] text-slate-400 font-medium line-clamp-1 italic" title={data.description}>
+                              <p className="text-[11px] text-muted-foreground/40 font-medium line-clamp-1 italic" title={data.description}>
                                 {data.description}
                               </p>
                             </Link>
@@ -310,4 +310,3 @@ const FeatureDetailPage = () => {
 };
 
 export default FeatureDetailPage;
-

@@ -169,22 +169,22 @@ const RalphDiagnosticsPage = () => {
                             <ShieldCheck className="h-4 w-4" />
                             <span className="text-[10px] font-bold uppercase tracking-[0.2em] leading-none">Diagnostic Hub</span>
                         </div>
-                        <h1 className="text-5xl font-bold tracking-tighter uppercase text-slate-900 leading-none">
+                        <h1 className="text-5xl font-bold tracking-tighter uppercase text-foreground leading-none">
                             Ralph <span className="text-primary italic">Diagnostics</span>
                         </h1>
-                        <p className="text-sm font-medium text-slate-400 max-w-xl">
+                        <p className="text-sm font-medium text-muted-foreground/60 max-w-xl">
                             Review and approve AI-generated code fixes. Ralph has validated these suggestions across frontend and backend endpoints for safety.
                         </p>
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <div className="p-6 bg-white border border-slate-100 rounded-[32px] shadow-sm flex items-center gap-6">
-                            <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400">
+                        <div className="p-6 bg-card border border-border rounded-[32px] shadow-sm flex items-center gap-6">
+                            <div className="h-12 w-12 rounded-2xl bg-secondary border border-border flex items-center justify-center text-muted-foreground/40">
                                 <Bug className="h-6 w-6" />
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1 font-sans">Active Fixes</p>
-                                <p className="text-2xl font-black text-slate-900 leading-none tabular-nums">{monitorsWithFixes.length}</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/30 mb-1 font-sans">Active Fixes</p>
+                                <p className="text-2xl font-black text-foreground leading-none tabular-nums">{monitorsWithFixes.length}</p>
                             </div>
                         </div>
                     </div>
@@ -194,7 +194,7 @@ const RalphDiagnosticsPage = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                         {/* Sidebar: Fix Selection */}
                         <div className="lg:col-span-4 space-y-6">
-                             <h3 className="text-[10px] font-bold uppercase tracking-[.4em] text-slate-400 flex items-center gap-3 px-2">
+                             <h3 className="text-[10px] font-bold uppercase tracking-[.4em] text-muted-foreground/40 flex items-center gap-3 px-2">
                                 <Search className="h-4 w-4 text-primary" />
                                 Selection Queue
                             </h3>
@@ -203,18 +203,18 @@ const RalphDiagnosticsPage = () => {
                                     <button 
                                         key={m._id}
                                         onClick={() => setSelectedMonitor(m)}
-                                        className={`w-full text-left p-6 rounded-[32px] border transition-all flex items-center justify-between group ${selectedMonitor?._id === m._id ? 'bg-white border-primary/20 shadow-lg' : 'bg-slate-50 border-slate-100 opacity-60 hover:opacity-100'}`}
+                                        className={`w-full text-left p-6 rounded-[32px] border transition-all flex items-center justify-between group ${selectedMonitor?._id === m._id ? 'bg-card border-primary/20 shadow-lg' : 'bg-secondary/50 border-border opacity-60 hover:opacity-100'}`}
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className={`h-12 w-12 rounded-2xl flex items-center justify-center ${selectedMonitor?._id === m._id ? 'bg-primary/10 text-primary' : 'bg-white text-slate-300'}`}>
+                                            <div className={`h-12 w-12 rounded-2xl flex items-center justify-center ${selectedMonitor?._id === m._id ? 'bg-primary/10 text-primary' : 'bg-card text-muted-foreground/20'}`}>
                                                 <Terminal className="h-6 w-6" />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-slate-900">{m.name}</p>
-                                                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{m.lastFixStatus}</p>
+                                                <p className="text-sm font-bold text-foreground">{m.name}</p>
+                                                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">{m.lastFixStatus}</p>
                                             </div>
                                         </div>
-                                        <ChevronRight className={`h-4 w-4 transition-transform ${selectedMonitor?._id === m._id ? 'text-primary translate-x-1' : 'text-slate-200'}`} />
+                                        <ChevronRight className={`h-4 w-4 transition-transform ${selectedMonitor?._id === m._id ? 'text-primary translate-x-1' : 'text-muted-foreground/20'}`} />
                                     </button>
                                 ))}
                             </div>
@@ -231,7 +231,7 @@ const RalphDiagnosticsPage = () => {
                                     />
 
                                     <div className="space-y-6">
-                                        <h3 className="text-[10px] font-bold uppercase tracking-[.4em] text-slate-400 flex items-center gap-3 px-2">
+                                        <h3 className="text-[10px] font-bold uppercase tracking-[.4em] text-muted-foreground/40 flex items-center gap-3 px-2">
                                             <Code2 className="h-4 w-4 text-primary" />
                                             AI Generation: {activeFix?.aiFix?.filePath || 'Decoding...'}
                                         </h3>
@@ -242,7 +242,7 @@ const RalphDiagnosticsPage = () => {
                                     </div>
 
                                     <div className="space-y-6">
-                                        <h3 className="text-[10px] font-bold uppercase tracking-[.4em] text-slate-400 flex items-center gap-3 px-2">
+                                        <h3 className="text-[10px] font-bold uppercase tracking-[.4em] text-muted-foreground/40 flex items-center gap-3 px-2">
                                             <ShieldCheck className="h-4 w-4 text-primary" />
                                             Multi-Endpoint Validation
                                         </h3>
@@ -258,22 +258,22 @@ const RalphDiagnosticsPage = () => {
 
                                     {/* Confirmation Dialog */}
                                     <AlertDialog open={showMergeConfirm} onOpenChange={setShowMergeConfirm}>
-                                        <AlertDialogContent className="rounded-[32px] border-slate-100 p-10">
+                                        <AlertDialogContent className="rounded-[32px] border-border bg-card p-10 shadow-2xl">
                                             <AlertDialogHeader className="space-y-4">
-                                                <AlertDialogTitle className="text-2xl font-black text-slate-900 leading-none">Confirm Production Merge</AlertDialogTitle>
-                                                <AlertDialogDescription className="text-sm font-medium text-slate-400">
+                                                <AlertDialogTitle className="text-2xl font-black text-foreground leading-none">Confirm Production Merge</AlertDialogTitle>
+                                                <AlertDialogDescription className="text-sm font-medium text-muted-foreground/40">
                                                     This will execute a **hard merge** from your fix branch directly into your primary production branch. 
                                                     Ralph will perform post-deployment verification immediately after.
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter className="mt-8 gap-4">
-                                                <AlertDialogCancel className="rounded-2xl border-slate-100 text-xs font-bold uppercase tracking-widest px-8">Cancel</AlertDialogCancel>
+                                                <AlertDialogCancel className="rounded-2xl border-border bg-secondary text-[10px] font-bold uppercase tracking-widest px-8">Cancel</AlertDialogCancel>
                                                 <AlertDialogAction 
                                                     onClick={() => {
                                                         setShowMergeConfirm(false);
                                                         handleMerge();
                                                     }}
-                                                    className="rounded-2xl bg-primary text-white text-xs font-bold uppercase tracking-widest px-8 hover:bg-primary/90"
+                                                    className="rounded-2xl bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-8 hover:bg-primary/90 shadow-lg shadow-primary/20"
                                                 >
                                                     Merge & Verify
                                                 </AlertDialogAction>
@@ -285,17 +285,17 @@ const RalphDiagnosticsPage = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="min-h-[500px] rounded-[60px] bg-white border border-slate-100 flex flex-col items-center justify-center gap-10 text-center p-12 relative overflow-hidden group">
+                    <div className="min-h-[500px] rounded-[60px] bg-card border border-border flex flex-col items-center justify-center gap-10 text-center p-12 relative overflow-hidden group shadow-sm">
                         <div className="absolute top-0 right-0 p-20 opacity-[0.02] group-hover:scale-110 transition-transform">
                             <ShieldCheck className="h-64 w-64" />
                         </div>
                         <div className="space-y-6 relative">
-                            <div className="mx-auto h-24 w-24 rounded-[40px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 group-hover:text-primary transition-all">
+                            <div className="mx-auto h-24 w-24 rounded-[40px] bg-secondary border border-border flex items-center justify-center text-muted-foreground/20 group-hover:text-primary transition-all">
                                 <Zap className="h-12 w-12" />
                             </div>
                             <div className="space-y-2">
-                                <h3 className="text-3xl font-black text-slate-900 tracking-tighter uppercase italic">No Pending Diagnostics</h3>
-                                <p className="text-sm font-medium text-slate-400">All systems are operational or being autonomously monitored.</p>
+                                <h3 className="text-3xl font-black text-foreground tracking-tighter uppercase italic">No Pending Diagnostics</h3>
+                                <p className="text-sm font-medium text-muted-foreground/40">All systems are operational or being autonomously monitored.</p>
                             </div>
                         </div>
                     </div>

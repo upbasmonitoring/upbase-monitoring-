@@ -18,6 +18,11 @@ const GlobalNetwork = () => {
   useLayoutEffect(() => {
     if (!chartRef.current) return;
 
+    const isDark = document.documentElement.classList.contains('dark');
+    const primaryColor = am5.color(0x0ea5e9); // primary blue
+    const secondaryColor = am5.color(isDark ? 0x1e293b : 0xe2e8f0);
+    const accentColor = am5.color(isDark ? 0xffffff : 0x000000);
+
     const root = am5.Root.new(chartRef.current);
     root.setThemes([am5themes_Animated.new(root)]);
 
@@ -38,8 +43,8 @@ const GlobalNetwork = () => {
     // Ocean / Sphere
     const backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
     backgroundSeries.mapPolygons.template.setAll({
-      fill: am5.color(0x3B82F6),
-      fillOpacity: 0.1,
+      fill: primaryColor,
+      fillOpacity: isDark ? 0.05 : 0.1,
       strokeOpacity: 0
     });
     backgroundSeries.data.push({
@@ -49,7 +54,7 @@ const GlobalNetwork = () => {
     // Graticule (Grid)
     const graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
     graticuleSeries.mapLines.template.setAll({
-      stroke: am5.color(0x3B82F6),
+      stroke: primaryColor,
       strokeOpacity: 0.1,
       strokeWidth: 0.5
     });
@@ -61,9 +66,9 @@ const GlobalNetwork = () => {
       })
     );
     polygonSeries.mapPolygons.template.setAll({
-      fill: am5.color(0x3B82F6),
-      fillOpacity: 1,
-      stroke: am5.color(0xffffff),
+      fill: isDark ? am5.color(0x0f172a) : primaryColor,
+      fillOpacity: isDark ? 0.8 : 1,
+      stroke: isDark ? am5.color(0x1e293b) : am5.color(0xffffff),
       strokeWidth: 0.5,
       strokeOpacity: 0.5
     });
@@ -75,7 +80,7 @@ const GlobalNetwork = () => {
       container.children.push(am5.Circle.new(root, {
         radius: 2,
         fill: am5.color(0xffffff),
-        stroke: am5.color(0x3B82F6),
+        stroke: primaryColor,
         strokeWidth: 1
       }));
       return am5.Bullet.new(root, { sprite: container });
@@ -94,8 +99,8 @@ const GlobalNetwork = () => {
     // Arcs
     const lineSeries = chart.series.push(am5map.MapLineSeries.new(root, {}));
     lineSeries.mapLines.template.setAll({
-      stroke: am5.color(0x3B82F6),
-      strokeOpacity: 0.3,
+      stroke: primaryColor,
+      strokeOpacity: isDark ? 0.2 : 0.3,
       strokeWidth: 1
     });
 
@@ -125,7 +130,7 @@ const GlobalNetwork = () => {
   }, []);
 
   return (
-    <section className="py-24 bg-white overflow-hidden relative border-t border-slate-100">
+    <section className="py-24 bg-background overflow-hidden relative border-t border-border">
       <div className="container relative z-10">
         
         {/* Cinematic Horizon Section - Showing only the upper part of the earth */}
@@ -146,14 +151,14 @@ const GlobalNetwork = () => {
                   initial={{ height: 0 }}
                   whileInView={{ height: '180px' }}
                   transition={{ delay: i * 0.1 + 0.3, duration: 1.2, ease: "easeOut" }}
-                  className="absolute bottom-[-200px] left-1/2 w-[1px] bg-gradient-to-b from-primary/60 to-transparent" 
+                  className="absolute bottom-[-200px] left-1/2 w-[1px] bg-gradient-to-b from-primary/40 to-transparent" 
                 />
                 
                 {/* Navigation Pin */}
-                <div className="h-2 w-2 rounded-full bg-primary mb-4 shadow-[0_0_10px_rgba(59,130,246,0.3)]" />
+                <div className="h-2 w-2 rounded-full bg-primary mb-4 shadow-[0_0_10px_rgba(0,163,255,0.3)]" />
                 
                 <h3 className="text-3xl md:text-5xl font-bold text-primary tracking-tighter mb-2">{stat.value}</h3>
-                <p className="text-[10px] md:text-xs text-slate-500 font-bold uppercase tracking-[0.2em] leading-tight max-w-[140px]">
+                <p className="text-[10px] md:text-xs text-muted-foreground/60 font-bold uppercase tracking-[0.2em] leading-tight max-w-[140px]">
                   {stat.label}
                 </p>
               </motion.div>
@@ -165,8 +170,8 @@ const GlobalNetwork = () => {
              <div ref={chartRef} className="w-full h-full scale-[1.1] contrast-[1.1]" />
              
              {/* Gradient overlay to hide everything except the upper curve */}
-             <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/80 to-white pointer-events-none" 
-                  style={{ background: 'radial-gradient(circle at top, transparent 20%, white 50%)' }} />
+             <div className="absolute inset-0 bg-gradient-to-b from-background/0 via-background/80 to-background pointer-events-none" 
+                  style={{ background: 'radial-gradient(circle at top, transparent 20%, hsl(var(--background)) 50%)' }} />
           </div>
 
         </div>

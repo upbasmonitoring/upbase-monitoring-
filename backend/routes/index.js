@@ -8,6 +8,7 @@ import incidentRoutes from './incidents.js';
 import deploymentRoutes from './deployments.js';
 import externalRoutes from './external.js';
 import fixRoutes from './fixRoutes.js';
+import statsRoutes from './stats.js';
 
 const router = express.Router();
 
@@ -21,5 +22,6 @@ router.use('/external', externalRoutes); // Mount external API
 router.use('/incidents', incidentRoutes);
 router.use('/deployments', deploymentRoutes);
 router.use('/fixes', fixRoutes);
+router.use('/stats', statsRoutes);
 
 export default router;

@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => ({
         manualChunks: {
           'ui-icons': ['lucide-react'],
           'charts': ['recharts'],
+          'globe-engine': ['@amcharts/amcharts5', '@amcharts/amcharts5/map', '@amcharts/amcharts5/themes/Animated', '@amcharts/amcharts5-geodata/worldLow'],
           'animations': ['framer-motion'],
           'query-stack': ['@tanstack/react-query'],
           'vendor': ['react', 'react-dom', 'react-router-dom'],

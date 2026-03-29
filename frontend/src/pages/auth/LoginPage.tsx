@@ -77,7 +77,7 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center font-sans bg-slate-50 relative overflow-hidden">
+        <div className="min-h-screen flex flex-col items-center justify-center font-sans bg-background text-foreground relative overflow-hidden transition-colors duration-500">
             {/* Soft Background Accents */}
             <div className="absolute inset-0 z-0 opacity-40">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px]" />
@@ -87,19 +87,19 @@ const LoginPage = () => {
             <div className="relative z-10 w-full max-w-md px-6 flex flex-col items-center">
                 
                 <div className="mb-12 flex flex-col items-center gap-4 transition-all duration-700 hover:scale-105 group/logo relative">
-                    <Logo size="lg" variant="dark" to="/" />
-                    <Link to="/" className="absolute -top-10 opacity-0 group-hover/logo:opacity-100 transition-opacity text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <Logo size="lg" variant="vibrant" to="/" />
+                    <Link to="/" className="absolute -top-10 opacity-0 group-hover/logo:opacity-100 transition-opacity text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                         <ChevronRight className="h-3 w-3 rotate-180" />
                         Back to Landing
                     </Link>
                 </div>
 
-                <div className="bg-white w-full p-10 rounded-[40px] border border-slate-100 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.06)] relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-40" />
+                <div className="bg-card w-full p-10 rounded-[40px] border border-border shadow-[0_30px_70px_-20px_rgba(0,0,0,0.06)] relative overflow-hidden group transition-all">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-40 dark:opacity-20" />
                     
                     <div className="text-center mb-10 space-y-2">
-                        <h2 className="text-2xl font-bold uppercase tracking-tighter text-slate-900">Welcome <span className="text-primary">Back</span></h2>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[.4em]">Secure Workspace Access</p>
+                        <h2 className="text-2xl font-bold uppercase tracking-tighter text-foreground">Welcome <span className="text-primary">Back</span></h2>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[.4em]">Secure Workspace Access</p>
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-6">
@@ -150,15 +150,15 @@ const LoginPage = () => {
 
                     <div className="relative my-10 flex items-center justify-center">
                         <div className="absolute inset-0 flex items-center">
-                             <div className="w-full h-px bg-slate-100" />
+                             <div className="w-full h-px bg-border opacity-50" />
                         </div>
-                        <span className="relative z-10 px-5 bg-white text-[9px] font-bold uppercase tracking-[.5em] text-slate-300">Fast Access</span>
+                        <span className="relative z-10 px-5 bg-card text-[9px] font-bold uppercase tracking-[.5em] text-muted-foreground">Fast Access</span>
                     </div>
 
                     <div className="grid grid-cols-1 gap-4">
                         <Button 
                             variant="outline" 
-                            className="h-14 bg-white border-slate-200 rounded-2xl flex items-center gap-4 hover:bg-slate-50 hover:border-slate-300 transition-all font-bold uppercase tracking-widest text-[9px] group text-slate-500"
+                            className="h-14 bg-card border-border rounded-2xl flex items-center gap-4 hover:bg-secondary hover:border-primary/40 transition-all font-bold uppercase tracking-widest text-[9px] group text-muted-foreground"
                             onClick={() => googleLogin()}
                             disabled={loading}
                         >
@@ -173,7 +173,7 @@ const LoginPage = () => {
                     </div>
 
                     <div className="mt-10 text-center">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest leading-relaxed">
                             New to infrastructure?{" "}
                             <Link to="/signup" className="text-primary font-bold hover:underline transition-all">Create Account</Link>
                         </p>

@@ -37,6 +37,39 @@
     --success: 142 71% 45%;
     --warning: 38 92% 50%;
   }
+
+  .dark {
+    --background: 222 47% 6%; /* Deep Space Black */
+    --foreground: 213 31% 91%; /* Slate 200 */
+
+    --card: 222 47% 8%; /* Near Black Card */
+    --card-foreground: 213 31% 91%;
+
+    --popover: 222 47% 8%;
+    --popover-foreground: 213 31% 91%;
+
+    --primary: 199 89% 48%; /* Keep Cyber Blue */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 222 47% 12%; 
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 222 47% 12%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 222 47% 12%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 222 47% 15%;
+    --input: 222 47% 15%;
+    --ring: 199 89% 48%;
+
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+  }
 }
 
 @layer base {
@@ -47,57 +80,54 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     background-image: 
-      radial-gradient(at 0% 0%, hsla(199, 89%, 48%, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, hsla(199, 89%, 48%, 0.03) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, hsla(var(--primary), 0.1) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(var(--primary), 0.05) 0px, transparent 50%);
     background-attachment: fixed;
   }
 
   /* Custom Scrollbar for Pro look */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-200 rounded-full;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-slate-300;
+    @apply bg-secondary/80 dark:bg-muted/40 rounded-full hover:bg-secondary dark:hover:bg-muted/60 transition-colors;
   }
 }
 
 @layer components {
   .pro-card {
-    @apply relative bg-white border border-slate-100 rounded-[40px] overflow-hidden transition-all duration-500;
+    @apply relative bg-card border border-border rounded-[40px] overflow-hidden transition-all duration-500;
   }
 
   .pro-card::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent pointer-events-none;
+    @apply absolute inset-0 bg-gradient-to-br from-foreground/[0.02] to-transparent pointer-events-none;
   }
 
   .pro-card:hover {
-    @apply border-primary/20 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)];
+    @apply border-primary/20 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] dark:shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)];
   }
 
   .premium-gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-slate-700 to-primary;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/80 to-primary;
   }
 
   .status-pill {
-    @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest border border-slate-100 bg-slate-50 text-slate-400;
+    @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest border border-border bg-secondary/50 text-muted-foreground/60;
   }
 }
 
 @layer utilities {
   .mesh-bg {
-    background: radial-gradient(circle at 50% 50%, rgba(0, 163, 255, 0.05) 0%, transparent 70%);
+    background: radial-gradient(circle at 50% 50%, hsla(var(--primary), 0.05) 0%, transparent 70%);
   }
   
   .glow-text-primary {
-    text-shadow: 0 0 20px rgba(0, 163, 255, 0.3);
+    text-shadow: 0 0 20px hsla(var(--primary), 0.3);
   }
 
   .animate-slow-pulse {
@@ -108,5 +138,22 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     opacity: 0.02;
     pointer-events: none;
+  }
+
+  /* Theme Transitions - Premium Smooth Execution */
+  html, body {
+    @apply transition-colors duration-500;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 500ms;
+  }
+
+  /* Prevent transition on initial load */
+  .no-transition * {
+    transition: none !important;
   }
 }

@@ -46,10 +46,10 @@ export const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
         {label && (
           <Label 
             htmlFor={id} 
-            className={cn("text-xs font-bold uppercase tracking-widest text-slate-500", labelClassName)}
+            className={cn("text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground/60", labelClassName)}
           >
             {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
+            {required && <span className="text-red-500/80 ml-1">*</span>}
           </Label>
         )}
         <div className="relative">
@@ -62,14 +62,14 @@ export const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
             placeholder={placeholder}
             required={required}
             className={cn(
-              "bg-slate-50 border-slate-200 h-12 text-sm font-semibold rounded-xl focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all",
+              "bg-secondary/30 border-border h-12 text-sm font-semibold rounded-xl focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all placeholder:text-muted-foreground/20 placeholder:font-bold placeholder:uppercase placeholder:tracking-widest",
               icon ? "pr-12" : "",
               className
             )}
             {...props}
           />
           {icon && (
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within/input:text-primary transition-colors pointer-events-none">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground/20 group-focus-within/input:text-primary transition-colors pointer-events-none">
               {icon}
             </div>
           )}

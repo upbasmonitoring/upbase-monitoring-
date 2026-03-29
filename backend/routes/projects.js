@@ -9,6 +9,7 @@ import Deployment from '../models/Deployment.js';
 import Insight from '../models/Insight.js';
 import HealingLog from '../models/HealingLog.js';
 import { protect } from '../middleware/auth.js';
+import { getProjectAnalytics } from '../services/analyticsService.js';
 
 const router = express.Router();
 
@@ -116,6 +117,25 @@ router.delete('/:id', protect, async (req, res) => {
     await project.deleteOne();
     
     res.json({ message: 'Project and all associated nodes decommissioned' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// @desc    Get project analytics
+// @route   GET /api/projects/:id/analytics
+// @access  Private
+router.get('/:id/analytics', protect, async (req, res) => {
+  try {
+    const project = await Project.findOne({ _id: req.params.id, user: req.user.id });
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+    
+    const range = req.query.range || '24h';
+    const monitorId = req.query.monitorId || null;
+    const analytics = await getProjectAnalytics(project._id, range, monitorId);
+    res.json(analytics);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

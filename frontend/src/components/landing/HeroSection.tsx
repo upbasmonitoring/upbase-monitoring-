@@ -9,14 +9,34 @@ import { FloatingGraphics } from "./BackgroundGraphics";
 const RotatingGlobe = lazy(() => import("./RotatingGlobe"));
 
 const GlobeSkeleton = () => (
-  <div className="flex-1 w-full aspect-square max-w-[550px] flex items-center justify-center lg:justify-end">
-    <Skeleton className="w-[85%] h-[85%] rounded-full opacity-5 bg-slate-200" />
-  </div>
+    <div className="flex-1 w-full aspect-square max-w-[550px] flex items-center justify-center lg:justify-end relative">
+      {/* Outer Pulse */}
+      <div className="absolute inset-0 rounded-full border border-primary/20 animate-[ping_3s_infinite]" />
+      <div className="absolute inset-[15%] rounded-full border border-primary/20 animate-[ping_4s_infinite]" />
+      
+      {/* Spinning Scanning Ring */}
+      <div className="absolute inset-0 rounded-full border-t-2 border-primary/40 animate-spin transition-opacity duration-1000" />
+      
+      {/* Inner Hub */}
+      <div className="w-[70%] h-[70%] rounded-full bg-gradient-to-tr from-primary/5 via-primary/10 to-transparent border border-primary/10 relative flex items-center justify-center">
+           <Satellite className="h-10 w-10 text-primary/30 animate-pulse" />
+           <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 opacity-[0.05] pointer-events-none">
+                {[...Array(16)].map((_, i) => (
+                    <div key={i} className="border-[0.5px] border-primary" />
+                ))}
+           </div>
+      </div>
+      
+      <div className="absolute bottom-[-40px] left-1/2 -translate-x-1/2 flex items-center gap-3">
+           <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+           <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-primary/50">Establishing Uplink...</span>
+      </div>
+    </div>
 );
 
 const HeroSection = () => {
   return (
-    <section className="relative overflow-hidden pt-32 pb-24 md:pt-48 md:pb-40 bg-white font-sans border-b border-slate-100">
+    <section id="hero" className="relative overflow-hidden pt-32 pb-24 md:pt-48 md:pb-40 bg-background text-foreground font-sans border-b border-border transition-colors duration-500">
       <FloatingGraphics />
       
       <div className="container relative z-10 px-6">
@@ -28,7 +48,7 @@ const HeroSection = () => {
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm group hover:border-primary/30 transition-all cursor-default"
+              className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-secondary/50 border border-border shadow-sm group hover:border-primary/30 transition-all cursor-default"
             >
               <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
               <span className="text-[10px] font-bold uppercase tracking-[.4em] text-slate-500">v2.4 Stable Deployment</span>
@@ -40,7 +60,7 @@ const HeroSection = () => {
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: "circOut" }}
-                  className="text-[clamp(2.5rem,10vw,4.5rem)] font-bold uppercase tracking-tighter leading-[0.9] text-slate-900"
+                  className="text-[clamp(2.5rem,10vw,4.5rem)] font-bold uppercase tracking-tighter leading-[0.9] text-foreground"
                 >
                   Reliable <br /> 
                   <span className="text-primary">Uptime</span> <br /> 
@@ -53,7 +73,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-lg md:text-xl text-slate-500 font-semibold uppercase tracking-widest leading-relaxed max-w-xl"
+              className="text-lg md:text-xl text-muted-foreground font-semibold uppercase tracking-widest leading-relaxed max-w-xl"
             >
               Monitor your website and API health with real-time incident alerting and performance tracking. Integrated uptime reporting you can trust.
             </motion.p>
@@ -74,7 +94,7 @@ const HeroSection = () => {
               <div className="flex flex-col items-center sm:items-start opacity-70 hover:opacity-100 transition-opacity cursor-default">
                   <div className="flex items-center gap-3 mb-1">
                        <Activity className="h-4 w-4 text-primary" />
-                       <span className="text-[10px] font-bold uppercase tracking-[.3em] text-slate-900">Uptime Check Intervals: 30s</span>
+                       <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground transition-colors">Uptime Check Intervals: 30s</span>
                   </div>
                   <span className="text-[10px] font-medium uppercase tracking-widest text-slate-400">Used by engineering teams globally</span>
               </div>
@@ -85,19 +105,19 @@ const HeroSection = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
-                className="grid grid-cols-3 gap-12 pt-10 border-t border-slate-100 w-full max-w-lg mt-8"
+                className="grid grid-cols-3 gap-12 pt-10 border-t border-border w-full max-w-lg mt-8"
             >
                 <div className="space-y-1">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Resolution</p>
-                    <p className="text-xl font-bold tracking-tighter uppercase text-slate-900/80">30<span className="text-[10px] ml-1">SEC</span></p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Resolution</p>
+                    <p className="text-xl font-bold tracking-tighter uppercase text-foreground/80">30<span className="text-[10px] ml-1">SEC</span></p>
                 </div>
                 <div className="space-y-1">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Uptime</p>
-                    <p className="text-xl font-bold tracking-tighter uppercase text-slate-900/80">99.9<span className="text-[10px] ml-1">%</span></p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Uptime</p>
+                    <p className="text-xl font-bold tracking-tighter uppercase text-foreground/80">99.9<span className="text-[10px] ml-1">%</span></p>
                 </div>
                 <div className="space-y-1">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Latencies</p>
-                    <p className="text-xl font-bold tracking-tighter uppercase text-slate-900/80">Global</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Latencies</p>
+                    <p className="text-xl font-bold tracking-tighter uppercase text-foreground/80">Global</p>
                 </div>
             </motion.div>
           </div>

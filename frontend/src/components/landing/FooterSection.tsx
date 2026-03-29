@@ -39,7 +39,7 @@ const FooterSection = () => {
     ];
 
     return (
-        <footer className="bg-slate-950 pt-24 pb-12 text-white font-sans border-t border-slate-900 relative z-50 overflow-hidden">
+        <footer id="footer" className="bg-slate-950 pt-24 pb-12 text-white font-sans border-t border-slate-900 relative z-50 overflow-hidden">
             {/* Ambient Background Glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
             <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />

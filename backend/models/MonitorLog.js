@@ -20,6 +20,29 @@ const monitorLogSchema = new mongoose.Schema({
         default: 0
     },
     
+    // Analytics Fields (Derived)
+    project: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Project',
+        required: false, // Make it optional temporarily for backwards compatibility
+    },
+    url: {
+        type: String,
+        default: null,
+    },
+    responseSize: {
+        type: Number,
+        default: 0,
+    },
+    region: {
+        type: String,
+        default: 'global',
+    },
+    userAgent: {
+        type: String,
+        default: null,
+    },
+    
     // EXPLICIT SEPARATION AS REQUESTED
     edgeLatency: {
         type: Number,

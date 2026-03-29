@@ -41,19 +41,19 @@ export const PremiumLoader: React.FC = () => {
 
 export const DashboardSkeleton: React.FC = () => {
     return (
-        <div className="flex h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden">
+        <div className="flex h-screen bg-background text-foreground font-sans overflow-hidden">
             {/* Sidebar Skeleton (Matching 280px width) */}
-            <aside className="hidden lg:flex w-[280px] flex-col shrink-0 border-r border-slate-100 bg-white relative">
-                <div className="h-20 flex items-center px-8 border-b border-slate-50 shrink-0">
-                    <div className="h-8 w-32 bg-slate-100 rounded-lg animate-pulse" />
+            <aside className="hidden lg:flex w-[280px] flex-col shrink-0 border-r border-border bg-card relative">
+                <div className="h-20 flex items-center px-8 border-b border-border/50 shrink-0">
+                    <div className="h-8 w-32 bg-secondary rounded-lg animate-pulse" />
                 </div>
                 <div className="px-5 py-8 space-y-4 flex-1">
                     {[1, 2, 3, 4, 5, 6].map(i => (
-                        <div key={i} className="h-12 w-full bg-slate-50 rounded-2xl animate-pulse" />
+                        <div key={i} className="h-12 w-full bg-secondary/40 rounded-2xl animate-pulse" />
                     ))}
                 </div>
-                <div className="p-5 border-t border-slate-50">
-                    <div className="h-16 w-full bg-slate-50 rounded-2xl animate-pulse" />
+                <div className="p-5 border-t border-border/50">
+                    <div className="h-16 w-full bg-secondary/40 rounded-2xl animate-pulse" />
                 </div>
             </aside>
 
@@ -62,12 +62,12 @@ export const DashboardSkeleton: React.FC = () => {
                 {/* Header Header (Matching sm:h-20) */}
                 <div className="h-16 sm:h-20 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b border-transparent">
                     <div className="flex items-center gap-6">
-                        <div className="h-10 w-48 bg-slate-100 rounded-2xl animate-pulse" />
-                        <div className="hidden md:block h-10 w-64 bg-slate-100 rounded-2xl animate-pulse" />
+                        <div className="h-10 w-48 bg-secondary/60 rounded-2xl animate-pulse" />
+                        <div className="hidden md:block h-10 w-64 bg-secondary/40 rounded-2xl animate-pulse" />
                     </div>
                     <div className="flex items-center gap-4">
-                        <div className="h-11 w-11 rounded-2xl bg-white border border-slate-100 animate-pulse" />
-                        <div className="h-11 w-11 rounded-2xl bg-white border border-slate-100 animate-pulse" />
+                        <div className="h-11 w-11 rounded-2xl bg-card border border-border animate-pulse" />
+                        <div className="h-11 w-11 rounded-2xl bg-card border border-border animate-pulse" />
                     </div>
                 </div>
 
@@ -76,18 +76,18 @@ export const DashboardSkeleton: React.FC = () => {
                     <div className="max-w-[1400px] mx-auto space-y-8">
                         <div className="flex items-center justify-between">
                             <div className="space-y-3">
-                                <div className="h-10 w-64 bg-slate-200 rounded-xl animate-pulse" />
-                                <div className="h-4 w-96 bg-slate-100 rounded-md animate-pulse" />
+                                <div className="h-10 w-64 bg-secondary/80 rounded-xl animate-pulse" />
+                                <div className="h-4 w-96 bg-secondary/40 rounded-md animate-pulse" />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {[1, 2, 3].map(i => (
-                                <div key={i} className="h-44 bg-white border border-slate-100 rounded-3xl animate-pulse shadow-sm" />
+                                <div key={i} className="h-44 bg-card border border-border rounded-3xl animate-pulse shadow-sm" />
                             ))}
                         </div>
 
-                        <div className="h-[500px] bg-white border border-slate-100 rounded-[32px] animate-pulse shadow-sm" />
+                        <div className="h-[500px] bg-card border border-border rounded-[32px] animate-pulse shadow-sm" />
                     </div>
                 </main>
             </div>

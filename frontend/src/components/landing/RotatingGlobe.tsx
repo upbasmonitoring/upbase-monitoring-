@@ -10,7 +10,11 @@ const RotatingGlobe = () => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setMounted(true);
+    // Priority: Give immediate bandwidth to text & layouts, then mount heavy logic
+    const timer = setTimeout(() => {
+        setMounted(true);
+    }, 50);
+    return () => clearTimeout(timer);
   }, []);
 
   useLayoutEffect(() => {

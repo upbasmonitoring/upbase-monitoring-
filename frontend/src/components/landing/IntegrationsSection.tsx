@@ -23,7 +23,7 @@ const integrations = [
 
 const IntegrationsSection = () => {
     return (
-        <section id="integrations" className="py-32 bg-white relative overflow-hidden border-b border-slate-100 font-sans">
+        <section id="integrations" className="py-32 bg-background relative overflow-hidden border-b border-border font-sans transition-colors duration-500">
             <div className="container relative z-10 px-6">
                 
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-24">
@@ -37,16 +37,16 @@ const IntegrationsSection = () => {
                                 className="flex items-center gap-3 mb-4"
                             >
                                 <div className="h-px w-8 bg-primary/20" />
-                                <span className="text-[10px] font-bold uppercase tracking-[.6em] text-slate-500">Native Endpoint Sync</span>
+                                <span className="text-[10px] font-bold uppercase tracking-[.6em] text-muted-foreground">Native Endpoint Sync</span>
                             </motion.div>
                             <motion.h2 
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-slate-900 leading-[0.9]"
+                                className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-foreground leading-[0.9]"
                             >
-                                Fleet <br /> <span className="text-primary">Connectivity</span>
+                                Fleet <br /> <span className="text-primary transition-colors">Connectivity</span>
                             </motion.h2>
-                            <p className="text-lg md:text-xl text-slate-500 font-semibold uppercase tracking-widest leading-relaxed pr-12">
+                            <p className="text-lg md:text-xl text-muted-foreground font-semibold uppercase tracking-widest leading-relaxed pr-12">
                                 Native status reporting and incident dispatching via SDK or Webhook. Synchronize your entire infrastructure health into a single unified dashboard.
                             </p>
                         </div>
@@ -61,12 +61,12 @@ const IntegrationsSection = () => {
                                     className="space-y-4 group"
                                 >
                                     <div className="flex items-center gap-4 text-primary">
-                                         <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:bg-primary group-hover:text-white group-hover:shadow-[0_10px_30px_-10px_rgba(0,163,255,0.4)] transition-all">
+                                         <div className="h-10 w-10 rounded-xl bg-secondary/50 border border-border flex items-center justify-center group-hover:bg-primary group-hover:text-white group-hover:shadow-[0_10px_30px_-10px_rgba(0,163,255,0.4)] transition-all">
                                             {item.icon}
                                          </div>
-                                         <h3 className="text-xl font-bold uppercase tracking-tighter text-slate-900 group-hover:text-primary transition-colors">{item.name}</h3>
+                                         <h3 className="text-xl font-bold uppercase tracking-tighter text-foreground group-hover:text-primary transition-colors">{item.name}</h3>
                                     </div>
-                                    <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 italic leading-relaxed group-hover:text-slate-500 transition-colors">
+                                    <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground italic leading-relaxed group-hover:text-foreground transition-colors">
                                         {item.desc}
                                     </p>
                                 </motion.div>
@@ -75,10 +75,10 @@ const IntegrationsSection = () => {
                     </div>
 
                     {/* Right: Authentic Network Visualization (Clean Grid) */}
-                    <div className="flex-1 w-full max-w-[650px] aspect-[4/3] bg-slate-50 rounded-[40px] border border-slate-200 overflow-hidden relative shadow-sm">
+                    <div className="flex-1 w-full max-w-[650px] aspect-[4/3] bg-secondary/30 rounded-[40px] border border-border overflow-hidden relative shadow-sm">
                         <div className="absolute inset-0 grid grid-cols-8 grid-rows-8 opacity-[0.05] pointer-events-none">
                             {[...Array(64)].map((_, i) => (
-                                <div key={i} className="border-[0.5px] border-slate-900" />
+                                <div key={i} className="border-[0.5px] border-foreground" />
                             ))}
                         </div>
                         
@@ -87,7 +87,7 @@ const IntegrationsSection = () => {
                              <motion.div
                                 animate={{ scale: [1, 1.05, 1], opacity: [0.8, 1, 0.8] }}
                                 transition={{ duration: 4, repeat: Infinity }}
-                                className="h-32 w-32 bg-white rounded-3xl border border-slate-200 shadow-2xl flex items-center justify-center relative z-20"
+                                className="h-32 w-32 bg-card rounded-3xl border border-border shadow-2xl flex items-center justify-center relative z-20"
                              >
                                  <Satellite className="h-12 w-12 text-primary animate-pulse" />
                              </motion.div>
@@ -117,11 +117,11 @@ const StatusBadge = ({ x, y, status, label, color = "text-green-500" }: any) => 
         style={{ position: "absolute", left: x, top: y, transform: "translate(-50%, -50%)" }}
         className="flex flex-col items-center gap-2"
     >
-        <div className="h-4 w-4 rounded-full bg-white border border-slate-200 shadow-xl flex items-center justify-center">
+        <div className="h-4 w-4 rounded-full bg-card border border-border shadow-xl flex items-center justify-center">
              <div className={`h-1.5 w-1.5 rounded-full bg-current ${color} animate-pulse`} />
         </div>
-        <div className="bg-white/80 backdrop-blur-xl px-4 py-1.5 rounded-xl border border-slate-100 shadow-sm flex flex-col items-center">
-             <span className="text-[7px] font-black uppercase tracking-widest text-slate-400 mb-0.5">{label}</span>
+        <div className="bg-card/80 backdrop-blur-xl px-4 py-1.5 rounded-xl border border-border shadow-sm flex flex-col items-center">
+             <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">{label}</span>
              <span className={`text-[8px] font-black uppercase tracking-widest ${color}`}>{status}</span>
         </div>
     </motion.div>

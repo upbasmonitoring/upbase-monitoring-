@@ -5,7 +5,7 @@ interface LogoProps {
   className?: string;
   size?: "sm" | "md" | "lg";
   withText?: boolean;
-  variant?: "light" | "dark" | "auto";
+  variant?: "light" | "dark" | "auto" | "vibrant";
   to?: string;
 }
 
@@ -29,9 +29,11 @@ const Logo = ({ className = "", size = "md", withText = true, variant = "auto", 
   };
 
   // Explicit white for light variant (on dark backgrounds)
-  // Explicit slate-900 for dark variant (on light backgrounds)
-  // Explicit slate-600 for dark/light contrast
-  const upTextColor = variant === "light" ? "text-white" : "text-slate-600";
+  // Vibrant logic: Orange "up"
+  const upTextColor = 
+    variant === "light" ? "text-white" : 
+    variant === "vibrant" ? "text-amber-500" : 
+    "text-muted-foreground";
 
   const content = (
     <div className={`flex items-center ${gaps[size]} ${className}`}>

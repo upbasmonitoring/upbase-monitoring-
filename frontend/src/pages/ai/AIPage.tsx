@@ -62,11 +62,11 @@ const AIPage: React.FC = () => {
               <Brain className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-black tracking-tight text-slate-900">AI Observability</h1>
+              <h1 className="text-2xl font-black tracking-tight text-foreground">AI Observability</h1>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Powered by MCP Core Engine</span>
-                <div className="h-1 w-1 rounded-full bg-slate-200" />
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-100/50">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">Powered by MCP Core Engine</span>
+                <div className="h-1 w-1 rounded-full bg-border" />
+                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                     <Sparkles className="w-2.5 h-2.5 text-emerald-500" />
                     <span className="text-[9px] font-black text-emerald-600 uppercase tracking-tight">Active</span>
                 </div>
@@ -76,8 +76,8 @@ const AIPage: React.FC = () => {
 
           {/* Monitor Selector for Context */}
           {!loading && monitors.length > 0 && (
-            <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm p-1.5 rounded-2xl border border-slate-100 shadow-sm">
-                <LucideMonitor className="w-3.5 h-3.5 text-slate-400 ml-2" />
+            <div className="flex items-center gap-2 bg-card border border-border p-1.5 rounded-2xl shadow-sm">
+                <LucideMonitor className="w-3.5 h-3.5 text-muted-foreground/40 ml-2" />
                 <select 
                     id="monitor-select"
                     name="monitorSelect"
@@ -86,7 +86,7 @@ const AIPage: React.FC = () => {
                         const m = monitors.find(x => x._id === e.target.value);
                         if (m) setSelectedMonitor(m);
                     }}
-                    className="bg-transparent text-xs font-bold text-slate-600 focus:outline-none border-none pr-8 py-1"
+                    className="bg-transparent text-xs font-bold text-muted-foreground/60 focus:outline-none border-none pr-8 py-1"
                 >
                     {monitors.map(m => (
                         <option key={m._id} value={m._id}>{m.name}</option>
@@ -112,24 +112,24 @@ const AIPage: React.FC = () => {
         </div>
 
         {/* Helper Footer */}
-        <div className="p-6 rounded-3xl bg-white border border-slate-100 shadow-sm flex items-center justify-between">
+        <div className="p-6 rounded-3xl bg-card border border-border shadow-sm flex items-center justify-between">
             <div className="flex items-center gap-4">
-                <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
-                    <Brain className="h-5 w-5 text-slate-400" />
+                <div className="h-10 w-10 rounded-xl bg-secondary/50 border border-border flex items-center justify-center">
+                    <Brain className="h-5 w-5 text-muted-foreground/40" />
                 </div>
                 <div>
-                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-tight">Ralph Intelligence Agent</h3>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mt-1">SRE-Level Observability Engine</p>
+                    <h3 className="text-xs font-black text-foreground uppercase tracking-tight">Ralph Intelligence Agent</h3>
+                    <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest leading-none mt-1">SRE-Level Observability Engine</p>
                 </div>
             </div>
             
             <button 
                 onClick={() => setShowDocs(true)}
-                className="group relative px-6 py-2.5 bg-slate-50 hover:bg-slate-900 border border-slate-200 hover:border-slate-900 rounded-xl transition-all duration-300 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-slate-900/10 flex items-center gap-3"
+                className="group relative px-6 py-2.5 bg-secondary/50 hover:bg-foreground border border-border hover:border-foreground rounded-xl transition-all duration-300 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-foreground/10 flex items-center gap-3"
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-primary opacity-0 group-hover:opacity-5 transition-opacity" />
-                <Info className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-400 transition-colors" />
-                <span className="text-[10px] font-black text-slate-600 group-hover:text-white uppercase tracking-widest transition-colors">
+                <LucideMonitor className="w-3.5 h-3.5 text-muted-foreground/40 group-hover:text-indigo-400 transition-colors" />
+                <span className="text-[10px] font-black text-muted-foreground/60 group-hover:text-background uppercase tracking-widest transition-colors">
                     View Documentation
                 </span>
             </button>

@@ -360,6 +360,8 @@ export const checkSingleMonitor = async (monitor) => {
     // Log history
     const log = await MonitorLog.create({
         monitor: monitor._id,
+        project: monitor.project, // Analytics Context
+        url: monitor.url, // Analytics Context
         status: (['GOOD', 'OK', 'DEGRADED'].includes(statusType)) ? 'UP' : statusType, // Map to UP for uptime math
         responseTime,
         latency: responseTime,
@@ -370,6 +372,9 @@ export const checkSingleMonitor = async (monitor) => {
         source: 'synthetic',
         errorMessage,
         statusCode,
+        responseSize: responseBody ? Buffer.byteLength(responseBody, 'utf8') : 0, // Analytics Context
+        region: 'global-synthetic', // Analytics Context
+        userAgent: 'PulseWatch-Engine', // Analytics Context
         responseBody: status === 'DOWN' ? responseBody : null // Save space, only failed body
     });
 

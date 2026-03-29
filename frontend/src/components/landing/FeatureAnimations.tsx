@@ -20,8 +20,7 @@ import {
 export const PerformanceAnimation = () => {
   return (
     <div 
-      style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)' }}
-      className="relative w-full h-full rounded-2xl overflow-hidden p-8 font-sans border border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.05)]"
+      className="relative w-full h-full rounded-2xl overflow-hidden p-8 font-sans border border-border bg-card shadow-[0_20px_50px_rgba(0,0,0,0.05)] transition-colors duration-500"
     >
       {/* Header HUD */}
       <div className="flex justify-between items-center mb-8 relative z-20">
@@ -29,18 +28,18 @@ export const PerformanceAnimation = () => {
            <div className="h-8 w-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
               <PulseIcon className="h-4 w-4 text-primary" />
            </div>
-           <p className="text-[10px] font-black uppercase tracking-widest text-slate-900 italic">Telemetry stream 0x1</p>
+           <p className="text-[10px] font-black uppercase tracking-widest text-foreground italic">Telemetry stream 0x1</p>
         </div>
         <div className="flex gap-2">
           <div className="h-1.5 w-8 rounded-full bg-primary/20" />
-          <div className="h-1.5 w-4 rounded-full bg-slate-200" />
+          <div className="h-1.5 w-4 rounded-full bg-border" />
         </div>
       </div>
 
       {/* Grid Lines Overlay */}
       <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 opacity-[0.03] pointer-events-none">
         {[...Array(144)].map((_, i) => (
-          <div key={i} className="border-[0.5px] border-slate-900" />
+          <div key={i} className="border-[0.5px] border-border" />
         ))}
       </div>
 
@@ -63,7 +62,7 @@ export const PerformanceAnimation = () => {
         <motion.div
             animate={{ x: [0, 40, 0], y: [-40, -60, -40] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-1/2 left-1/4 px-4 py-2 bg-white/90 border border-primary/20 rounded-2xl shadow-2xl backdrop-blur-xl flex flex-col items-center gap-0.5"
+            className="absolute top-1/2 left-1/4 px-4 py-2 bg-card/90 border border-border rounded-2xl shadow-2xl backdrop-blur-xl flex flex-col items-center gap-0.5"
         >
             <span className="text-[8px] font-black uppercase tracking-[.3em] text-slate-500 italic">Latency</span>
             <span className="text-sm font-black italic tracking-tighter text-primary">124ms</span>
@@ -95,25 +94,25 @@ export const PerformanceAnimation = () => {
       </div>
 
       {/* Bottom Forensic Stats */}
-      <div className="grid grid-cols-3 gap-6 border-t border-slate-100 pt-8 mt-4 relative z-20">
+      <div className="grid grid-cols-3 gap-6 border-t border-border pt-8 mt-4 relative z-20">
         <div className="space-y-1">
           <p className="text-slate-400 uppercase text-[8px] font-black tracking-widest italic leading-none">Request Rate</p>
           <div className="flex items-baseline gap-1.5 pt-1">
-            <span className="text-slate-900 font-black italic text-base tracking-tighter">479K</span>
+            <span className="text-foreground font-black italic text-base tracking-tighter">479K</span>
             <span className="text-green-500 text-[8px] font-bold">+12%</span>
           </div>
         </div>
         <div className="space-y-1">
           <p className="text-slate-400 uppercase text-[8px] font-black tracking-widest italic leading-none">Response</p>
           <div className="flex items-baseline gap-1.5 pt-1">
-            <span className="text-slate-900 font-black italic text-base tracking-tighter">117ms</span>
+            <span className="text-foreground font-black italic text-base tracking-tighter">117ms</span>
             <span className="text-green-500 text-[8px] font-bold">-4ms</span>
           </div>
         </div>
         <div className="space-y-1">
           <p className="text-slate-400 uppercase text-[8px] font-black tracking-widest italic leading-none">Stability</p>
           <div className="flex items-baseline gap-1.5 pt-1">
-            <span className="text-slate-900 font-black italic text-base tracking-tighter">99.9%</span>
+            <span className="text-foreground font-black italic text-base tracking-tighter">99.9%</span>
             <span className="text-slate-400 text-[8px] font-bold">Stable</span>
           </div>
         </div>
@@ -124,7 +123,7 @@ export const PerformanceAnimation = () => {
 
 export const SecurityAnimation = () => {
   return (
-    <div className="relative w-full h-full flex items-center justify-center p-8 bg-slate-50/50 rounded-2xl overflow-hidden border border-slate-100">
+    <div className="relative w-full h-full flex items-center justify-center p-8 bg-secondary/10 rounded-2xl overflow-hidden border border-border">
       {/* Mesh/Grid Background */}
       <div className="absolute inset-0 opacity-[0.03] rotate-12 scale-150">
         <svg width="100%" height="100%">
@@ -139,7 +138,7 @@ export const SecurityAnimation = () => {
       <motion.div 
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="relative z-20 h-32 w-32 md:h-48 md:w-48 bg-white rounded-3xl shadow-2xl flex items-center justify-center border border-slate-100"
+        className="relative z-20 h-32 w-32 md:h-48 md:w-48 bg-card rounded-3xl shadow-2xl flex items-center justify-center border border-border"
       >
         <div className="absolute inset-0 bg-primary/5 rounded-3xl blur-2xl" />
         <Cloud className="h-16 w-16 md:h-24 md:w-24 text-primary" />
@@ -150,10 +149,10 @@ export const SecurityAnimation = () => {
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
           className="absolute inset-[-40px] border-[1px] border-dashed border-primary/20 rounded-full"
         >
-          <motion.div className="absolute top-0 left-1/2 -translate-x-1/2 p-2 bg-white rounded-full shadow-lg border border-slate-100">
+          <motion.div className="absolute top-0 left-1/2 -translate-x-1/2 p-2 bg-card rounded-full shadow-lg border border-border">
             <Shield className="h-4 w-4 text-primary" />
           </motion.div>
-          <motion.div className="absolute bottom-0 left-1/2 -translate-x-1/2 p-2 bg-white rounded-full shadow-lg border border-slate-100">
+          <motion.div className="absolute bottom-0 left-1/2 -translate-x-1/2 p-2 bg-card rounded-full shadow-lg border border-border">
             <Lock className="h-4 w-4 text-primary" />
           </motion.div>
         </motion.div>
@@ -187,7 +186,7 @@ const Node = ({ icon, x, y, delay }: any) => (
     animate={{ y: [0, -5, 0] }}
     transition={{ delay, duration: 4, repeat: Infinity, ease: "easeInOut" }}
     style={{ left: x, top: y, position: "absolute", transform: "translate(-50%, -50%)" }}
-    className="p-3 bg-white rounded-2xl shadow-lg border border-slate-100 text-primary"
+    className="p-3 bg-card rounded-2xl shadow-lg border border-border text-primary"
   >
     {icon}
   </motion.div>

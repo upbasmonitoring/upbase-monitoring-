@@ -36,7 +36,7 @@ const RalphRadar: React.FC<RalphRadarProps> = ({ monitors, incidents }) => {
                 )}
             </div>
 
-            <div className={`bg-white rounded-[40px] border border-slate-100 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden transition-all duration-500 ${activeRalphs.length > 0 ? 'border-primary/20 ring-4 ring-primary/5' : ''}`}>
+            <div className={`bg-card rounded-[40px] border border-border shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden transition-all duration-500 ${activeRalphs.length > 0 ? 'border-primary/20 ring-4 ring-primary/5' : ''}`}>
                 <div className="p-8 space-y-8">
                     {/* --- 📡 RADAR SCANNER --- */}
                     <div className="relative h-48 w-full bg-slate-900 rounded-[32px] overflow-hidden group">
@@ -114,9 +114,9 @@ const RalphRadar: React.FC<RalphRadarProps> = ({ monitors, incidents }) => {
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, scale: 0.95 }}
-                                        className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex gap-4 group hover:border-primary/20 transition-all"
+                                        className="p-4 rounded-2xl bg-secondary/20 border border-border flex gap-4 group hover:border-primary/20 transition-all"
                                     >
-                                        <div className="h-8 w-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                                        <div className="h-8 w-8 rounded-lg bg-card border border-border flex items-center justify-center shrink-0">
                                             {getRalphEventIcon(event.type)}
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -124,11 +124,11 @@ const RalphRadar: React.FC<RalphRadarProps> = ({ monitors, incidents }) => {
                                                 <span className="text-[9px] font-bold text-primary uppercase tracking-tighter truncate">{event.monitorName}</span>
                                                 <span className="text-[8px] font-semibold text-slate-300 tabular-nums uppercase">{new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                             </div>
-                                            <p className="text-[10px] font-bold text-slate-600 leading-tight uppercase tracking-tight">{event.message}</p>
+                                            <p className="text-[10px] font-bold text-foreground opacity-80 leading-tight uppercase tracking-tight">{event.message}</p>
                                         </div>
                                     </motion.div>
                                 )) : (
-                                    <div className="py-12 flex flex-col items-center justify-center gap-4 text-center border-2 border-dashed border-slate-50 rounded-[32px]">
+                                    <div className="py-12 flex flex-col items-center justify-center gap-4 text-center border-2 border-dashed border-border rounded-[32px]">
                                         <div className="h-10 w-10 text-slate-100">
                                             <ShieldAlert className="h-full w-full" />
                                         </div>
@@ -153,7 +153,7 @@ const RalphRadar: React.FC<RalphRadarProps> = ({ monitors, incidents }) => {
                                     </span>
                                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Status: {activeRalphs[0].ralphStatus}</span>
                                 </div>
-                                <div className="h-1.5 w-full bg-white rounded-full overflow-hidden border border-primary/10">
+                                <div className="h-1.5 w-full bg-secondary/50 rounded-full overflow-hidden border border-primary/10">
                                     <motion.div 
                                         className="h-full bg-primary shadow-[0_0_10px_rgba(0,163,255,0.5)]"
                                         initial={{ width: "10%" }}
@@ -161,8 +161,8 @@ const RalphRadar: React.FC<RalphRadarProps> = ({ monitors, incidents }) => {
                                         transition={{ duration: 1 }}
                                     />
                                 </div>
-                                <p className="text-[9px] font-semibold text-slate-500 uppercase tracking-tight leading-relaxed">
-                                    Ralph is currently running an autonomous diagnostic loop for <span className="text-slate-900">{activeRalphs[0].name}</span>. 
+                                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-tight leading-relaxed">
+                                    Ralph is currently running an autonomous diagnostic loop for <span className="text-foreground">{activeRalphs[0].name}</span>. 
                                     Expected MTTR estimate: <span className="text-primary italic">45s</span>.
                                 </p>
                             </div>
@@ -171,7 +171,7 @@ const RalphRadar: React.FC<RalphRadarProps> = ({ monitors, incidents }) => {
                 </div>
                 
                 {/* Footer Sync */}
-                <div className="px-10 py-5 bg-slate-50/50 border-t border-slate-50 flex items-center justify-between">
+                <div className="px-10 py-5 bg-secondary/30 border-t border-border flex items-center justify-between">
                     <div className="flex items-center gap-3">
                          <div className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
                          <span className="text-[9px] font-bold uppercase tracking-widest text-slate-300">Heuristic Engine v1.0</span>

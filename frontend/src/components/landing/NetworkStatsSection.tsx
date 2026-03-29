@@ -9,7 +9,7 @@ const NetworkStatsSection = () => {
   ];
 
   return (
-    <section className="py-32 bg-white overflow-hidden relative">
+    <section className="py-32 bg-background overflow-hidden relative">
       <div className="container relative z-10">
         <div className="flex flex-col items-center mb-24">
           <motion.div
@@ -19,7 +19,7 @@ const NetworkStatsSection = () => {
             className="text-center"
           >
             <span className="text-xs font-black uppercase tracking-[0.3em] text-primary mb-4 block">The Global Backbone</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight text-balance">Built local, scaled universal</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight text-balance">Built local, scaled universal</h2>
           </motion.div>
         </div>
 
@@ -54,7 +54,7 @@ const NetworkStatsSection = () => {
                 />
                 
                 <span className="text-3xl md:text-5xl font-bold text-primary tracking-tighter mb-3">{stat.value}</span>
-                <p className="text-xs md:text-sm text-slate-500 font-bold uppercase tracking-wider leading-tight max-w-[120px]">
+                <p className="text-xs md:text-sm text-muted-foreground/60 font-bold uppercase tracking-wider leading-tight max-w-[120px]">
                   {stat.label}
                 </p>
               </motion.div>
@@ -62,7 +62,7 @@ const NetworkStatsSection = () => {
           </div>
 
           {/* The Hemisphere Globe (Reference Style) */}
-          <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 w-[100%] md:w-[120%] aspect-square rounded-full bg-white border border-slate-100 shadow-[0_-40px_100px_rgba(59,130,246,0.08)] overflow-hidden">
+          <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 w-[100%] md:w-[120%] aspect-square rounded-full bg-card border border-border shadow-[0_-40px_100px_rgba(0,163,255,0.08)] overflow-hidden">
              
              {/* Radial Grid effect */}
              <div className="absolute inset-0 opacity-[0.15]" 
@@ -115,7 +115,7 @@ const NetworkStatsSection = () => {
           </div>
           
           {/* Masking the bottom to create the "rising" effect */}
-          <div className="absolute bottom-[-110px] left-0 w-full h-[150px] bg-white z-20" />
+          <div className="absolute bottom-[-110px] left-0 w-full h-[150px] bg-background z-20" />
         </div>
       </div>
     </section>
