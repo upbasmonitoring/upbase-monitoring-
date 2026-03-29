@@ -27,7 +27,7 @@ export const initWhatsApp = (projectId = 'global') => {
                 args: [
                     '--no-sandbox',
                     '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage',
+                    '--disable-dev-shm-usage', // Mandatory for Render/Docker/Linux containers
                     '--disable-extensions',
                     '--disable-gpu',
                     '--no-first-run',

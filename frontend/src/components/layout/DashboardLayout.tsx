@@ -176,6 +176,8 @@ const DashboardLayout = () => {
                         <div className="hidden md:flex items-center gap-3 bg-card border border-border rounded-2xl px-5 py-2.5 w-full max-w-sm focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/5 transition-all group">
                             <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                             <Input 
+                                id="header-search"
+                                name="header-search"
                                 placeholder="Command Console..." 
                                 className="border-0 bg-transparent p-0 h-auto focus-visible:ring-0 text-xs font-bold uppercase tracking-widest placeholder:text-muted-foreground/30"
                             />
