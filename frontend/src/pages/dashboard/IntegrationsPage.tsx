@@ -400,12 +400,12 @@ const IntegrationsPage = () => {
         </div>
 
         {/* --- 📟 3. ALERT LOGIC OVERVIEW --- */}
-        <div className="bg-card p-10 rounded-[40px] border border-border shadow-sm relative overflow-hidden group">
+        <div className="bg-card p-6 sm:p-10 rounded-[32px] sm:rounded-[40px] border border-border shadow-sm relative overflow-hidden group">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
             
-            <div className="flex items-start gap-8">
-                <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
-                    <ShieldCheck className="h-7 w-7" />
+            <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8">
+                <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="h-6 w-6 sm:h-7 sm:w-7" />
                 </div>
                 <div className="space-y-4">
                     <h3 className="text-lg font-bold uppercase tracking-tighter text-foreground">Escalation Logic</h3>

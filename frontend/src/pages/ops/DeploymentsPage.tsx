@@ -95,96 +95,98 @@ const DeploymentsPage = () => {
 
                 {/* --- 📟 2. DEPLOYMENT LEDGER --- */}
                 <div className="bg-card rounded-[40px] border border-border shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden">
-                    <Table>
-                        <TableHeader className="bg-secondary/30">
-                            <TableRow className="border-border hover:bg-transparent">
-                                <TableHead className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/50 pl-6 sm:pl-10 h-14 sm:h-18">Version Sync</TableHead>
-                                <TableHead className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/50 hidden md:table-cell h-14 sm:h-18">Repository Path</TableHead>
-                                <TableHead className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/50 text-center h-14 sm:h-18">Rollout Status</TableHead>
-                                <TableHead className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/50 text-center hidden sm:table-cell h-14 sm:h-18">Post-Rollout Health</TableHead>
-                                <TableHead className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/50 text-right pr-6 sm:pr-10 h-14 sm:h-18">Timestamp</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {isLoading ? (
-                                [1,2,3,4].map(i => (
-                                    <TableRow key={i} className="animate-pulse border-border h-28">
-                                        <TableCell colSpan={5} className="bg-secondary/10" />
-                                    </TableRow>
-                                ))
-                            ) : deployments?.length > 0 ? (
-                                deployments.map((deploy: any) => (
-                                    <TableRow key={deploy._id} className="border-border group hover:bg-secondary/20 transition-all h-24 sm:h-28 relative">
-                                        <TableCell className="pl-6 sm:pl-10 relative">
-                                            <div className="flex items-center gap-4 sm:gap-6">
-                                                <div onClick={() => setSelectedImpactId(deploy._id)} className="h-10 w-10 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl bg-card border border-border flex items-center justify-center text-muted-foreground/30 group-hover:border-primary group-hover:bg-primary/5 group-hover:text-primary cursor-pointer transition-all shrink-0 shadow-sm">
-                                                    <GitCommit className="h-5 w-5 sm:h-6 sm:w-6" />
-                                                </div>
-                                                <div className="flex flex-col gap-0.5 sm:gap-1 overflow-hidden">
-                                                    <span className="text-xs sm:text-sm font-bold text-foreground group-hover:text-primary transition-all">#{deploy.commitSha?.substring(0, 7) || 'UNKNOWN'}</span>
-                                                    <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest truncate max-w-[120px] sm:max-w-[250px]">{deploy.commitMessage || 'Automated deployment sync'}</span>
-                                                </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            <div className="flex flex-col gap-1.5">
-                                                <span className="text-xs font-bold text-foreground/80 uppercase tracking-widest leading-none">{deploy.repo}</span>
-                                                <span className="text-[10px] font-bold text-muted-foreground/40 uppercase flex items-center gap-2">
-                                                    <GitBranch className="h-3.5 w-3.5" />
-                                                    {deploy.branch || 'main'}
-                                                </span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                            <DeployStatus status={deploy.status} />
-                                        </TableCell>
-                                        <TableCell className="text-center hidden sm:table-cell">
-                                            <div className="flex flex-col items-center gap-3">
-                                                 {deploy.impact?.length > 0 ? (
-                                                     <div className="space-y-2">
-                                                        <div className="px-4 py-1.5 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 text-[9px] font-bold uppercase tracking-widest">
-                                                            Incident Detected
-                                                        </div>
-                                                        <button 
-                                                            onClick={() => setSelectedImpactId(deploy._id)}
-                                                            className="text-[9px] font-bold uppercase tracking-widest text-primary hover:underline flex items-center gap-2 justify-center"
-                                                        >
-                                                            View Impact <ArrowUpRight className="h-3.5 w-3.5" />
-                                                        </button>
-                                                     </div>
-                                                 ) : (
-                                                     <div className="flex flex-col items-center gap-1.5">
-                                                        <div className={`inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-widest ${deploy.healthStatus === 'OK' ? 'text-green-500' : 'text-muted-foreground/30'}`}>
-                                                            {deploy.healthStatus === 'OK' ? <ShieldCheck className="h-4 w-4" /> : <Activity className="h-4 w-4" />}
-                                                            {deploy.healthStatus || 'TELEMETRY PENDING'}
-                                                        </div>
-                                                        {deploy.healthStatus === 'OK' && (
-                                                            <span className="text-[9px] font-bold text-muted-foreground/20 uppercase tracking-widest">Verified Baseline</span>
-                                                        )}
-                                                     </div>
-                                                 )}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right pr-6 sm:pr-10">
-                                            <div className="flex flex-col items-end gap-0.5 sm:gap-1.5">
-                                                <span className="text-[10px] sm:text-[11px] font-bold text-foreground uppercase tracking-widest tabular-nums">{new Date(deploy.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                                <span className="text-[8px] sm:text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest hidden xs:block">{new Date(deploy.createdAt).toLocaleDateString()}</span>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="text-center h-80 text-muted-foreground/20 font-bold uppercase tracking-[.4em] text-sm italic">
-                                        <div className="flex flex-col items-center gap-10">
-                                            <Satellite className="h-16 w-16 opacity-30" />
-                                            Awaiting First Release Sync
-                                        </div>
-                                    </TableCell>
+                    <div className="overflow-x-auto scrollbar-hide">
+                        <Table>
+                            <TableHeader className="bg-secondary/30">
+                                <TableRow className="border-border hover:bg-transparent">
+                                    <TableHead className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/50 pl-6 sm:pl-10 h-14 sm:h-18">Version Sync</TableHead>
+                                    <TableHead className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/50 hidden md:table-cell h-14 sm:h-18">Repository Path</TableHead>
+                                    <TableHead className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/50 text-center h-14 sm:h-18">Rollout Status</TableHead>
+                                    <TableHead className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/50 text-center hidden sm:table-cell h-14 sm:h-18">Post-Rollout Health</TableHead>
+                                    <TableHead className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/50 text-right pr-6 sm:pr-10 h-14 sm:h-18">Timestamp</TableHead>
                                 </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {isLoading ? (
+                                    [1,2,3,4].map(i => (
+                                        <TableRow key={i} className="animate-pulse border-border h-28">
+                                            <TableCell colSpan={5} className="bg-secondary/10" />
+                                        </TableRow>
+                                    ))
+                                ) : deployments?.length > 0 ? (
+                                    deployments.map((deploy: any) => (
+                                        <TableRow key={deploy._id} className="border-border group hover:bg-secondary/20 transition-all h-24 sm:h-28 relative">
+                                            <TableCell className="pl-6 sm:pl-10 relative">
+                                                <div className="flex items-center gap-4 sm:gap-6">
+                                                    <div onClick={() => setSelectedImpactId(deploy._id)} className="h-10 w-10 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl bg-card border border-border flex items-center justify-center text-muted-foreground/30 group-hover:border-primary group-hover:bg-primary/5 group-hover:text-primary cursor-pointer transition-all shrink-0 shadow-sm">
+                                                        <GitCommit className="h-5 w-5 sm:h-6 sm:w-6" />
+                                                    </div>
+                                                    <div className="flex flex-col gap-0.5 sm:gap-1 overflow-hidden">
+                                                        <span className="text-xs sm:text-sm font-bold text-foreground group-hover:text-primary transition-all">#{deploy.commitSha?.substring(0, 7) || 'UNKNOWN'}</span>
+                                                        <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest truncate max-w-[120px] sm:max-w-[250px]">{deploy.commitMessage || 'Automated deployment sync'}</span>
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <div className="flex flex-col gap-1.5">
+                                                    <span className="text-xs font-bold text-foreground/80 uppercase tracking-widest leading-none">{deploy.repo}</span>
+                                                    <span className="text-[10px] font-bold text-muted-foreground/40 uppercase flex items-center gap-2">
+                                                        <GitBranch className="h-3.5 w-3.5" />
+                                                        {deploy.branch || 'main'}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                <DeployStatus status={deploy.status} />
+                                            </TableCell>
+                                            <TableCell className="text-center hidden sm:table-cell">
+                                                <div className="flex flex-col items-center gap-3">
+                                                    {deploy.impact?.length > 0 ? (
+                                                        <div className="space-y-2">
+                                                            <div className="px-4 py-1.5 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 text-[9px] font-bold uppercase tracking-widest">
+                                                                Incident Detected
+                                                            </div>
+                                                            <button 
+                                                                onClick={() => setSelectedImpactId(deploy._id)}
+                                                                className="text-[9px] font-bold uppercase tracking-widest text-primary hover:underline flex items-center gap-2 justify-center"
+                                                            >
+                                                                View Impact <ArrowUpRight className="h-3.5 w-3.5" />
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center gap-1.5">
+                                                            <div className={`inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-widest ${deploy.healthStatus === 'OK' ? 'text-green-500' : 'text-muted-foreground/30'}`}>
+                                                                {deploy.healthStatus === 'OK' ? <ShieldCheck className="h-4 w-4" /> : <Activity className="h-4 w-4" />}
+                                                                {deploy.healthStatus || 'TELEMETRY PENDING'}
+                                                            </div>
+                                                            {deploy.healthStatus === 'OK' && (
+                                                                <span className="text-[9px] font-bold text-muted-foreground/20 uppercase tracking-widest">Verified Baseline</span>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right pr-6 sm:pr-10">
+                                                <div className="flex flex-col items-end gap-0.5 sm:gap-1.5">
+                                                    <span className="text-[10px] sm:text-[11px] font-bold text-foreground uppercase tracking-widest tabular-nums">{new Date(deploy.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    <span className="text-[8px] sm:text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest hidden xs:block">{new Date(deploy.createdAt).toLocaleDateString()}</span>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center h-80 text-muted-foreground/20 font-bold uppercase tracking-[.4em] text-sm italic">
+                                            <div className="flex flex-col items-center gap-10">
+                                                <Satellite className="h-16 w-16 opacity-30" />
+                                                Awaiting First Release Sync
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </div>
 
                 {/* --- 🔬 IMPACT ANALYSIS DRAWER --- */}

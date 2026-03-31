@@ -125,32 +125,36 @@ export const DiagnosticsChat: React.FC<DiagnosticsChatProps> = ({ monitorId, tar
   };
 
   return (
-    <div className="flex flex-col h-[500px] sm:h-[600px] lg:h-[700px] w-full max-w-4xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl relative">
+    <div className="flex flex-col h-[75vh] sm:h-[600px] lg:h-[700px] w-full max-w-4xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl relative transition-all duration-500">
       {/* Header */}
       <div className="p-4 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-500/20 rounded-lg">
-            <LucideShield className="w-5 h-5 text-indigo-400" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-slate-100 uppercase tracking-tight text-xs flex items-center gap-2">
-              AI Observability Agent
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[9px] font-black text-emerald-400 flex items-center gap-1 animate-pulse">
-                🛡️ Blockchain Verified
-              </span>
-            </h3>
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Connected to MCP Core Engine</p>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-indigo-500/20 rounded-lg shrink-0">
+              <LucideShield className="w-5 h-5 text-indigo-400" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-slate-100 uppercase tracking-tight text-xs flex flex-wrap items-center gap-1.5">
+                AI Observability Agent
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[9px] font-black text-emerald-400 flex items-center gap-1 animate-pulse">
+                  🛡️ Blockchain Verified
+                </span>
+              </h3>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5 sm:mt-0">Connected to MCP Core Engine</p>
+            </div>
           </div>
         </div>
-        <button 
-          onClick={() => setDebugMode(!debugMode)}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-            debugMode ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-          }`}
-        >
-          <LucideBug className="w-3.5 h-3.5" />
-          Debug {debugMode ? 'ON' : 'OFF'}
-        </button>
+        <div className="mt-2 sm:mt-0">
+          <button 
+            onClick={() => setDebugMode(!debugMode)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              debugMode ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+            }`}
+          >
+            <LucideBug className="w-3.5 h-3.5" />
+            <span className="whitespace-nowrap">Debug {debugMode ? 'ON' : 'OFF'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Chat Area */}
@@ -304,15 +308,15 @@ export const DiagnosticsChat: React.FC<DiagnosticsChatProps> = ({ monitorId, tar
             <LucideSend className="w-4 h-4" />
           </button>
         </div>
-        <div className="mt-2 flex items-center gap-4">
-            <div className="flex items-center gap-1.5">
-                <LucideClock className="w-3.5 h-3.5 text-slate-500" />
-                <span className="text-[10px] text-slate-500">Real-time p95 analysis active</span>
+        <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-1.5 overflow-hidden">
+                <LucideClock className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span className="text-[10px] text-slate-500 truncate">Real-time p95 analysis active</span>
             </div>
             {targetUrl && (
-                <div className="flex items-center gap-1.5">
-                    <LucideShield className="w-3.5 h-3.5 text-emerald-500/70" />
-                    <span className="text-[10px] text-slate-500">Scanning {new URL(targetUrl).hostname}</span>
+                <div className="flex items-center gap-1.5 overflow-hidden">
+                    <LucideShield className="w-3.5 h-3.5 text-emerald-500/70 shrink-0" />
+                    <span className="text-[10px] text-slate-500 truncate">Scanning {new URL(targetUrl).hostname}</span>
                 </div>
             )}
         </div>

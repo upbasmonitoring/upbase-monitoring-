@@ -148,7 +148,7 @@ const SelfHealingPage = () => {
                         </div>
                     </div>
 
-                    <div className="min-h-[600px] p-10 lg:p-14 space-y-16">
+                    <div className="min-h-[600px] p-5 sm:p-10 lg:p-14 space-y-16">
                         {isLoading ? (
                             <div className="space-y-10 animate-pulse">
                                 {[1,2,3].map(i => <div key={i} className="h-32 w-full bg-secondary/20 rounded-[32px] border border-border" />)}

@@ -12,8 +12,8 @@ export default function MobileBottomNav() {
 
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-slate-900 border-t border-slate-700 md:hidden z-50 rounded-t-2xl shadow-2xl">
-      <div className="flex justify-around items-center h-16 px-2">
+    <div className="fixed bottom-0 left-0 w-full bg-background/95 backdrop-blur-xl border-t border-border md:hidden z-50 rounded-t-[2.5rem] shadow-2xl pb-safe-area-inset-bottom">
+      <div className="flex justify-around items-center h-20 px-4">
         {navItems.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
@@ -21,16 +21,16 @@ export default function MobileBottomNav() {
             end={to === "/dashboard"}
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 transition-all duration-300 w-16 ${
-                isActive ? "text-indigo-400 scale-110 font-bold" : "text-slate-400 active:scale-95"
+                isActive ? "text-primary scale-110 font-bold" : "text-muted-foreground active:scale-95"
               }`
             }
           >
             {({ isActive }) => (
               <>
-                <div className={`p-1 rounded-lg ${isActive ? "bg-indigo-500/10" : ""}`}>
-                  <Icon size={20} />
+                <div className={`p-1.5 rounded-xl transition-colors ${isActive ? "bg-primary/10" : "group-hover:bg-secondary"}`}>
+                  <Icon size={20} className={isActive ? "text-primary" : "text-muted-foreground"} />
                 </div>
-                <span className="text-[10px] uppercase tracking-tighter">{label}</span>
+                <span className="text-[10px] font-bold uppercase tracking-tighter">{label}</span>
               </>
             )}
           </NavLink>
