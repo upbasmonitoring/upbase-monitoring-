@@ -1,4 +1,9 @@
-const API_URL = import.meta.env.VITE_API_URL;
+let API_URL = import.meta.env.VITE_API_URL || '';
+
+// --- 🌐 SMART API SYNC: Ensure /api prefix in Production ---
+if (API_URL && !API_URL.endsWith('/api') && !API_URL.endsWith('/api/')) {
+    API_URL = `${API_URL.replace(/\/$/, '')}/api`;
+}
 
 export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
   let user: any = {};
