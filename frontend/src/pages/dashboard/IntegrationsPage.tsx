@@ -375,95 +375,27 @@ const IntegrationsPage = () => {
           </div>
 
           {/* WhatsApp Hub */}
-          <div className={`bg-card p-8 rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group flex flex-col justify-between min-h-[320px] ${whatsappStatus.isConnected ? 'ring-1 ring-emerald-500/20' : ''}`}>
+          <div className={`bg-card p-8 rounded-[40px] border border-border shadow-sm transition-all group flex flex-col justify-between min-h-[320px] opacity-70 grayscale-[0.3]`}>
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <div className={`h-14 w-14 flex items-center justify-center rounded-2xl border transition-all ${whatsappStatus.isConnected ? 'bg-emerald-500 text-white border-emerald-600 shadow-lg shadow-emerald-500/20' : 'bg-secondary text-muted-foreground/30 border-border'}`}>
+                    <div className="h-14 w-14 flex items-center justify-center rounded-2xl border bg-secondary text-muted-foreground/30 border-border">
                       <MessageCircle className="h-6 w-6" />
                     </div>
-                    {whatsappStatus.isConnected ? (
-                        <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[9px] font-bold uppercase tracking-widest shadow-sm">
-                            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            Connected ✅
-                        </div>
-                    ) : (
-                        <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[9px] font-bold uppercase tracking-widest animate-pulse shadow-sm">
-                            Establishing...
-                        </div>
-                    )}
+                    <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20 text-[9px] font-bold uppercase tracking-widest shadow-sm">
+                        Coming Soon 🚀
+                    </div>
                 </div>
                 <div className="space-y-1.5">
                     <h3 className="text-lg font-bold uppercase tracking-tighter text-foreground">WhatsApp Hub</h3>
-                    <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest leading-relaxed">Secure live uplink for critical (1-2m) and escalated (15m) incident signals.</p>
+                    <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest leading-relaxed">
+                      Secure live uplink for critical incident signals. Currently undergoing global architecture upgrades.
+                    </p>
                 </div>
             </div>
 
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button variant="outline" className={`w-full h-14 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all ${whatsappStatus.isConnected ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/20' : 'border-border text-muted-foreground/40 hover:bg-secondary'}`}>
-                        {whatsappStatus.isConnected ? 'Active Status' : 'Scan QR Uplink'}
-                    </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[450px] bg-card border-border rounded-[40px] shadow-2xl p-10 outline-none">
-                    <DialogHeader className="space-y-3">
-                        <DialogTitle className="text-2xl font-bold uppercase tracking-tighter text-foreground outline-none">WhatsApp <span className="text-emerald-500">Uplink</span></DialogTitle>
-                        <DialogDescription className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest leading-relaxed">
-                            {whatsappStatus.isConnected ? "You are connected! You can now receive alerts and reply with 'STATUS' or 'ROLLBACK'." : "Scan the QR code below with your phone's WhatsApp camera."}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-8 flex flex-col items-center justify-center space-y-6">
-                        {whatsappStatus.isConnected ? (
-                            <div className="w-full h-48 bg-emerald-500/5 rounded-3xl border-2 border-emerald-500/20 border-dashed flex flex-col items-center justify-center space-y-3">
-                                <CheckCircle2 className="h-12 w-12 text-emerald-500" />
-                                <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Secure Handshake Active</p>
-                            </div>
-                        ) : (
-                            whatsappStatus.qrCode ? (
-                                <div className="p-4 bg-slate-50 border-2 border-primary/20 rounded-3xl shadow-inner dark:bg-slate-100">
-                                    <img src={whatsappStatus.qrCode} alt="WhatsApp QR" className="w-48 h-48 rounded-2xl mix-blend-multiply" />
-                                </div>
-                            ) : (
-                                <div className="w-48 h-48 bg-secondary rounded-3xl border border-border flex items-center justify-center animate-pulse">
-                                    <p className="text-[8px] font-bold text-muted-foreground/20 uppercase tracking-widest">Generating QR...</p>
-                                </div>
-                            )
-                        )}
-                        
-                        <div className="w-full space-y-4">
-                            <div className="p-4 bg-secondary/50 rounded-2xl border border-border space-y-2">
-                                <p className="text-[9px] font-bold text-foreground underline uppercase tracking-tighter">Available Commands:</p>
-                                <p className="text-[10px] text-muted-foreground/60 font-semibold">• *STATUS*: Current fleet health</p>
-                                <p className="text-[10px] text-muted-foreground/60 font-semibold">• *ROLLBACK*: Trigger recovery loop</p>
-                            </div>
-
-                            <InputField 
-                                id="phone-number"
-                                name="phone"
-                                autoComplete="tel"
-                                placeholder="+91 999.." 
-                                defaultValue={integrations.phone}
-                                onBlur={(e) => {
-                                    if (e.target.value) handleUpdateIntegrations('whatsapp', { whatsapp: e.target.value });
-                                }}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        handleUpdateIntegrations('whatsapp', { whatsapp: (e.target as HTMLInputElement).value });
-                                    }
-                                }}
-                                className="h-14 text-xs font-bold rounded-2xl text-foreground placeholder:text-muted-foreground/20"
-                            />
-                        </div>
-
-                        <Button 
-                            onClick={handleWhatsappLogout} 
-                            variant="ghost" 
-                            className="w-full text-[9px] font-bold uppercase tracking-widest text-red-400 hover:text-red-500 hover:bg-red-50"
-                        >
-                            {whatsappStatus.isConnected ? "Disconnect Hub & Reset QR" : "Force Reset Hanging Session"}
-                        </Button>
-                    </div>
-                </DialogContent>
-            </Dialog>
+            <Button disabled variant="outline" className="w-full h-14 rounded-2xl font-bold uppercase tracking-widest text-[10px] border-border text-muted-foreground/20">
+                Uplink Pending
+            </Button>
           </div>
         </div>
 
