@@ -2,6 +2,8 @@ import Monitor from '../models/Monitor.js';
 import MonitorLog from '../models/MonitorLog.js';
 import Deployment from '../models/Deployment.js';
 import Insight from '../models/Insight.js';
+import Incident from '../models/Incident.js';
+import Project from '../models/Project.js';
 import HealingLog from '../models/HealingLog.js';
 import Alert from '../models/Alert.js';
 import asyncHandler from '../utils/asyncHandler.js';
@@ -377,20 +379,31 @@ export const getDeployments = asyncHandler(async (req, res) => {
 export const getActiveAlerts = asyncHandler(async (req, res) => {
     const { projectId } = req.query;
     
-    // Find alerts that are 'active' for monitors owned by this user
     let monQuery = { user: req.user._id };
     if (projectId) monQuery.project = projectId;
     const userMonitors = await Monitor.find(monQuery).select('_id');
     const ids = userMonitors.map(m => m._id);
 
-    const activeAlerts = await Alert.find({ 
+    // Map ACTIVE INCIDENTS to the Alert format the frontend expects
+    const activeIncidents = await Incident.find({ 
         monitor: { $in: ids },
-        status: 'active' 
+        status: 'OPEN' 
     })
     .populate('monitor', 'name url status responseTime failureStartedAt')
-    .sort({ triggeredAt: -1 });
+    .sort({ startTime: -1 });
 
-    res.json(activeAlerts);
+    // Transform Incident -> Alert structure for frontend compatibility
+    const mappedAlerts = activeIncidents.map(inc => ({
+        _id: inc._id,
+        monitor: inc.monitor,
+        type: inc.severity === 'CRITICAL' || inc.severity === 'HIGH' ? 'DOWN' : 'DEGRADED',
+        severity: inc.severity.toLowerCase(),
+        message: inc.description || `Incident detected on ${inc.monitor?.name}`,
+        triggeredAt: inc.startTime,
+        status: 'active'
+    }));
+
+    res.json(mappedAlerts);
 });
 
 /**
@@ -406,14 +419,27 @@ export const getAlertHistory = asyncHandler(async (req, res) => {
     const userMonitors = await Monitor.find(monQuery).select('_id');
     const ids = userMonitors.map(m => m._id);
 
-    const history = await Alert.find({ 
-        monitor: { $in: ids }
+    // Map RESOLVED INCIDENTS to history
+    const resolvedIncidents = await Incident.find({ 
+        monitor: { $in: ids },
+        status: 'RESOLVED'
     })
     .populate('monitor', 'name url')
-    .sort({ triggeredAt: -1 })
+    .sort({ endTime: -1 })
     .limit(50);
 
-    res.json(history);
+    const mappedHistory = resolvedIncidents.map(inc => ({
+        _id: inc._id,
+        monitor: inc.monitor,
+        type: inc.severity === 'CRITICAL' || inc.severity === 'HIGH' ? 'DOWN' : 'DEGRADED',
+        severity: inc.severity.toLowerCase(),
+        message: inc.description || `Resolved incident on ${inc.monitor?.name}`,
+        triggeredAt: inc.startTime,
+        resolvedAt: inc.endTime,
+        status: 'resolved'
+    }));
+
+    res.json(mappedHistory);
 });
 
 export const getSelfHealingLogs = asyncHandler(async (req, res) => {

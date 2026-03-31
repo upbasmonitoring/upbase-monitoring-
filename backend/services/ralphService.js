@@ -36,15 +36,15 @@ export const triggerRalphLoop = async (monitorId, forceManual = false) => {
         await monitor.save();
 
         // 2. Add to Incident Timeline
-        await addIncidentEvent(monitor._id, 'RALPH_TRIGGERED', 'Ralph initiated self-healing via intelligent protocol. Analyzing root cause...');
+        await addIncidentEvent(monitor._id, 'UPBASE_TRIGGERED', 'Up-base initiated self-healing via intelligent protocol. Analyzing root cause...');
 
         // 3. Diagnostic Ingestion
         const diagnostics = await collectDiagnostics(monitor._id);
-        console.log(`[RALPH] Collected ${diagnostics.logs.length} log entries for RCA.`);
+        console.log(`[UPBASE] Collected ${diagnostics.logs.length} log entries for RCA.`);
 
         // --- Log Creation (Phase 1) ---
-        const { runRalphIntelligence } = await import('./ralphIntelligence.js');
-        const intelligence = await runRalphIntelligence(monitor._id, diagnostics);
+        const { runUpbaseIntelligence } = await import('./ralphIntelligence.js');
+        const intelligence = await runUpbaseIntelligence(monitorId, diagnostics);
         
         const { default: HealingLog } = await import('../models/HealingLog.js');
         const healingLog = await HealingLog.create({
@@ -61,21 +61,21 @@ export const triggerRalphLoop = async (monitorId, forceManual = false) => {
             }
         });
 
-        // --- RALPH INSIGHT INTEGRATION ---
+        // --- UPBASE INSIGHT INTEGRATION ---
         // Also create a Smart Insight so it shows up in the 'Monitor Details' sidebar
         const { default: Insight } = await import('../models/Insight.js');
         await Insight.create({
             monitor: monitor._id,
             user: monitor.user,
             type: 'ANOMALY',
-            message: `[RALPH ANALYSIS] ${intelligence.cause}: ${intelligence.suggestion}`,
+            message: `[UPBASE ANALYSIS] ${intelligence.cause}: ${intelligence.suggestion}`,
             severity: intelligence.severity,
             data: { analysis: intelligence }
         });
 
         if (intelligence) {
-            console.log(`[RALPH-INTEL] Ralph Analysis: ${intelligence.cause}`);
-            await addIncidentEvent(monitor._id, 'RALPH_INTELLIGENCE', `Analysis complete. Cause: ${intelligence.cause}. Suggestion: ${intelligence.suggestion}`);
+            console.log(`[UPBASE-INTEL] Up-base Analysis: ${intelligence.cause}`);
+            await addIncidentEvent(monitor._id, 'UPBASE_INTELLIGENCE', `Analysis complete. Cause: ${intelligence.cause}. Suggestion: ${intelligence.suggestion}`);
         }
 
         // Daily Counter Reset check (Synchronize state)
@@ -93,7 +93,7 @@ export const triggerRalphLoop = async (monitorId, forceManual = false) => {
         // 5. Autonomic Remediation - (Feature 4.4)
         // If it's the 1st rollback of the day, we proceed RELIABLY even with low AI confidence.
         if (rca && (rca.confidence >= 0.7 || isFirstRollback)) {
-            console.log(`[RALPH] Attempting remediation. Confidence: ${rca.confidence}. First of day: ${isFirstRollback}`);
+            console.log(`[UPBASE] Attempting remediation. Confidence: ${rca.confidence}. First of day: ${isFirstRollback}`);
             
             // Force ROLLBACK for the first silent trigger if AI didn't specify
             if (isFirstRollback && rca.remediation === 'MANUAL') {
@@ -112,13 +112,13 @@ export const triggerRalphLoop = async (monitorId, forceManual = false) => {
             healingLog.completedAt = new Date();
             await healingLog.save();
             
-            console.log(`[RALPH] Diagnosis confidence low (${rca?.confidence || 0}). Manual review required.`);
+            console.log(`[UPBASE] Diagnosis confidence low (${rca?.confidence || 0}). Manual review required.`);
             await updateRalphStatus(monitor._id, 'IDLE', 'RCA completed with low confidence. Awaiting manual intervention.');
         }
         
     } catch (err) {
-        console.error(`[RALPH-ERROR] Failed to trigger Ralph Loop: ${err.message}`);
-        await updateRalphStatus(monitorId, 'IDLE', `Error in Ralph Loop: ${err.message}`);
+        console.error(`[UPBASE-ERROR] Failed to trigger Up-base Loop: ${err.message}`);
+        await updateRalphStatus(monitorId, 'IDLE', `Error in Up-base Loop: ${err.message}`);
     }
 };
 
@@ -142,7 +142,7 @@ export const performRCA = async (monitorId, diagnostics) => {
 
         return null;
     } catch (err) {
-        console.error(`[RALPH-RCA-ERROR] RCA failed: ${err.message}`);
+        console.error(`[UPBASE-RCA-ERROR] RCA failed: ${err.message}`);
         return null;
     }
 };
@@ -163,7 +163,7 @@ export const executeRemediation = async (monitorId, rca, healingLogId = null) =>
         const isNewDay = !lastRollback || lastRollback.toDateString() !== now.toDateString();
         
         if (isNewDay && monitor.rollbackTodayCount > 0) {
-            console.log(`[RALPH] Resetting daily rollback counter for ${monitor.name}.`);
+            console.log(`[UPBASE] Resetting daily rollback counter for ${monitor.name}.`);
             monitor.rollbackTodayCount = 0;
             // monitor.autoHealPaused = false; // Optional: Auto-resume on new day
         }
@@ -175,7 +175,7 @@ export const executeRemediation = async (monitorId, rca, healingLogId = null) =>
         const needsAuthorization = !isFirstRollback && monitor.autoHealPaused;
 
         if (needsAuthorization) {
-            console.log(`[RALPH] Limit (1/day) hit & Autopilot paused. Sending approval request for ${monitor.name}.`);
+            console.log(`[UPBASE] Limit (1/day) hit & Autopilot paused. Sending approval request for ${monitor.name}.`);
             
             // Send WhatsApp 'APPROVE' alert
             const user = await User.findById(monitor.user);
@@ -187,8 +187,8 @@ export const executeRemediation = async (monitorId, rca, healingLogId = null) =>
         }
 
         // 3. Inform of status
-        console.log(`[RALPH] Executing ${isFirstRollback ? 'AUTOMATIC 1ST-ROLLBACK' : 'AUTHORIZED ROLLBACK'} for ${monitor.name}.`);
-        await updateRalphStatus(monitorId, 'REMEDIATING', `Ralph Autopilot: Executing ${rca.remediation} sequence (${isFirstRollback ? 'Silent Auto' : 'Authorized'}).`);
+        console.log(`[UPBASE] Executing ${isFirstRollback ? 'AUTOMATIC 1ST-ROLLBACK' : 'AUTHORIZED ROLLBACK'} for ${monitor.name}.`);
+        await updateRalphStatus(monitorId, 'REMEDIATING', `Up-base Autopilot: Executing ${rca.remediation} sequence (${isFirstRollback ? 'Silent Auto' : 'Authorized'}).`);
 
         if (rca.remediation === 'ROLLBACK') {
             const user = await User.findById(monitor.user).select('+github.accessToken');
@@ -200,7 +200,7 @@ export const executeRemediation = async (monitorId, rca, healingLogId = null) =>
                 return;
             }
 
-            console.log(`[RALPH-ACTION] Ralph initiated self-healing via intelligent rollback protocol for ${owner}/${repo}`);
+            console.log(`[UPBASE-ACTION] Up-base initiated self-healing via intelligent rollback protocol for ${owner}/${repo}`);
             const result = await attemptRollback(token, owner, repo, branch, monitor.url);
 
             if (healingLogId) {
@@ -222,36 +222,36 @@ export const executeRemediation = async (monitorId, rca, healingLogId = null) =>
                 monitor.lastRollbackAt = new Date();
                 await monitor.save();
                 
-                console.log(`[RALPH] Rollback Counter Incremented: ${monitor.rollbackTodayCount}/day for ${monitor.name}.`);
+                console.log(`[UPBASE] Rollback Counter Incremented: ${monitor.rollbackTodayCount}/day for ${monitor.name}.`);
                 
                 await updateRalphStatus(monitorId, 'STABILIZING', `Self-healing successful! Service restored to stable commit ${result.commitSha.substring(0,7)}.`);
-                await addIncidentEvent(monitor._id, 'RALPH_REMEDIATION_SUCCESS', `Ralph initiated self-healing via intelligent rollback protocol. Outage neutralized.`);
+                await addIncidentEvent(monitor._id, 'UPBASE_REMEDIATION_SUCCESS', `Up-base initiated self-healing via intelligent rollback protocol. Outage neutralized.`);
             }
  else {
                 await updateRalphStatus(monitorId, 'IDLE', `Rollback failed: ${result.message}`);
-                await addIncidentEvent(monitor._id, 'RALPH_REMEDIATION_FAILED', `Ralph attempted rollback but encountered an error: ${result.message}`);
+                await addIncidentEvent(monitor._id, 'UPBASE_REMEDIATION_FAILED', `Up-base attempted rollback but encountered an error: ${result.message}`);
             }
         }
  else if (rca.remediation === 'HOTFIX') {
             const loc = rca.localization;
             const fixMsg = loc 
-                ? `Ralph suggests a fix in ${loc.file} (lines ${loc.lines}): ${loc.fixSuggestion}`
-                : 'Ralph recommended a HOTFIX. Manual code review of the poison commit is required.';
+                ? `Up-base suggests a fix in ${loc.file} (lines ${loc.lines}): ${loc.fixSuggestion}`
+                : 'Up-base recommended a HOTFIX. Manual code review of the poison commit is required.';
             
-            await updateRalphStatus(monitorId, 'IDLE', 'HOTFIX recommended. Ralph has drafted a fix strategy.');
-            await addIncidentEvent(monitor._id, 'RALPH_ADVISORY', fixMsg);
+            await updateRalphStatus(monitorId, 'IDLE', 'HOTFIX recommended. Up-base has drafted a fix strategy.');
+            await addIncidentEvent(monitor._id, 'UPBASE_ADVISORY', fixMsg);
         } else {
             await updateRalphStatus(monitorId, 'IDLE', 'Manual intervention required as per AI recommendation.');
         }
 
     } catch (err) {
-        console.error(`[RALPH-REMEDIATION-ERROR] ${err.message}`);
+        console.error(`[UPBASE-REMEDIATION-ERROR] ${err.message}`);
         await updateRalphStatus(monitorId, 'IDLE', `Remediation Error: ${err.message}`);
     }
 };
 
 /**
- * Update Ralph Status
+ * Update Up-base Status
  * Helper to transition through Loop states (ANALYZING, REMEDIATING, STABILIZING, IDLE)
  */
 export const updateRalphStatus = async (monitorId, status, message) => {
@@ -263,12 +263,12 @@ export const updateRalphStatus = async (monitorId, status, message) => {
         await monitor.save();
 
         if (message) {
-            await addIncidentEvent(monitor._id, 'RALPH_UPDATE', message);
+            await addIncidentEvent(monitor._id, 'UPBASE_UPDATE', message);
         }
         
-        console.log(`[RALPH] 状态更新: ${status} - ${message || 'No message'}`);
+        console.log(`[UPBASE] 状态更新: ${status} - ${message || 'No message'}`);
     } catch (err) {
-        console.error(`[RALPH-ERROR] Failed to update Ralph status: ${err.message}`);
+        console.error(`[UPBASE-ERROR] Failed to update Up-base status: ${err.message}`);
     }
 };
 

@@ -160,7 +160,7 @@ const IntegrationsPage = () => {
   };
 
   return (
-      <div className="space-y-12 max-w-6xl mx-auto pb-20 font-sans">
+      <div className="space-y-8 sm:space-y-12 max-w-6xl mx-auto pb-20 font-sans">
         
         {/* --- 🚀 1. INTEGRATIONS HEADER --- */}
         <div className="flex flex-col gap-3">
@@ -178,10 +178,10 @@ const IntegrationsPage = () => {
         </div>
 
         {/* --- 📟 2. INTEGRATION CARDS --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
           
           {/* Discord Integration */}
-          <div className="bg-card p-8 rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group flex flex-col justify-between min-h-[320px]">
+          <div className="bg-card p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group flex flex-col justify-between min-h-[280px] sm:min-h-[320px]">
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div className="h-14 w-14 flex items-center justify-center bg-indigo-500/10 border border-indigo-500/20 rounded-2xl group-hover:bg-indigo-500 group-hover:text-white transition-all">
@@ -236,7 +236,7 @@ const IntegrationsPage = () => {
           </div>
 
           {/* Email Integration */}
-          <div className={`bg-card p-8 rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group flex flex-col justify-between min-h-[320px] ${integrations.emailAlerts ? 'ring-1 ring-primary/20' : ''}`}>
+          <div className={`bg-card p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group flex flex-col justify-between min-h-[280px] sm:min-h-[320px] ${integrations.emailAlerts ? 'ring-1 ring-primary/20' : ''}`}>
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div className={`h-14 w-14 flex items-center justify-center rounded-2xl border transition-all ${integrations.emailAlerts ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-secondary text-muted-foreground/30 border-border'}`}>
@@ -302,7 +302,7 @@ const IntegrationsPage = () => {
           </div>
 
           {/* GitHub Integration */}
-          <div className="bg-card p-8 rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group flex flex-col justify-between min-h-[320px]">
+          <div className="bg-card p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group flex flex-col justify-between min-h-[280px] sm:min-h-[320px]">
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div className="h-14 w-14 flex items-center justify-center bg-foreground text-card rounded-2xl shadow-xl shadow-foreground/10">
@@ -375,7 +375,7 @@ const IntegrationsPage = () => {
           </div>
 
           {/* WhatsApp Hub */}
-          <div className={`bg-card p-8 rounded-[40px] border border-border shadow-sm transition-all group flex flex-col justify-between min-h-[320px] opacity-70 grayscale-[0.3]`}>
+          <div className={`bg-card p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] border border-border shadow-sm transition-all group flex flex-col justify-between min-h-[280px] sm:min-h-[320px] opacity-70 grayscale-[0.3]`}>
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div className="h-14 w-14 flex items-center justify-center rounded-2xl border bg-secondary text-muted-foreground/30 border-border">

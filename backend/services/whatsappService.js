@@ -28,7 +28,7 @@ export const initWhatsApp = (projectId = 'global') => {
     if (clients.has(projectId)) return;
 
     try {
-        console.log(`[UPBASE] Initializing WhatsApp Sentinel for Project ${projectId}...`);
+        console.log(`[UPBASE] Initializing Up-base Connect for Project ${projectId}...`);
         
         // --- 🛡️ 1. ARCHITECTURE: Puppeteer Hardening for Cloud/Windows ---
         const client = new Client({

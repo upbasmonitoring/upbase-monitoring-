@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // Correct API URL logic - must call /mcp/query exactly
-const BACKEND_BASE = import.meta.env.VITE_BACKEND_URL;
+const envBase = import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL || window.location.origin;
+const BACKEND_BASE = envBase.replace(/\/api$/, '').replace(/:8080$/, ':5000');
 const API_URL = `${BACKEND_BASE}/mcp/query`;
 
 const MCP_API_KEY = import.meta.env.VITE_MCP_API_KEY || 'super-secret-mcp-key';

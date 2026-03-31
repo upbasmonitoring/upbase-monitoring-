@@ -67,17 +67,17 @@ export const ProjectSwitcher: React.FC = () => {
     <div className="flex items-center gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center gap-2 px-2 h-9 border-none hover:bg-muted/50 transition-all">
-            <div className="h-6 w-6 rounded bg-primary/10 flex items-center justify-center">
+          <Button variant="ghost" className="flex items-center gap-1 sm:gap-2 px-1.5 sm:px-2 h-9 border-none hover:bg-muted/50 transition-all max-w-[140px] sm:max-w-none">
+            <div className="h-6 w-6 rounded bg-primary/10 flex items-center justify-center shrink-0">
               <Folder className="h-3.5 w-3.5 text-primary" />
             </div>
-            <div className="flex flex-col items-start leading-none gap-0.5">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest leading-none">Project</span>
-              <span className={`text-sm font-black italic uppercase leading-none ${!selectedProject ? 'text-red-400' : ''}`}>
-                 {selectedProject?.name || 'Select Project'}
+            <div className="flex flex-col items-start leading-none gap-0.5 overflow-hidden">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest leading-none hidden xs:block">Project</span>
+              <span className={`text-xs sm:text-sm font-black italic uppercase leading-none truncate w-full ${!selectedProject ? 'text-red-400' : ''}`}>
+                 {selectedProject?.name || 'Select'}
               </span>
             </div>
-            <ChevronDown className="h-3 w-3 text-muted-foreground" />
+            <ChevronDown className="h-3 w-3 text-muted-foreground shrink-0" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 glass-card bg-background/95 border-border/50">

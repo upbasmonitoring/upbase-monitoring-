@@ -134,7 +134,7 @@ const RalphRadar: React.FC<RalphRadarProps> = ({ monitors, incidents }) => {
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">No Active Outages</p>
-                                            <p className="text-[8px] font-bold text-slate-200 uppercase tracking-widest">PulseWatch is monitoring all nodes</p>
+                                            <p className="text-[8px] font-bold text-slate-200 uppercase tracking-widest">Up-base is monitoring all nodes</p>
                                         </div>
                                     </div>
                                 )}

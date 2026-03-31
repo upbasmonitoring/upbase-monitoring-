@@ -55,7 +55,7 @@ export const sendDiscordAlert = async (user, monitor, statusType) => {
             { name: 'Response Time', value: `${monitor.responseTime}ms`, inline: true },
             { name: 'Timestamp', value: new Date().toLocaleString(), inline: false }
         ],
-        footer: { text: 'Sentinel Monitoring System - PulseWatch' }
+        footer: { text: 'Up-base Monitoring System' }
     };
 
     try {
@@ -89,7 +89,7 @@ export const sendEmailAlert = async (user, monitor, statusType) => {
     if (!user.integrations?.emailAlerts) return;
 
     const mailOptions = {
-        from: `"Sentinel Monitor" <${process.env.SMTP_USER || 'alerts@sentinel.com'}>`,
+        from: `"Up-base Monitor" <${process.env.SMTP_USER || 'alerts@up-base.com'}>`,
         to: user.integrations?.alertEmail || user.email,
         subject: `CRITICAL: ${monitor.name} is ${statusType}`,
         text: `Urgent Alert: ${monitor.url} is ${statusType}.\nResponse Time: ${monitor.responseTime}ms\nDetected at: ${new Date().toISOString()}`,
@@ -144,7 +144,7 @@ export const sendRecoveryAlert = async (user, monitor) => {
     const discordUrl = user.integrations?.discordWebhook;
     const emailAlerts = user.integrations?.emailAlerts;
 
-    const message = `PulseWatch SUCCESS: ${monitor.name} is BACK UP!\n` +
+    const message = `Up-base SUCCESS: ${monitor.name} is BACK UP!\n` +
                     `URL: ${monitor.url}\n` +
                     `Recovered after: ${Math.round((Date.now() - new Date(monitor.failureStartedAt).getTime()) / (1000 * 60))} minutes.`;
 
@@ -159,7 +159,7 @@ export const sendRecoveryAlert = async (user, monitor) => {
                 { name: 'Status', value: 'UP / STABLE', inline: true },
                 { name: 'Timestamp', value: new Date().toLocaleString(), inline: false }
             ],
-            footer: { text: 'Sentinel Monitoring System - Recovery Alert' }
+            footer: { text: 'Up-base Monitoring System - Recovery Alert' }
         };
         await axios.post(discordUrl, { embeds: [embed] }).catch(() => {});
     }
@@ -167,7 +167,7 @@ export const sendRecoveryAlert = async (user, monitor) => {
     // WhatsApp Recovery
     if (user.integrations?.phone) {
         const duration = Math.round((Date.now() - new Date(monitor.failureStartedAt).getTime()) / (1000 * 60));
-        const recoveryMsg = `✅ *PULSEWATCH RECOVERY*\n\n` +
+        const recoveryMsg = `✅ *UP-BASE RECOVERY*\n\n` +
                             `*Monitor:* ${monitor.name}\n` +
                             `*Status:* BACK UP / STABLE\n` +
                             `*Resolution:* Resolved after ${duration} mins\n` +
@@ -178,7 +178,7 @@ export const sendRecoveryAlert = async (user, monitor) => {
     // Email Recovery
     if (emailAlerts) {
         const mailOptions = {
-            from: `"Sentinel Monitor" <${process.env.SMTP_USER || 'alerts@sentinel.com'}>`,
+            from: `"Up-base Monitor" <${process.env.SMTP_USER || 'alerts@up-base.com'}>`,
             to: user.integrations?.alertEmail || user.email,
             subject: `RESTORED: ${monitor.name} is BACK UP`,
             text: message,
@@ -223,7 +223,7 @@ export const processAlertingTier = async (monitor) => {
 
             console.log(`[ALERT] Sending Engineering WhatsApp Alert to ${user.integrations.phone}`);
             
-            const message = `🚨 *PULSEWATCH CRITICAL ALERT*\n\n` +
+            const message = `🚨 *UP-BASE CRITICAL ALERT*\n\n` +
                             `*Monitor:* ${monitor.name}\n` +
                             `*Status:* DOWN\n` +
                             `*Severity:* ${severity}\n` +
@@ -316,7 +316,7 @@ export const sendRalphDiagnosticAlert = async (monitorId, analysis) => {
             description: `Autonomous agent has completed diagnostics for **${monitor.name}**.`,
             color: 0x8b5cf6, // Purple
             fields: fields,
-            footer: { text: 'Ralph Autopilot Engine - PulseWatch' },
+            footer: { text: 'Ralph Autopilot Engine - Up-base' },
             timestamp: new Date().toISOString()
         };
 

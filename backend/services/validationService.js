@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { calculateSentinelIQScore } from './monitorService.js';
+import { calculateUpbaseIQScore } from './monitorService.js';
 
 /**
- * Ralph Multi-Endpoint Validation Service
+ * Up-base Multi-Endpoint Validation Service
  * Verifies both Frontend and Backend health to ensure full system recovery.
  */
 export const validateFix = async ({ frontendUrl, backendUrl, monitor }) => {
@@ -55,7 +55,7 @@ export const validateFix = async ({ frontendUrl, backendUrl, monitor }) => {
 };
 
 /**
- * Verify Frontend Health (HTML + Sentinel IQ)
+ * Verify Frontend Health (HTML + Up-base IQ)
  */
 async function checkFrontend(url, monitor) {
     const start = Date.now();
@@ -64,7 +64,7 @@ async function checkFrontend(url, monitor) {
         const responseTime = Date.now() - start;
         const html = typeof res.data === 'string' ? res.data : JSON.stringify(res.data);
         
-        const iqScore = calculateSentinelIQScore(html, monitor.failureKeywords);
+        const iqScore = calculateUpbaseIQScore(html, monitor.failureKeywords);
 
         return {
             ok: res.status === 200 && responseTime < 3000 && iqScore < 3,

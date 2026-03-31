@@ -18,16 +18,21 @@ export default function MobileBottomNav() {
           <NavLink
             key={to}
             to={to}
+            end={to === "/dashboard"}
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 transition-all duration-300 w-16 ${
                 isActive ? "text-indigo-400 scale-110 font-bold" : "text-slate-400 active:scale-95"
               }`
             }
           >
-            <div className={`p-1 rounded-lg ${to === (window.location.pathname) ? "bg-indigo-500/10" : ""}`}>
-              <Icon size={20} />
-            </div>
-            <span className="text-[10px] uppercase tracking-tighter">{label}</span>
+            {({ isActive }) => (
+              <>
+                <div className={`p-1 rounded-lg ${isActive ? "bg-indigo-500/10" : ""}`}>
+                  <Icon size={20} />
+                </div>
+                <span className="text-[10px] uppercase tracking-tighter">{label}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </div>

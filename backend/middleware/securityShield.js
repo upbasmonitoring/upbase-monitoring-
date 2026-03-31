@@ -99,7 +99,12 @@ export const securityShield = async (req, res, next) => {
                 retryAfter: Math.round(err.msBeforeNext / 1000) 
             });
         }
-        console.error('[SECURITY-SENTINEL] Fallback Passthrough Error:', err.message);
+        
+        // Suppress specific Redis-iteration noise during connection failovers
+        if (!err.message.includes('iterable')) {
+            console.error('[SECURITY-SENTINEL] Failover Passthrough:', err.message);
+        }
+        
         next();
     }
 };
