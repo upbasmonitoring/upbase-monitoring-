@@ -1,8 +1,7 @@
 import { Suspense, lazy, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider, useLocation, useOutlet } from "react-router-dom";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,8 +20,8 @@ const IntegrationsPage     = lazy(() => import("./pages/dashboard/IntegrationsPa
 
 // ai/
 const AIPage               = lazy(() => import("./pages/ai/AIPage"));
-const RalphDiagnosticsPage = lazy(() => import("./pages/ai/RalphDiagnosticsPage"));
-const RalphIntelligencePage= lazy(() => import("./pages/ai/RalphIntelligencePage"));
+const UpbaseDiagnosticsPage = lazy(() => import("./pages/ai/RalphDiagnosticsPage"));
+const UpbaseIntelligencePage= lazy(() => import("./pages/ai/RalphIntelligencePage"));
 
 // system/
 const AlertsPage           = lazy(() => import("./pages/system/AlertsPage"));
@@ -137,9 +136,9 @@ const router = createBrowserRouter([
         { path: "deployments", element: <DeploymentsPage /> },
         { path: "alerts", element: <AlertsPage /> },
         { path: "healing", element: <SelfHealingPage /> },
-        { path: "intelligence", element: <RalphIntelligencePage /> },
+        { path: "intelligence", element: <UpbaseIntelligencePage /> },
         { path: "ai", element: <AIPage /> },
-        { path: "ralph", element: <RalphDiagnosticsPage /> },
+        { path: "ralph", element: <UpbaseDiagnosticsPage /> },
         { path: "keys", element: <ApiKeysPage /> },
         { path: "errors", element: <ErrorsPage /> },
         { path: "audit", element: <AuditLogsPage /> },
@@ -192,7 +191,6 @@ const App = () => {
             <QueryClientProvider client={queryClient}>
                 <TooltipProvider>
                     <Toaster />
-                    <Sonner />
                     <Suspense fallback={<PremiumLoader />}>
                         <RouterProvider 
                             router={router} 

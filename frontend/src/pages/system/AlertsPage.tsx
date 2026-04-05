@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "@/lib/axios";
+import { apiFetch } from "@/lib/api";
 import { 
     Clock, CheckCircle2, Activity, History as HistoryIcon, Zap, Skull, 
     Terminal, ShieldAlert, Satellite, Fingerprint, Search, Target, Bell 
@@ -7,32 +7,35 @@ import {
 
 
 
+import { useProject } from "@/context/ProjectContext";
+
 const getUser = () => {
     return JSON.parse(localStorage.getItem("user") || "null");
 };
 
 const AlertsPage = () => {
     const user = getUser();
+    const { selectedProject } = useProject();
 
 
     const { data: activeAlerts, isLoading: activeLoading } = useQuery({
-        queryKey: ["active-alerts"],
+        queryKey: ["active-alerts", selectedProject?._id],
         queryFn: async () => {
-            const { data } = await axios.get("/monitors/alerts/active");
-            return data;
+            return await apiFetch(`/monitors/alerts/active?projectId=${selectedProject?._id}`);
         },
-        enabled: !!user, // Run only when authenticated
-        retry: false // ✅ Disable retry for alerts (Zero-Spam)
+        enabled: !!user && !!selectedProject?._id, // Run only when authenticated and project is selected
+        refetchInterval: 5000, // ✅ Fresh alerts every 5s
+        retry: false 
     });
 
     const { data: alertHistory, isLoading: historyLoading } = useQuery({
-        queryKey: ["alert-history"],
+        queryKey: ["alert-history", selectedProject?._id],
         queryFn: async () => {
-            const { data } = await axios.get("/monitors/alerts/history");
-            return data;
+            return await apiFetch(`/monitors/alerts/history?projectId=${selectedProject?._id}`);
         },
-        enabled: !!user, // Run only when authenticated
-        retry: false // ✅ Disable retry for history (Zero-Spam)
+        enabled: !!user && !!selectedProject?._id, // Run only when authenticated and project is selected
+        refetchInterval: 10000, // ✅ History refresh every 10s
+        retry: false
     });
 
     if (!user) {
@@ -64,7 +67,7 @@ const AlertsPage = () => {
                             </div>
                             <h2 className="text-[10px] font-bold uppercase tracking-[.4em] text-primary">Intelligence Hub</h2>
                         </div>
-                        <h1 className="text-4xl font-bold uppercase tracking-tighter text-foreground leading-none">
+                        <h1 className="text-2xl sm:text-4xl font-bold uppercase tracking-tighter text-foreground leading-none">
                             Alert <span className="text-primary">Control</span> Center
                         </h1>
                         <p className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest max-w-lg leading-relaxed">
@@ -72,16 +75,16 @@ const AlertsPage = () => {
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-8 px-10 py-6 bg-card border border-border rounded-[32px] shadow-sm group hover:border-primary/20 transition-all">
+                    <div className="flex items-center gap-5 px-5 sm:px-10 py-4 sm:py-6 bg-card border border-border rounded-2xl sm:rounded-[32px] shadow-sm group hover:border-primary/20 transition-all">
                          <div className="flex flex-col">
                             <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/30 leading-none mb-2">Active Signal Drop</span>
-                            <span className={`text-3xl font-bold tracking-tighter tabular-nums leading-none uppercase ${activeAlerts?.length > 0 ? 'text-red-500' : 'text-foreground'}`}>
+                            <span className={`text-2xl sm:text-3xl font-bold tracking-tighter tabular-nums leading-none uppercase ${activeAlerts?.length > 0 ? 'text-red-500' : 'text-foreground'}`}>
                                 {activeAlerts?.length || 0} SEVERE
                             </span>
                          </div>
                          <div className="h-10 w-px bg-border" />
-                         <div className="h-12 w-12 rounded-2xl bg-secondary border border-border flex items-center justify-center group-hover:bg-primary/5 transition-all text-muted-foreground/40 group-hover:text-primary">
-                            <Target className="h-6 w-6" />
+                         <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-secondary border border-border flex items-center justify-center group-hover:bg-primary/5 transition-all text-muted-foreground/40 group-hover:text-primary">
+                            <Target className="h-5 w-5 sm:h-6 sm:w-6" />
                          </div>
                     </div>
                 </div>
@@ -98,7 +101,7 @@ const AlertsPage = () => {
                         
                         <div className="space-y-6 min-h-[400px]">
                             {activeAlerts?.length > 0 ? activeAlerts.map((alert: any) => (
-                                <div key={alert._id} className="bg-card p-8 rounded-[40px] border border-border shadow-sm hover:border-red-500/20 transition-all group relative overflow-hidden">
+                                <div key={alert._id} className="bg-card p-6 sm:p-8 rounded-2xl sm:rounded-[40px] border border-border shadow-sm hover:border-red-500/20 transition-all group relative overflow-hidden">
                                     <div className={`absolute top-0 left-0 w-1.5 h-full opacity-60 ${
                                         alert.type === 'DEGRADED' ? 'bg-amber-500' : 'bg-red-500'
                                     }`} />
@@ -181,26 +184,27 @@ const AlertsPage = () => {
                         </h3>
 
                         <div className="bg-card rounded-[40px] border border-border shadow-sm h-[680px] flex flex-col overflow-hidden">
-                            <div className="h-18 px-10 border-b border-secondary/50 flex items-center justify-between bg-card text-muted-foreground/40">
-                                 <span className="text-[10px] font-bold uppercase tracking-widest">Handshake Integrity: Verified</span>
+                            <div className="h-14 px-6 sm:px-10 border-b border-secondary/50 flex items-center justify-between bg-card text-muted-foreground/40">
+                                 <span className="text-[10px] font-bold uppercase tracking-widest hidden xs:block">Handshake Integrity: Verified</span>
+                                 <span className="text-[10px] font-bold uppercase tracking-widest block xs:hidden">Verified</span>
                                  <div className="flex items-center gap-2">
                                      <div className="h-1.5 w-1.5 rounded-full bg-border" />
                                      <span className="text-[9px] font-bold uppercase tracking-widest opacity-40">Past 20 Events</span>
                                  </div>
                             </div>
-                            <div className="flex-1 overflow-y-auto p-10 space-y-5 custom-scrollbar">
+                            <div className="flex-1 overflow-y-auto p-5 sm:p-10 space-y-4 sm:space-y-5 custom-scrollbar">
                                 {alertHistory?.map((log: any) => (
-                                    <div key={log._id} className="flex gap-6 p-6 rounded-[32px] bg-card border border-border hover:border-primary/20 hover:shadow-sm transition-all group/item">
-                                        <div className={`h-12 w-12 shrink-0 rounded-2xl flex items-center justify-center border transition-all duration-500 ${
+                                    <div key={log._id} className="flex gap-4 sm:gap-6 p-4 sm:p-6 rounded-2xl sm:rounded-[32px] bg-card border border-border hover:border-primary/20 hover:shadow-sm transition-all group/item">
+                                        <div className={`h-10 w-10 sm:h-12 sm:w-12 shrink-0 rounded-xl sm:rounded-2xl flex items-center justify-center border transition-all duration-500 ${
                                             log.type === 'DOWN' ? 'bg-red-500/10 border-red-500/20 text-red-500' : 
                                             log.type === 'DEGRADED' || log.severity === 'warning' ? 'bg-amber-500/10 border-amber-500/20 text-amber-500' : 
                                             log.type === 'RECOVERY' || log.type === 'UP' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' :
                                             'bg-primary/5 border-primary/10 text-primary'
                                         }`}>
-                                            {log.type === 'DOWN' ? <Skull className="h-6 w-6" /> : 
-                                             log.type === 'DEGRADED' ? <Activity className="h-6 w-6" /> : 
-                                             log.type === 'RECOVERY' ? <CheckCircle2 className="h-6 w-6" /> :
-                                             <Zap className="h-6 w-6" />}
+                                            {log.type === 'DOWN' ? <Skull className="h-5 w-5 sm:h-6 sm:w-6" /> : 
+                                             log.type === 'DEGRADED' ? <Activity className="h-5 w-5 sm:h-6 sm:w-6" /> : 
+                                             log.type === 'RECOVERY' ? <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6" /> :
+                                             <Zap className="h-5 w-5 sm:h-6 sm:w-6" />}
                                         </div>
                                         <div className="flex-1 min-w-0 space-y-2">
                                             <div className="flex items-center justify-between gap-4">
@@ -243,11 +247,14 @@ const AlertsPage = () => {
 
 // Simple duration formatter
 function formatDuration(startTime?: string) {
-    if (!startTime) return "---";
+    if (!startTime) return "0 MINS SIGNAL LOSS";
     const start = new Date(startTime).getTime();
-    const now = new Date().getTime();
-    const diffMins = Math.floor((now - start) / 60000);
+    if (isNaN(start)) return "CALCULATING SIGNAL...";
     
+    const now = new Date().getTime();
+    const diffMins = Math.max(0, Math.floor((now - start) / 60000));
+    
+    if (diffMins < 1) return "LESS THAN 1M SIGNAL LOSS";
     if (diffMins < 60) return `${diffMins} MINS SIGNAL LOSS`;
     const hours = Math.floor(diffMins / 60);
     const mins = diffMins % 60;

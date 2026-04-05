@@ -34,9 +34,9 @@ import { useTheme } from "next-themes";
 // --- 💎 MEMOIZED COMPONENTS ---
 
 const StatCard = memo(({ title, value, icon, loading, trend, valueClass = "text-foreground" }: any) => (
-    <div className="bg-card p-4 sm:p-7 rounded-[20px] sm:rounded-[32px] border border-border shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] hover:border-primary/30 hover:shadow-[0_20px_60px_-20px_rgba(0,163,255,0.08)] transition-all group flex flex-col">
-        <div className="flex items-center justify-between mb-8">
-            <div className="h-9 w-9 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-secondary/50 border border-border flex items-center justify-center transition-all group-hover:bg-primary/5 shadow-sm">
+    <div className="bg-card p-4 sm:p-7 rounded-[20px] sm:rounded-[32px] border border-border shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] hover:border-primary/30 hover:shadow-[0_20px_60px_-20px_rgba(0,163,255,0.08)] transition-[border-color,background-color,transform,box-shadow] duration-500 group flex flex-col h-fit self-start">
+        <div className="flex items-center justify-between mb-4 sm:mb-8">
+            <div className="h-8 w-8 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-secondary/50 border border-border flex items-center justify-center transition-all group-hover:bg-primary/5 shadow-sm">
                 {icon}
             </div>
             <div className="h-1.5 w-6 rounded-full bg-border group-hover:bg-primary/20 transition-all" />
@@ -240,7 +240,7 @@ const DashboardPage = () => {
             </div>
 
             {/* --- 📊 2. METRIC LEDGER --- */}
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 h-fit items-start">
                 <StatCard 
                     title="Active Monitors" 
                     value={totalMonitors} 

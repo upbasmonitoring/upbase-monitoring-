@@ -18,8 +18,8 @@ const getGeminiDeepAnalysis = async (diagnostics) => {
         const logContext = logs.slice(0, 10).map(l => `[${l.checkedAt}] ${l.status}: ${l.errorMessage}`).join('\n');
 
         const prompt = `
-            You are "Ralph Intelligence", a Senior Site Reliability Engineer.
-            Analyze this website failure telemetry:
+            You are "Up-base Intelligence", a Senior Site Reliability Engineer.
+            Analyze the following diagnostic bundle for a service outage.lemetry:
             
             URL: ${diagnostics.url}
             LAST ERROR: ${lastFailure?.errorMessage}
@@ -40,10 +40,10 @@ const getGeminiDeepAnalysis = async (diagnostics) => {
 };
 
 /**
- * Ralph Intelligence (Hybrid Engine: Rule-Based + Gemini AI)
+ * Up-base Intelligence (Hybrid Engine: Rule-Based + Gemini AI)
  * Determines the cause, impact, and suggestion for a failure.
  */
-export const runRalphIntelligence = async (monitorId, diagnostics) => {
+export const runUpbaseIntelligence = async (monitorId, diagnostics) => {
     try {
         const monitor = await Monitor.findById(monitorId);
         const { logs, lastFailure, deployments } = diagnostics;
@@ -64,8 +64,8 @@ export const runRalphIntelligence = async (monitorId, diagnostics) => {
         const deployTimeStr = lastDeploy ? new Date(lastDeploy.time).getTime() : 0;
         const timeSinceDeploy = (now - deployTimeStr) / (1000 * 60); // minutes
 
-        if (lastFailure && (lastFailure.error?.includes('SENTINEL_IQ') || lastFailure.errorMessage?.includes('SENTINEL_IQ'))) {
-            console.log(`[RALPH-INTEL] Ghost-200 (Sentinel IQ) detected. Responding with Rule-Based ROLLBACK.`);
+        if (lastFailure && (lastFailure.error?.includes('UPBASE_IQ') || lastFailure.errorMessage?.includes('UPBASE_IQ'))) {
+            console.log(`[UPBASE-INTEL] Ghost-200 (Up-base IQ) detected. Responding with Rule-Based ROLLBACK.`);
             res.cause = "Stealth Failure Detected (Ghost-200)";
             res.impact = "Page content is broken or shows errors despite 200 OK status.";
             res.suggestion = "Rollback to the last confirmed stable version.";

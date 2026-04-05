@@ -39,8 +39,8 @@ router.route('/')
 router.get('/stats', protect, getMonitorStats);
 router.get('/events', protect, getRecentEvents);
 router.get('/deployments', protect, getDeployments);
-router.get('/alerts/active', protect, (req, res) => res.json([]));
-router.get('/alerts/history', protect, (req, res) => res.json([]));
+router.get('/alerts/active', protect, getActiveAlerts);
+router.get('/alerts/history', protect, getAlertHistory);
 
 
 router.get('/healing/logs', protect, getSelfHealingLogs);

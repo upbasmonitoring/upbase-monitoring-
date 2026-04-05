@@ -88,7 +88,7 @@ const ErrorPage = () => {
                  <div className="flex items-center gap-3 px-5 py-2 rounded-full bg-card border border-border shadow-sm">
                     <Satellite className="h-3.5 w-3.5 text-primary opacity-20" />
                     <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.3em]">
-                        upBASE • Sentinel Station V2.4
+                        upBASE • Up-base Station V2.4
                     </p>
                  </div>
             </div>

@@ -33,7 +33,7 @@ const SelfHealingPage = () => {
         const fetchStatus = async () => {
             try {
                 // In a real app, you'd get this from a /user/profile endpoint
-                const res = await apiFetch("/auth/whatsapp/status");
+                await apiFetch("/auth/whatsapp/status");
             } catch (err) {
                 console.error(err);
             }
@@ -65,28 +65,28 @@ const SelfHealingPage = () => {
     });
 
     return (
-            <div className="space-y-12 pb-20 font-sans">
+            <div className="space-y-6 sm:space-y-12 pb-20 font-sans">
                 
                 {/* --- 🚀 1. RECOVERY HEADER --- */}
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-                    <div className="space-y-4 lg:max-w-md">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-10">
+                    <div className="space-y-2 sm:space-y-4 lg:max-w-md">
                         <div className="flex items-center gap-3">
                             <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_10px_rgba(0,163,255,0.4)]" />
                             <h2 className="text-[10px] font-bold uppercase tracking-[.4em] text-muted-foreground/60">System Stability</h2>
                         </div>
-                        <h1 className="text-4xl font-bold uppercase tracking-tighter text-foreground leading-none">
+                        <h1 className="text-2xl sm:text-4xl font-bold uppercase tracking-tighter text-foreground leading-none">
                             Automated <span className="text-primary">Recovery</span>
                         </h1>
-                        <p className="text-sm font-semibold text-muted-foreground/60 uppercase tracking-widest leading-relaxed">
+                        <p className="text-[10px] sm:text-sm font-semibold text-muted-foreground/60 uppercase tracking-wide sm:tracking-widest leading-relaxed">
                             Autonomous remediation of performance degradations. 
                             The engine monitors for failure triggers and applies fail-safes instantly.
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-8 px-10 py-6 bg-card border border-border rounded-[32px] shadow-sm group hover:border-primary/20 transition-all">
+                    <div className="flex items-center gap-3 sm:gap-8 px-4 sm:px-10 py-2 sm:py-6 bg-card border border-border rounded-xl sm:rounded-[32px] shadow-sm group hover:border-primary/20 transition-all">
                          <div className="flex flex-col">
                             <span className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/30 leading-none mb-2">Autopilot Mode</span>
-                            <span className={`text-3xl font-bold tracking-tighter tabular-nums leading-none uppercase transition-all ${isAutopilot ? 'text-primary' : 'text-muted-foreground/20'}`}>
+                            <span className={`text-lg sm:text-3xl font-bold tracking-tighter tabular-nums leading-none uppercase transition-all ${isAutopilot ? 'text-primary' : 'text-muted-foreground/20'}`}>
                                 {isAutopilot ? 'Active' : 'Standby'}
                             </span>
                          </div>
@@ -104,7 +104,7 @@ const SelfHealingPage = () => {
                 </div>
 
                 {/* --- 📊 2. OPERATION METRICS --- */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-start h-fit overflow-visible">
                     <MetricCard 
                         label="Auto-Rollbacks" 
                         value={logs?.filter((l: any) => l.rollback?.attempted).length || 0} 
@@ -136,11 +136,11 @@ const SelfHealingPage = () => {
                 </div>
 
                 {/* --- 📟 3. RECOVERY LOGS --- */}
-                <div className="bg-card rounded-[40px] border border-border shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden">
-                    <div className="h-18 px-10 border-b border-border flex items-center justify-between bg-secondary/30">
+                <div className="bg-card rounded-2xl sm:rounded-[40px] border border-border shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden">
+                    <div className="h-14 sm:h-18 px-6 sm:px-10 border-b border-border flex items-center justify-between bg-secondary/30">
                         <div className="flex items-center gap-4">
                             <Terminal className="h-4 w-4 text-muted-foreground/40" />
-                            <h3 className="text-[10px] font-bold uppercase tracking-[.4em] text-muted-foreground/40">Recovery Operations Audit</h3>
+                            <h3 className="text-[10px] font-bold uppercase tracking-[.4em] text-slate-400">Recovery Operations Audit</h3>
                         </div>
                         <div className="flex items-center gap-3">
                              <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.3)]" />
@@ -148,7 +148,7 @@ const SelfHealingPage = () => {
                         </div>
                     </div>
 
-                    <div className="min-h-[600px] p-10 lg:p-14 space-y-16">
+                    <div className="min-h-[600px] p-5 sm:p-10 lg:p-14 space-y-16">
                         {isLoading ? (
                             <div className="space-y-10 animate-pulse">
                                 {[1,2,3].map(i => <div key={i} className="h-32 w-full bg-secondary/20 rounded-[32px] border border-border" />)}
@@ -161,11 +161,11 @@ const SelfHealingPage = () => {
                                     <div className="flex flex-col gap-10">
                                         {/* --- 🧠 RALPH INTELLIGENCE --- */}
                                         {log.analysis?.cause && (
-                                            <div className="p-10 rounded-[40px] bg-secondary/30 border border-border hover:border-primary/20 transition-all relative overflow-hidden group/intel shadow-sm">
+                                            <div className="p-6 sm:p-10 rounded-2xl sm:rounded-[40px] bg-secondary/30 border border-border hover:border-primary/20 transition-all relative overflow-hidden group/intel shadow-sm">
                                                 <div className="absolute top-0 right-0 p-8 opacity-5 group-hover/intel:opacity-10 transition-opacity">
                                                     <Brain className="h-28 w-28 text-indigo-500" />
                                                 </div>
-                                                <div className="flex items-center gap-4 mb-8">
+                                                <div className="flex items-center gap-4 mb-6 sm:mb-8">
                                                     <div className="h-10 w-10 rounded-[1.25rem] bg-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 relative z-10">
                                                         <Sparkles className="h-5 w-5" />
                                                     </div>
@@ -218,7 +218,7 @@ const SelfHealingPage = () => {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                             {/* Rollback Phase */}
                                             {log.rollback?.attempted && (
-                                                <div className="p-8 rounded-[40px] bg-card border border-border group/roll hover:border-primary/20 transition-all shadow-sm">
+                                                <div className="p-6 sm:p-8 rounded-2xl sm:rounded-[40px] bg-card border border-border group/roll hover:border-primary/20 transition-all shadow-sm">
                                                     <div className="flex items-center justify-between mb-8">
                                                         <span className="text-[10px] font-bold uppercase text-blue-500 tracking-[.3em] flex items-center gap-3 italic">
                                                             <RefreshCcw className="h-4.5 w-4.5 text-blue-400" /> 
@@ -244,7 +244,7 @@ const SelfHealingPage = () => {
 
                                             {/* AI Fix Phase */}
                                             {log.aiFix?.attempted && (
-                                                <div className="p-8 rounded-[40px] bg-card border border-border group/ai hover:border-primary/20 transition-all shadow-sm">
+                                                <div className="p-6 sm:p-8 rounded-2xl sm:rounded-[40px] bg-card border border-border group/ai hover:border-primary/20 transition-all shadow-sm">
                                                      <div className="flex items-center justify-between mb-8">
                                                         <span className="text-[10px] font-bold uppercase text-indigo-500 tracking-[.3em] flex items-center gap-3 italic">
                                                             <Cpu className="h-4.5 w-4.5 text-indigo-400" /> 
@@ -270,41 +270,41 @@ const SelfHealingPage = () => {
                                         </div>
 
                                         {log.outcome.startsWith('healed') ? (
-                                            <div className="flex items-center gap-8 p-8 px-10 rounded-[40px] bg-emerald-500/10 border border-emerald-500/20 shadow-sm relative overflow-hidden group/success transition-all">
+                                            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 sm:px-10 rounded-2xl sm:rounded-[40px] bg-emerald-500/10 border border-emerald-500/20 shadow-sm relative overflow-hidden group/success transition-all">
                                                 <div className="absolute top-0 right-0 p-8 opacity-5 group-hover/success:opacity-10 transition-opacity">
                                                     <ShieldCheck className="h-20 w-20 text-emerald-500" />
                                                 </div>
-                                                <div className="h-14 w-14 rounded-2xl bg-card flex items-center justify-center shrink-0 border border-emerald-500/20 shadow-sm text-emerald-500 relative z-10">
-                                                    <CheckCircle2 className="h-7 w-7" />
+                                                <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl bg-card flex items-center justify-center shrink-0 border border-emerald-500/20 shadow-sm text-emerald-500 relative z-10">
+                                                    <CheckCircle2 className="h-6 w-6 sm:h-7 sm:w-7" />
                                                 </div>
-                                                <div className="flex-1 space-y-1.5 relative z-10">
-                                                    <div className="flex items-center justify-between">
+                                                <div className="flex-1 space-y-1.5 relative z-10 text-center sm:text-left">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                                                         <span className="text-[12px] font-bold uppercase text-emerald-500 tracking-[0.2em]">Resolution Verified</span>
                                                         <span className="text-[10px] font-bold text-emerald-500/40 tabular-nums uppercase">{new Date(log.completedAt || Date.now()).toLocaleTimeString()}</span>
                                                     </div>
-                                                    <p className="text-xs font-bold text-muted-foreground/80 uppercase tracking-widest truncate leading-none">Signal integrity restored. System returned to nominal state.</p>
+                                                    <p className="text-xs font-bold text-muted-foreground/80 uppercase tracking-widest leading-relaxed">Signal integrity restored. System returned to nominal state.</p>
                                                 </div>
                                             </div>
                                         ) : log.outcome === 'healing_failed' ? (
-                                            <div className="flex items-center gap-8 p-8 px-10 rounded-[40px] bg-red-500/10 border border-red-500/20 shadow-sm relative overflow-hidden group/fail transition-all">
+                                            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 sm:px-10 rounded-2xl sm:rounded-[40px] bg-red-500/10 border border-red-500/20 shadow-sm relative overflow-hidden group/fail transition-all">
                                                 <div className="absolute top-0 right-0 p-8 opacity-5 group-hover/fail:opacity-10 transition-opacity">
                                                     <XCircle className="h-20 w-20 text-red-500" />
                                                 </div>
-                                                <div className="h-14 w-14 rounded-2xl bg-card flex items-center justify-center shrink-0 border border-red-500/20 shadow-sm text-red-500 relative z-10">
-                                                    <XCircle className="h-7 w-7" />
+                                                <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl bg-card flex items-center justify-center shrink-0 border border-red-500/20 shadow-sm text-red-500 relative z-10">
+                                                    <XCircle className="h-6 w-6 sm:h-7 sm:w-7" />
                                                 </div>
-                                                <div className="flex-1 space-y-1.5 relative z-10">
-                                                    <div className="flex items-center justify-between">
+                                                <div className="flex-1 space-y-1.5 relative z-10 text-center sm:text-left">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                                                         <span className="text-[12px] font-bold uppercase text-red-500 tracking-[0.2em]">Sequence Halted</span>
                                                         <span className="text-[10px] font-bold text-red-500/40 tabular-nums uppercase">{new Date(log.completedAt || Date.now()).toLocaleTimeString()}</span>
                                                     </div>
-                                                    <p className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest truncate leading-none">Automated recovery bypassed. Manual remediation required for node <span className="text-red-500 underline decoration-2 underline-offset-4 cursor-pointer">#{log.monitor?.id?.substring(0,6)}</span>.</p>
+                                                    <p className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest leading-relaxed">Automated recovery bypassed. Manual remediation required for node <span className="text-red-500 underline decoration-2 underline-offset-4 cursor-pointer">#{log.monitor?.id?.substring(0,6)}</span>.</p>
                                                 </div>
                                             </div>
                                         ) : (
-                                            <div className="flex items-center gap-8 p-8 px-10 rounded-[40px] bg-secondary/30 border border-border relative group/pending transition-all grayscale opacity-50">
-                                                <div className="h-14 w-14 rounded-2xl bg-card flex items-center justify-center shrink-0 border border-border shadow-sm text-muted-foreground/30 relative z-10">
-                                                    <Clock className="h-7 w-7 animate-spin-slow" />
+                                            <div className="flex items-center gap-6 sm:gap-8 p-6 sm:p-8 sm:px-10 rounded-2xl sm:rounded-[40px] bg-secondary/30 border border-border relative group/pending transition-all grayscale opacity-50">
+                                                <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl bg-card flex items-center justify-center shrink-0 border border-border shadow-sm text-muted-foreground/30 relative z-10">
+                                                    <Clock className="h-6 w-6 sm:h-7 sm:w-7 animate-spin-slow" />
                                                 </div>
                                                 <div className="flex-1 space-y-1.5 relative z-10">
                                                     <p className="text-xs font-bold text-muted-foreground/40 uppercase tracking-widest leading-none">Remediation in progress. Monitoring node for stability handshake...</p>
@@ -340,16 +340,16 @@ const MetricCard = ({ label, value, icon, trend, activeColor }: any) => {
     };
     
     return (
-        <div className="bg-card p-10 rounded-[40px] border border-border shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] hover:border-primary/20 transition-all group flex flex-col relative overflow-hidden">
-            <div className="flex items-center justify-between mb-10 relative z-10">
-                <div className={`h-14 w-14 rounded-2xl flex items-center justify-center transition-all bg-secondary border border-border group-hover:scale-110 shadow-sm ${colorMap[activeColor] || colorMap.slate}`}>
+        <div className="bg-card p-4 sm:p-10 rounded-xl sm:rounded-[40px] border border-border shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] transition-[border-color,background-color,transform] duration-300 group relative overflow-hidden block sm:flex sm:flex-col !h-auto !min-h-0 flex-none self-start">
+            <div className="flex items-center justify-between mb-2 sm:mb-10 relative z-10">
+                <div className={`h-10 w-10 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all bg-secondary border border-border group-hover:scale-110 shadow-sm ${colorMap[activeColor] || colorMap.slate}`}>
                     {icon}
                 </div>
                 <div className="h-1.5 w-6 rounded-full bg-secondary group-hover:bg-primary/10 transition-all" />
             </div>
-            <div className="space-y-3 relative z-10">
-                <p className="text-[10px] font-bold uppercase tracking-[.3em] text-muted-foreground/30">{label}</p>
-                <h3 className="text-4xl font-bold tracking-tighter uppercase tabular-nums text-foreground leading-none">
+            <div className="space-y-1 sm:space-y-3 relative z-10">
+                <p className="text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground/30">{label}</p>
+                <h3 className="text-xl sm:text-4xl font-bold tracking-tighter uppercase tabular-nums text-foreground leading-[1.1]">
                     {value}
                 </h3>
                 {trend && (

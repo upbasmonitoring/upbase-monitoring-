@@ -58,17 +58,17 @@ const AIPage: React.FC = () => {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-primary/10 rounded-2xl border border-primary/20 shadow-sm">
+            <div className="p-2.5 bg-primary/10 rounded-2xl border border-primary/20 shadow-sm shrink-0">
               <Brain className="w-6 h-6 text-primary" />
             </div>
-            <div>
-              <h1 className="text-2xl font-black tracking-tight text-foreground">AI Observability</h1>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">Powered by MCP Core Engine</span>
-                <div className="h-1 w-1 rounded-full bg-border" />
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground truncate">AI Observability</h1>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 whitespace-nowrap">Powered by MCP Core Engine</span>
+                <div className="hidden sm:block h-1 w-1 rounded-full bg-border" />
                 <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                     <Sparkles className="w-2.5 h-2.5 text-emerald-500" />
-                    <span className="text-[9px] font-black text-emerald-600 uppercase tracking-tight">Active</span>
+                    <span className="text-[8px] sm:text-[9px] font-black text-emerald-600 uppercase tracking-tight">Active</span>
                 </div>
               </div>
             </div>
@@ -112,20 +112,20 @@ const AIPage: React.FC = () => {
         </div>
 
         {/* Helper Footer */}
-        <div className="p-6 rounded-3xl bg-card border border-border shadow-sm flex items-center justify-between">
-            <div className="flex items-center gap-4">
-                <div className="h-10 w-10 rounded-xl bg-secondary/50 border border-border flex items-center justify-center">
+        <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-card border border-border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-4">
+            <div className="flex items-center gap-4 w-full sm:w-auto">
+                <div className="h-10 w-10 rounded-xl bg-secondary/50 border border-border flex items-center justify-center shrink-0">
                     <Brain className="h-5 w-5 text-muted-foreground/40" />
                 </div>
                 <div>
-                    <h3 className="text-xs font-black text-foreground uppercase tracking-tight">Ralph Intelligence Agent</h3>
+                    <h3 className="text-xs font-black text-foreground uppercase tracking-tight">Up-base Intelligence Agent</h3>
                     <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest leading-none mt-1">SRE-Level Observability Engine</p>
                 </div>
             </div>
             
             <button 
                 onClick={() => setShowDocs(true)}
-                className="group relative px-6 py-2.5 bg-secondary/50 hover:bg-foreground border border-border hover:border-foreground rounded-xl transition-all duration-300 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-foreground/10 flex items-center gap-3"
+                className="w-full sm:w-auto group relative px-6 py-2.5 bg-secondary/50 hover:bg-foreground border border-border hover:border-foreground rounded-xl transition-all duration-300 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-foreground/10 flex items-center justify-center gap-3"
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-primary opacity-0 group-hover:opacity-5 transition-opacity" />
                 <LucideMonitor className="w-3.5 h-3.5 text-muted-foreground/40 group-hover:text-indigo-400 transition-colors" />

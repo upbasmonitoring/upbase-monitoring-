@@ -39,11 +39,11 @@ const RalphIntelligencePage = () => {
                             <Brain className="h-4 w-4 text-primary" />
                             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary leading-none">AI Analytics Core</span>
                         </div>
-                        <h1 className="text-5xl font-bold tracking-tighter uppercase text-foreground leading-none">
-                            Ralph <span className="text-primary italic">Intelligence</span>
+                        <h1 className="text-3xl sm:text-5xl font-bold tracking-tighter uppercase text-foreground leading-none">
+                            Up-base <span className="text-primary italic">Intelligence</span>
                         </h1>
-                        <p className="text-sm font-medium text-muted-foreground/60 max-w-xl">
-                            The analytical hub of Upbase. Ralph scans every failure, correlates deployments, and provides Gemini-powered deep root cause analysis (RCA) across your entire fleet.
+                        <p className="text-[11px] sm:text-sm font-medium text-muted-foreground/60 max-w-xl">
+                            The analytical hub of Up-base. The engine scans every failure, correlates deployments, and provides Gemini-powered deep root cause analysis (RCA) across your entire fleet.
                         </p>
                     </div>
 
@@ -82,28 +82,28 @@ const RalphIntelligencePage = () => {
                         ) : insights?.length > 0 ? (
                             <div className="space-y-6">
                                 {insights.map((log: any) => (
-                                    <div key={log._id} className="p-8 rounded-[40px] bg-card border border-border shadow-sm hover:border-primary/20 transition-all group relative overflow-hidden">
+                                    <div key={log._id} className="p-5 sm:p-8 rounded-2xl sm:rounded-[40px] bg-card border border-border shadow-sm hover:border-primary/20 transition-all group relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
                                             <Satellite className="h-24 w-24 text-primary" />
                                         </div>
 
                                         <div className="flex flex-col gap-8 relative">
                                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                                                <div className="flex items-center gap-6">
-                                                    <div className="h-16 w-16 rounded-[24px] bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                                                        <Fingerprint className="h-8 w-8" />
+                                                <div className="flex items-center gap-4 sm:gap-6">
+                                                    <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-[1.25rem] sm:rounded-[24px] bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:scale-105 transition-transform shrink-0">
+                                                        <Fingerprint className="h-6 w-6 sm:h-8 sm:w-8" />
                                                     </div>
-                                                    <div className="space-y-2">
+                                                    <div className="space-y-1 sm:space-y-2 min-w-0">
                                                         <div className="flex items-center gap-3">
-                                                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{log.monitor?.name}</span>
-                                                            <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                                                            <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest truncate">{log.monitor?.name}</span>
+                                                            <div className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-red-500 shrink-0" />
                                                         </div>
-                                                        <h4 className="text-lg font-bold text-foreground leading-none">Cause: {log.analysis?.cause || 'External Outage'}</h4>
+                                                        <h4 className="text-sm sm:text-lg font-bold text-foreground leading-tight uppercase truncate">Cause: {log.analysis?.cause || 'External Outage'}</h4>
                                                     </div>
                                                 </div>
 
                                                 <div className="flex items-center gap-4">
-                                                    <Link to={`/dashboard/monitors/${log.monitor?._id}`} className="px-6 py-3 rounded-2xl bg-secondary border border-border text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary hover:border-primary/20 hover:bg-card transition-all flex items-center gap-2 shadow-sm">
+                                                    <Link to={`/dashboard/monitors/${log.monitor?._id}`} className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-secondary border border-border text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary hover:border-primary/20 hover:bg-card transition-all flex items-center justify-center gap-2 shadow-sm">
                                                         Open Node <ChevronRight className="h-3 w-3" />
                                                     </Link>
                                                 </div>
@@ -111,8 +111,8 @@ const RalphIntelligencePage = () => {
 
                                             {/* AI DEEP ANALYSIS BLOCK */}
                                             {log.analysis?.aiAnalysis && (
-                                                <div className="p-6 rounded-3xl bg-secondary/40 border border-border text-[11px] font-medium text-muted-foreground leading-relaxed italic relative">
-                                                    <div className="absolute -top-3 left-6 px-2 bg-primary text-white rounded text-[8px] font-black uppercase tracking-widest shadow-lg">Gemini Deep Analysis</div>
+                                                <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-secondary/40 border border-border text-[10px] sm:text-[11px] font-medium text-muted-foreground leading-relaxed italic relative">
+                                                    <div className="absolute -top-2.5 left-6 px-2 bg-primary text-white rounded text-[7px] sm:text-[8px] font-black uppercase tracking-widest shadow-lg">Gemini Deep Analysis</div>
                                                     "{log.analysis.aiAnalysis}"
                                                 </div>
                                             )}
@@ -148,9 +148,9 @@ const RalphIntelligencePage = () => {
                                         <Cpu className="h-7 w-7" />
                                     </div>
                                     <div className="space-y-3">
-                                        <p className="text-lg font-bold text-white leading-tight uppercase tracking-tight italic">Ralph Pilot Pro Active</p>
-                                        <p className="text-xs font-semibold text-slate-400 leading-relaxed">
-                                            Rule-based logic is currently monitoring 4 patterns: Recent Deployments, Latency Spikes, Server 500s, and Authentication Failures.
+                                        <p className="text-lg font-bold text-white leading-tight uppercase tracking-tight italic">Up-base Pilot Pro Active</p>
+                                        <p className="text-[11px] sm:text-xs font-semibold text-slate-400 leading-relaxed">
+                                            Rule-based logic is currently monitoring patterns including Recent Deployments, Latency Spikes, and Authentication Failures.
                                         </p>
                                     </div>
                                     <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
@@ -160,7 +160,7 @@ const RalphIntelligencePage = () => {
                                         </div>
                                          <div className="flex flex-col text-right">
                                             <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Confidence</span>
-                                            <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest italic">88% (AVG)</span>
+                                            <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest italic">92% (AVG)</span>
                                         </div>
                                     </div>
                                 </div>

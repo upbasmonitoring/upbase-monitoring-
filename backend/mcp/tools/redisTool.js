@@ -26,6 +26,7 @@ export async function fetchLatencyData(monitorId) {
         console.log("[LATENCY DATA]", latencies);
 
         if (latencies.length > 0) {
+            const latest = logs[0].latency || logs[0].responseTime || 0;
             latencies.sort((a, b) => a - b);
             
             // Calculate p50 (Median)
@@ -37,8 +38,9 @@ export async function fetchLatencyData(monitorId) {
             const p95 = latencies[p95Idx];
 
             return { 
-                p50: `${p50}ms`, 
-                p95: `${p95}ms`,
+                p50, 
+                p95,
+                latest, // Absolute latest before sorting the average list
                 samples: latencies.length 
             };
         }

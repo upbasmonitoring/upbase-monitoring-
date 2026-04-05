@@ -3,7 +3,7 @@ import Monitor from '../models/Monitor.js';
 import redis from '../config/redis.js';
 import logger from '../utils/logger.js';
 
-const STATS_CACHE_KEY = 'global_sentinel_stats';
+const STATS_CACHE_KEY = 'global_upbase_stats';
 const CACHE_TTL = 300; // 5 minutes
 
 /**
