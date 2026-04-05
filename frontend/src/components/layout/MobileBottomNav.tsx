@@ -1,7 +1,33 @@
 import { NavLink } from "react-router-dom";
 import { Home, Activity, Bot, Bell, Key } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function MobileBottomNav() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const scrollContainer = document.getElementById("main-scroll-container");
+    if (!scrollContainer) return;
+
+    const handleScroll = () => {
+      const currentScrollY = scrollContainer.scrollTop;
+      
+      // Threshold to avoid minor scroll triggers
+      if (Math.abs(currentScrollY - lastScrollY) < 10) return;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        setIsVisible(false); // scroll down -> hide
+      } else {
+        setIsVisible(true); // scroll up -> show
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    scrollContainer.addEventListener("scroll", handleScroll, { passive: true });
+    return () => scrollContainer.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   const navItems = [
     { to: "/dashboard", icon: Home, label: "Home" },
     { to: "/dashboard/monitors", icon: Activity, label: "Monitors" },
@@ -10,9 +36,10 @@ export default function MobileBottomNav() {
     { to: "/dashboard/keys", icon: Key, label: "Access" }
   ];
 
-
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-background/95 backdrop-blur-xl border-t border-border md:hidden z-50 rounded-t-[2.5rem] shadow-2xl pb-safe-area-inset-bottom">
+    <div className={`fixed bottom-0 left-0 w-full bg-background/95 backdrop-blur-xl border-t border-border md:hidden z-50 rounded-t-[2.5rem] shadow-2xl pb-safe-area-inset-bottom transition-transform duration-300 ease-in-out ${
+      isVisible ? "translate-y-0" : "translate-y-full"
+    }`}>
       <div className="flex justify-around items-center h-20 px-4">
         {navItems.map(({ to, icon: Icon, label }) => (
           <NavLink
