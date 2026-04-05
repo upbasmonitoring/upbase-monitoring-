@@ -242,7 +242,7 @@ const DashboardLayout = () => {
             </header>
 
             {/* Scrollable Viewport */}
-            <main className="flex-1 overflow-y-auto relative scroll-smooth px-3 sm:px-6 lg:px-12 py-2 sm:py-8 custom-scrollbar pb-24 lg:pb-8">
+            <main id="main-scroll-container" className="flex-1 overflow-y-auto relative scroll-smooth px-3 sm:px-6 lg:px-12 py-2 sm:py-8 custom-scrollbar pb-24 lg:pb-8">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={location.pathname}
