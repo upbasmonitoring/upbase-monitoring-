@@ -2,7 +2,7 @@ import express from 'express';
 import redisClient from '../config/redis.js';
 import User from '../models/User.js';
 import Monitor from '../models/Monitor.js';
-import IncidentLog from '../models/IncidentLog.js';
+import Incident from '../models/Incident.js';
 
 const router = express.Router();
 
@@ -23,7 +23,7 @@ router.get('/landing-stats', async (req, res) => {
 
         // 2. CACHE MISS: Hit MongoDB to calculate actual metrics
         const totalMonitors = await Monitor.countDocuments();
-        const totalIncidents = await IncidentLog.countDocuments();
+        const totalIncidents = await Incident.countDocuments();
         
         // Baseline realism + actual DB data
         const globalUptime = 99.93 + (Math.random() * 0.05);
