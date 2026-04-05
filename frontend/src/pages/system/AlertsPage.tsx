@@ -209,7 +209,12 @@ const AlertsPage = () => {
                                         <div className="flex-1 min-w-0 space-y-2">
                                             <div className="flex items-center justify-between gap-4">
                                                 <span className="text-sm font-bold uppercase text-foreground truncate group-hover/item:text-primary transition-colors">{log.monitor?.name || 'System Alert'}</span>
-                                                <span className="text-[10px] font-bold text-muted-foreground/30 uppercase tracking-widest tabular-nums">{new Date(log.triggeredAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                <span className="text-[10px] font-bold text-muted-foreground/30 uppercase tracking-widest tabular-nums">
+                                                    {(() => {
+                                                        const d = new Date(log.triggeredAt || log.createdAt || log.timestamp || Date.now());
+                                                        return isNaN(d.getTime()) ? 'N/A' : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                                    })()}
+                                                </span>
                                             </div>
                                             <p className="text-[11px] font-medium text-muted-foreground/60 line-clamp-1 uppercase tracking-tight">{log.message}</p>
                                             <div className="flex items-center gap-4 pt-1">
