@@ -10,15 +10,9 @@ const RotatingGlobe = () => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Priority: Wait for the main thread to be COMPLETELY free before loading 3D
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(() => {
-        setMounted(true);
-      }, { timeout: 2000 });
-    } else {
-      const timer = setTimeout(() => setMounted(true), 150);
-      return () => clearTimeout(timer);
-    }
+     // 🚀 IMMEDIATE MOUNT: Removed artificial requestIdleCallback delay 
+     // to ensure the 3D globe paints the absolute millisecond the JS chunk finishes downloading.
+     setMounted(true);
   }, []);
 
   useLayoutEffect(() => {
