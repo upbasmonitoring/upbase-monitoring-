@@ -13,10 +13,17 @@ export default function MobileBottomNav() {
     const handleScroll = () => {
       const currentScrollY = scrollContainer.scrollTop;
       
-      // Threshold to avoid minor scroll triggers
-      if (Math.abs(currentScrollY - lastScrollY) < 10) return;
+      // Always show at the absolute top (handles iOS bounce gracefully)
+      if (currentScrollY <= 10) {
+        setIsVisible(true);
+        setLastScrollY(currentScrollY);
+        return;
+      }
+      
+      // Increased threshold to avoid micro-triggers (thumb jiggles)
+      if (Math.abs(currentScrollY - lastScrollY) < 25) return;
 
-      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+      if (currentScrollY > lastScrollY && currentScrollY > 70) {
         setIsVisible(false); // scroll down -> hide
       } else {
         setIsVisible(true); // scroll up -> show
@@ -37,7 +44,7 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <div className={`fixed bottom-0 left-0 w-full bg-background/95 backdrop-blur-xl border-t border-border md:hidden z-50 rounded-t-[2.5rem] shadow-2xl pb-safe-area-inset-bottom transition-transform duration-300 ease-in-out ${
+    <div className={`fixed bottom-0 left-0 w-full bg-background/95 backdrop-blur-xl border-t border-border md:hidden z-50 rounded-t-[2.5rem] shadow-2xl pb-safe-area-inset-bottom transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
       isVisible ? "translate-y-0" : "translate-y-full"
     }`}>
       <div className="flex justify-around items-center h-20 px-4">
