@@ -11,6 +11,8 @@ import fixRoutes from './fixRoutes.js';
 import statsRoutes from './stats.js';
 import integrationsRoutes from './integrations.js';
 
+import publicRoutes from './public.js';
+
 const router = express.Router();
 
 // Essential Core Routes
@@ -25,5 +27,6 @@ router.use('/deployments', deploymentRoutes);
 router.use('/fixes', fixRoutes);
 router.use('/stats', statsRoutes);
 router.use('/integrations', integrationsRoutes);
+router.use('/public', publicRoutes);
 
 export default router;
