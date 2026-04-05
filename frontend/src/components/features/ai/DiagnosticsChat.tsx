@@ -125,36 +125,40 @@ export const DiagnosticsChat: React.FC<DiagnosticsChatProps> = ({ monitorId, tar
   };
 
   return (
-    <div className="flex flex-col h-[700px] w-full max-w-4xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+    <div className="flex flex-col h-[75vh] sm:h-[600px] lg:h-[700px] w-full max-w-4xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl relative transition-all duration-500">
       {/* Header */}
       <div className="p-4 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-500/20 rounded-lg">
-            <LucideShield className="w-5 h-5 text-indigo-400" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-slate-100 uppercase tracking-tight text-xs flex items-center gap-2">
-              AI Observability Agent
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[9px] font-black text-emerald-400 flex items-center gap-1 animate-pulse">
-                🛡️ Blockchain Verified
-              </span>
-            </h3>
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Connected to MCP Core Engine</p>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-indigo-500/20 rounded-lg shrink-0">
+              <LucideShield className="w-5 h-5 text-indigo-400" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-slate-100 uppercase tracking-tight text-xs flex flex-wrap items-center gap-1.5">
+                AI Observability Agent
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[9px] font-black text-emerald-400 flex items-center gap-1 animate-pulse">
+                  🛡️ Blockchain Verified
+                </span>
+              </h3>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5 sm:mt-0">Connected to MCP Core Engine</p>
+            </div>
           </div>
         </div>
-        <button 
-          onClick={() => setDebugMode(!debugMode)}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-            debugMode ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-          }`}
-        >
-          <LucideBug className="w-3.5 h-3.5" />
-          Debug {debugMode ? 'ON' : 'OFF'}
-        </button>
+        <div className="mt-2 sm:mt-0">
+          <button 
+            onClick={() => setDebugMode(!debugMode)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              debugMode ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+            }`}
+          >
+            <LucideBug className="w-3.5 h-3.5" />
+            <span className="whitespace-nowrap">Debug {debugMode ? 'ON' : 'OFF'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-slate-700">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6 scrollbar-thin scrollbar-thumb-slate-700">
         {messages.length === 0 && (
           <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
             <div className="p-4 bg-slate-800/50 rounded-full border border-slate-700">
@@ -171,7 +175,7 @@ export const DiagnosticsChat: React.FC<DiagnosticsChatProps> = ({ monitorId, tar
 
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] ${msg.type === 'user' ? 'bg-indigo-600 text-white rounded-2xl rounded-tr-none' : 'space-y-4'} p-4`}>
+            <div className={`max-w-[95%] sm:max-w-[85%] ${msg.type === 'user' ? 'bg-indigo-600 text-white rounded-2xl rounded-tr-none' : 'space-y-4'} p-3 sm:p-4`}>
                 {msg.type === 'user' ? (
                     <span className="text-sm">{msg.content}</span>
                 ) : (
@@ -196,19 +200,21 @@ export const DiagnosticsChat: React.FC<DiagnosticsChatProps> = ({ monitorId, tar
 
                         {/* Metrics Grid */}
                         {msg.data && (
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="bg-slate-800/50 border border-slate-700/50 p-3 rounded-xl flex items-center gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                                <div className="bg-slate-800/50 border border-slate-700/50 p-2.5 sm:p-3 rounded-xl flex items-center gap-3">
                                     <LucideActivity className="w-4 h-4 text-emerald-400" />
                                     <div>
-                                        <p className="text-[10px] text-slate-500 uppercase font-bold">Latency p95</p>
-                                        <p className="text-sm text-slate-200 font-mono">{msg.data.latency.p95}ms</p>
+                                        <p className="text-[9px] sm:text-[10px] text-slate-500 uppercase font-bold">Latency p95</p>
+                                        <p className="text-xs sm:text-sm text-slate-200 font-mono">
+                                            {msg.data.latency.p95.toString().replace(/ms$/, '')}ms
+                                        </p>
                                     </div>
                                 </div>
-                                <div className="bg-slate-800/50 border border-slate-700/50 p-3 rounded-xl flex items-center gap-3">
+                                <div className="bg-slate-800/50 border border-slate-700/50 p-2.5 sm:p-3 rounded-xl flex items-center gap-3">
                                     <LucideShield className="w-4 h-4 text-sky-400" />
                                     <div>
-                                        <p className="text-[10px] text-slate-500 uppercase font-bold">Confidence</p>
-                                        <p className="text-sm text-slate-200">{Math.round(msg.data.confidenceScore * 100)}%</p>
+                                        <p className="text-[9px] sm:text-[10px] text-slate-500 uppercase font-bold">Confidence</p>
+                                        <p className="text-xs sm:text-sm text-slate-200">{Math.round(msg.data.confidenceScore * 100)}%</p>
                                     </div>
                                 </div>
                             </div>
@@ -217,18 +223,25 @@ export const DiagnosticsChat: React.FC<DiagnosticsChatProps> = ({ monitorId, tar
                         {/* Error/Warning Flags */}
                         {msg.data && (msg.data.errors.length > 0 || msg.data.security.issues.length > 0) && (
                             <div className="space-y-2">
-                                {msg.data.errors.length > 0 && (
-                                    <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-xl flex items-start gap-3">
-                                        <LucideAlertCircle className="w-4 h-4 text-red-400 mt-0.5" />
-                                        <div className="space-y-1">
-                                            <p className="text-xs font-semibold text-red-200">Backend Exceptions</p>
-                                            <ul className="text-[11px] text-red-400 space-y-0.5">
-                                                {msg.data.errors.slice(0, 2).map((err, i) => <li key={i}>• {err}</li>)}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                                            {msg.data.errors && msg.data.errors.length > 0 && msg.data.severity === 'high' && (
+                                                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                                                    <h4 className="text-red-400 font-semibold mb-2 flex items-center gap-2">
+                                                        <LucideAlertCircle size={16} />
+                                                        Backend Exceptions
+                                                    </h4>
+                                                    <ul className="text-sm space-y-1 text-red-300 opacity-80 list-none pl-0">
+                                                        {msg.data.errors.slice(0, 3).map((err, i) => (
+                                                            <li key={i}>• {err}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                            {/* Luxury Tier: Move "Passive" signals to a footnote or hide if accuracy note is present */}
+                                            {msg.data.severity !== 'high' && msg.data.errors?.some(e => e.includes("Cold start") || e.includes("404")) && (
+                                                <div className="mt-2 text-xs text-blue-400/60 italic px-1">
+                                                    Note: Some minor network signals (timeouts/cold starts) were filtered for report accuracy.
+                                                </div>
+                                            )}</div>
                         )}
 
                         {/* Debug Tools Meta */}
@@ -295,15 +308,15 @@ export const DiagnosticsChat: React.FC<DiagnosticsChatProps> = ({ monitorId, tar
             <LucideSend className="w-4 h-4" />
           </button>
         </div>
-        <div className="mt-2 flex items-center gap-4">
-            <div className="flex items-center gap-1.5">
-                <LucideClock className="w-3.5 h-3.5 text-slate-500" />
-                <span className="text-[10px] text-slate-500">Real-time p95 analysis active</span>
+        <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-1.5 overflow-hidden">
+                <LucideClock className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span className="text-[10px] text-slate-500 truncate">Real-time p95 analysis active</span>
             </div>
             {targetUrl && (
-                <div className="flex items-center gap-1.5">
-                    <LucideShield className="w-3.5 h-3.5 text-emerald-500/70" />
-                    <span className="text-[10px] text-slate-500">Scanning {new URL(targetUrl).hostname}</span>
+                <div className="flex items-center gap-1.5 overflow-hidden">
+                    <LucideShield className="w-3.5 h-3.5 text-emerald-500/70 shrink-0" />
+                    <span className="text-[10px] text-slate-500 truncate">Scanning {new URL(targetUrl).hostname}</span>
                 </div>
             )}
         </div>

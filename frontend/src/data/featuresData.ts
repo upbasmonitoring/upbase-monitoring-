@@ -18,7 +18,7 @@ export const featuresData: Record<string, FeatureInfo> = {
       "AI-powered root cause suggestions",
       "Timeline-based incident tracking"
     ],
-    "howItWorks": "Sentinel IQ collects logs and performance metrics from your services and uses AI to correlate related events, helping you quickly identify the origin of failures.",
+    "howItWorks": "Up-base IQ collects logs and performance metrics from your services and uses AI to correlate related events, helping you quickly identify the origin of failures.",
     "benefits": [
       "Faster debugging",
       "Reduced downtime",

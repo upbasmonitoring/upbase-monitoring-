@@ -474,7 +474,7 @@ const MonitorDetailsPage = () => {
 
                         <div className="space-y-6 sm:space-y-10">
                             {incidents?.length > 0 ? incidents.map((incident: any) => (
-                                <div key={incident._id} className={`bg-card rounded-[24px] sm:rounded-[40px] border transition-all overflow-hidden ${incident.status === 'OPEN' ? 'border-red-500/20 shadow-lg' : 'border-border grayscale-[0.8] opacity-60 shadow-sm'}`}>
+                                <div key={incident._id} className={`bg-card rounded-2xl sm:rounded-[40px] border transition-all overflow-hidden ${incident.status === 'OPEN' ? 'border-red-500/20 shadow-lg' : 'border-border grayscale-[0.8] opacity-60 shadow-sm'}`}>
                                     <div className={`px-4 sm:px-10 h-12 sm:h-16 flex items-center justify-between border-b ${incident.status === 'OPEN' ? 'bg-red-500/5 border-red-500/10' : 'bg-secondary/30 border-border'}`}>
                                         <div className="flex items-center gap-3 sm:gap-5">
                                             <div className={`h-2.5 w-2.5 rounded-full ${incident.status === 'OPEN' ? 'bg-red-500 animate-pulse-slow shadow-[0_0_10px_rgba(239,68,68,0.4)]' : 'bg-muted-foreground/30'}`} />
@@ -486,9 +486,9 @@ const MonitorDetailsPage = () => {
                                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest italic">{new Date(incident.startedAt).toLocaleString()}</span>
                                     </div>
 
-                                    <div className="p-4 sm:p-8 lg:p-12 space-y-8 sm:space-y-12">
+                                    <div className="p-5 sm:p-8 lg:p-12 space-y-6 sm:space-y-12">
                                         {incident.aiRca && (
-                                            <div className="relative p-4 sm:p-8 rounded-[20px] sm:rounded-[32px] bg-primary/5 border border-primary/10 flex gap-4 sm:gap-6 items-start">
+                                            <div className="relative p-5 sm:p-8 rounded-xl sm:rounded-[32px] bg-primary/5 border border-primary/10 flex gap-4 sm:gap-6 items-start">
                                                 <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl bg-card border border-primary/20 flex items-center justify-center shrink-0 shadow-sm">
                                                     <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                                                 </div>
@@ -551,7 +551,7 @@ const MonitorDetailsPage = () => {
                                 {combinedInsights.length > 0 ? (
                                     combinedInsights.map((insight: any) => (
                                         <div key={insight._id} 
-                                             className={`p-8 bg-card border rounded-[32px] space-y-5 group hover:border-primary/30 transition-all shadow-sm ${
+                                             className={`p-5 sm:p-8 bg-card border rounded-2xl sm:rounded-[32px] space-y-4 sm:space-y-5 group hover:border-primary/30 transition-all shadow-sm ${
                                                 insight.type === 'HIGH' || insight.type === 'CRITICAL' || insight.type === 'danger' ? 'border-red-500/10' : 
                                                 insight.severity === 'MEDIUM' || insight.type === 'warning' ? 'border-yellow-500/10' : 'border-emerald-500/10'
                                              }`}
@@ -679,7 +679,7 @@ const MonitorDetailsPage = () => {
 };
 
 const TelemetryCard = ({ label, value, icon, glow }: any) => (
-    <div className={`bg-card border border-border rounded-[20px] sm:rounded-[32px] p-4 sm:p-8 space-y-3 sm:space-y-6 group hover:border-primary/30 hover:shadow-[0_20px_60px_-20px_rgba(0,163,255,0.08)] transition-all flex flex-col shadow-sm ${glow ? 'border-indigo-500/20 ring-4 ring-indigo-500/5' : ''}`}>
+    <div className={`bg-card border border-border rounded-2xl sm:rounded-[32px] p-4 sm:p-8 space-y-3 sm:space-y-6 group hover:border-primary/30 hover:shadow-[0_20px_60px_-20px_rgba(0,163,255,0.08)] transition-all flex flex-col shadow-sm ${glow ? 'border-indigo-500/20 ring-4 ring-indigo-500/5' : ''}`}>
         <div className="flex items-center justify-between">
             <div className="h-9 w-9 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-secondary/50 border border-border flex items-center justify-center transition-all group-hover:bg-primary/5 shadow-sm text-muted-foreground/40 group-hover:text-primary">
                 {icon}

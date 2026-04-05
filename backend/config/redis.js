@@ -143,7 +143,8 @@ try {
       internalClient = new Redis(redisUrl, REDIS_CONFIG);
       
       internalClient.on('error', (err) => {
-        if (!isMock && (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND')) {
+        // Switching to mock on ANY error to ensure stability (including WRONGPASS)
+        if (!isMock) {
           switchToMock();
         }
       });

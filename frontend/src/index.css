@@ -100,7 +100,7 @@
 
 @layer components {
   .pro-card {
-    @apply relative bg-card border border-border rounded-[40px] overflow-hidden transition-all duration-500;
+    @apply relative bg-card border border-border rounded-2xl md:rounded-[40px] overflow-hidden transition-all duration-500;
   }
 
   .pro-card::before {

@@ -11,10 +11,10 @@ import { generateHash } from '../utils/hash.js';
 import { storeHash } from './blockchainService.js';
 
 /**
- * Sentinel IQ (V2) - Intelligent Hazard Detection
+ * Up-base IQ (V2) - Intelligent Hazard Detection
  * Analyzes HTML content to detect "Ghost 200" failures.
  */
-export const calculateSentinelIQScore = (html, customFailureKeywords = []) => {
+export const calculateUpbaseIQScore = (html, customFailureKeywords = []) => {
     // 1. Structural Red Flags - FIX: Don't flag APIs/204s with short responses!
     // A 204 No Content or `{ "ok": true }` is perfectly fine.
     if (!html || html.length < 5) return 0; // Only flag truly dead shells, not tiny APIs
@@ -155,27 +155,27 @@ export const checkSingleMonitor = async (monitor) => {
     let frontendResData = frontendResWrapper.success ? frontendResWrapper.response : frontendResWrapper.error;
 
     // --- Section 0.5: Network Integrity Recovery (Stealth Fallback) ---
-    // Fix: NEVER trigger stealth on timeout. Only do it if explicitly blocked (403) or immediately reset by firewall.
-    // Timeouts hitting the stealth browser were causing the 10,000ms+ latency spikes!
+    // Accuracy Fix: Trigger stealth if standard axios is throttled or slow (>5s)
     let executedStealthBypass = false;
     
-    if (frontendResStatus === 'rejected' && 
-        (['ECONNRESET', 'EAI_AGAIN'].includes(frontendResData.code) || 
-         (frontendResData.response && frontendResData.response.status === 403))) {
-        
-        const stealth = await checkWithStealthBrowser(monitor.url);
-        
-        if (stealth.success) {
-            executedStealthBypass = true;
-            frontendResStatus = 'fulfilled';
-            frontendResData = { 
-                data: stealth.data, 
-                status: stealth.status 
-            };
-            // STRICT RULE: Do not mix Stealth Boot Time with Real Network Latency!
-            // We record bypass time separately in the logs or drop it, but we do NOT overwrite
-            // standard mathematical latency with a 6-second Chromium engine boot.
-            // frontendLatency remains the pure time it took to reach the WAF (typically 50-200ms)
+    if (frontendResStatus === 'rejected' || frontendLatency > 5000) {
+        if (frontendResStatus === 'rejected' && 
+            (['ECONNRESET', 'EAI_AGAIN'].includes(frontendResData.code) || 
+             (frontendResData.response && frontendResData.response.status === 403) ||
+             (frontendResData.code === 'ECONNABORTED' || frontendResData.code === 'ETIMEDOUT'))) {
+            
+            const stealth = await checkWithStealthBrowser(monitor.url);
+            
+            if (stealth.success) {
+                executedStealthBypass = true;
+                frontendResStatus = 'fulfilled';
+                frontendResData = { 
+                    data: stealth.data, 
+                    status: stealth.status 
+                };
+                // Accuracy Correction: Use the real browser load time
+                frontendLatency = stealth.latency || frontendLatency;
+            }
         }
     }
 
@@ -190,20 +190,20 @@ export const checkSingleMonitor = async (monitor) => {
         const isHttpStatusUp = response.status >= 200 && response.status < 400;
         let hasIntegrity = true;
         
-        if (isHttpStatusUp && monitor.useSentinelIQ !== false && response.status !== 204) {
-            let iqScore = calculateSentinelIQScore(responseBody, monitor.failureKeywords);
+        if (isHttpStatusUp && monitor.useUpbaseIQ !== false && response.status !== 204) {
+            let iqScore = calculateUpbaseIQScore(responseBody, monitor.failureKeywords);
             
             if (iqScore >= 1 && iqScore < 3 && process.env.GROQ_API_KEY) {
                 const aiResult = await analyzeWithGroq(responseBody);
                 if (aiResult && aiResult.isFailure && aiResult.confidence >= 80) {
                     iqScore = 6;
-                    errorMessage = `SENTINEL_IQ: Groq-AI Detection (${aiResult.confidence}%) - ${aiResult.reason}`;
+                    errorMessage = `UPBASE_IQ: Groq-AI Detection (${aiResult.confidence}%) - ${aiResult.reason}`;
                 }
             }
 
             if (iqScore >= 3) {
                 hasIntegrity = false;
-                errorMessage = errorMessage || `SENTINEL_IQ: Hidden failure detected (Score: ${iqScore}/10)`;
+                errorMessage = errorMessage || `UPBASE_IQ: Hidden failure detected (Score: ${iqScore}/10)`;
             }
         }
 
@@ -238,6 +238,13 @@ export const checkSingleMonitor = async (monitor) => {
                     ? `API HTTP 404 (Not Found). Tip: Use a valid health path like /health or /api/status instead of the root.` 
                     : `API HTTP ${bResp.status} Error (Backend)`;
                 errorMessage += msg;
+            } else {
+                // AUTO-RESOLUTION: If backend was down but is now up, ensure we flag for recovery
+                console.log(`[MONITOR][${monitor.name}] Backend recovered: 200 OK at ${monitor.apiUrl}`);
+                // PURGE 404 NOISE: If we just recovered, wipe any mention of "404" from the active error string
+                if (errorMessage && errorMessage.includes("404")) {
+                    errorMessage = errorMessage.split('|').filter(part => !part.includes("404")).join('|').trim() || null;
+                }
             }
         } else {
             backendUp = false;
@@ -401,7 +408,7 @@ export const checkSingleMonitor = async (monitor) => {
         statusCode,
         responseSize: responseBody ? Buffer.byteLength(responseBody, 'utf8') : 0, // Analytics Context
         region: 'global-synthetic', // Analytics Context
-        userAgent: 'PulseWatch-Engine', // Analytics Context
+        userAgent: 'Up-base-Engine', // Analytics Context
         responseBody: status === 'DOWN' ? responseBody : null // Save space, only failed body
     });
 
@@ -422,7 +429,7 @@ export const checkSingleMonitor = async (monitor) => {
     if (monitor.consecutiveFailures >= 3) {
         await processAlertingTier(monitor);
         
-        // --- 🤖 Ralph Auto-Fix Engine (V3 Integration) ---
+        // --- 🤖 Up-base Auto-Fix Engine (V3 Integration) ---
         // After alerting/rollback, it attempts to generate and push a code fix.
         try {
             const { triggerAutoFix } = await import('./autoFixService.js');

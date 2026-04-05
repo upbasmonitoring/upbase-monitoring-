@@ -169,11 +169,11 @@ const RalphDiagnosticsPage = () => {
                             <ShieldCheck className="h-4 w-4" />
                             <span className="text-[10px] font-bold uppercase tracking-[0.2em] leading-none">Diagnostic Hub</span>
                         </div>
-                        <h1 className="text-5xl font-bold tracking-tighter uppercase text-foreground leading-none">
-                            Ralph <span className="text-primary italic">Diagnostics</span>
+                        <h1 className="text-3xl sm:text-5xl font-bold tracking-tighter uppercase text-foreground leading-none">
+                            Up-base <span className="text-primary italic">Diagnostics</span>
                         </h1>
-                        <p className="text-sm font-medium text-muted-foreground/60 max-w-xl">
-                            Review and approve AI-generated code fixes. Ralph has validated these suggestions across frontend and backend endpoints for safety.
+                        <p className="text-[11px] sm:text-sm font-medium text-muted-foreground/60 max-w-xl">
+                            Review and approve AI-generated code fixes. Up-base has validated these suggestions across frontend and backend endpoints for safety.
                         </p>
                     </div>
 
@@ -260,10 +260,10 @@ const RalphDiagnosticsPage = () => {
                                     <AlertDialog open={showMergeConfirm} onOpenChange={setShowMergeConfirm}>
                                         <AlertDialogContent className="rounded-[32px] border-border bg-card p-10 shadow-2xl">
                                             <AlertDialogHeader className="space-y-4">
-                                                <AlertDialogTitle className="text-2xl font-black text-foreground leading-none">Confirm Production Merge</AlertDialogTitle>
-                                                <AlertDialogDescription className="text-sm font-medium text-muted-foreground/40">
+                                                <AlertDialogTitle className="text-xl sm:text-2xl font-black text-foreground leading-none">Confirm Production Merge</AlertDialogTitle>
+                                                <AlertDialogDescription className="text-xs sm:text-sm font-medium text-muted-foreground/40">
                                                     This will execute a **hard merge** from your fix branch directly into your primary production branch. 
-                                                    Ralph will perform post-deployment verification immediately after.
+                                                    Up-base will perform post-deployment verification immediately after.
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter className="mt-8 gap-4">

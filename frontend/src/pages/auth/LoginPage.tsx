@@ -96,7 +96,7 @@ const LoginPage = () => {
                     </Link>
                 </div>
 
-                <div className="bg-card w-full p-10 rounded-[40px] border border-border shadow-[0_30px_70px_-20px_rgba(0,0,0,0.06)] relative overflow-hidden group transition-all">
+                <div className="bg-card w-full p-6 sm:p-10 rounded-2xl sm:rounded-[40px] border border-border shadow-[0_30px_70px_-20px_rgba(0,0,0,0.06)] relative overflow-hidden group transition-all">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-40 dark:opacity-20" />
                     
                     <div className="text-center mb-10 space-y-2">

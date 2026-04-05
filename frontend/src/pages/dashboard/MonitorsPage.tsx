@@ -155,7 +155,7 @@ const MonitorsPage = () => {
                     </div>
 
                     <div className="flex-1 max-w-2xl">
-                        <form onSubmit={handleAddMonitor} className="bg-card p-4 sm:p-7 rounded-[24px] sm:rounded-[40px] border border-border shadow-[0_20px_60px_-20px_rgba(0,0,0,0.05)] space-y-4 sm:space-y-6">
+                        <form onSubmit={handleAddMonitor} className="bg-card p-5 sm:p-7 rounded-2xl sm:rounded-[40px] border border-border shadow-[0_20px_60px_-20px_rgba(0,0,0,0.05)] space-y-4 sm:space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div className="space-y-2">
                                     <InputField
@@ -273,7 +273,7 @@ const MonitorsPage = () => {
                             <MonitorDisplayCard key={monitor._id} monitor={monitor} />
                         ))}
                         {monitors?.length === 0 && (
-                            <div className="lg:col-span-2 h-[300px] sm:h-[450px] flex flex-col items-center justify-center border-2 border-dashed border-border rounded-[24px] sm:rounded-[50px] bg-card group hover:border-primary/20 transition-all gap-6 sm:gap-8 px-4">
+                            <div className="lg:col-span-2 h-[300px] sm:h-[450px] flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl sm:rounded-[50px] bg-card group hover:border-primary/20 transition-all gap-6 sm:gap-8 px-4">
                                 <div className="h-20 w-20 rounded-3xl bg-secondary/20 flex items-center justify-center text-muted-foreground group-hover:bg-primary/5 group-hover:text-primary transition-all">
                                     <Satellite className="h-10 w-10" />
                                 </div>
@@ -358,7 +358,7 @@ const MonitorDisplayCard = ({ monitor }: { monitor: any }) => {
     };
 
     return (
-        <div className="bg-card p-4 sm:p-6 lg:p-8 rounded-[24px] sm:rounded-[40px] border border-border shadow-[0_20px_50px_-20px_rgba(0,0,0,0.04)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.06)] hover:border-primary/20 transition-all flex flex-col group relative overflow-hidden">
+        <div className="bg-card p-5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-[40px] border border-border shadow-[0_20px_50px_-20px_rgba(0,0,0,0.04)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.06)] hover:border-primary/20 transition-all flex flex-col group relative overflow-hidden">
             
             <div className={`absolute left-0 top-18 bottom-18 w-1.5 rounded-full opacity-40 ${statusBg}`} />
             

@@ -86,7 +86,7 @@ const SettingsPage = () => {
                 <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_10px_rgba(0,163,255,0.4)]" />
                 <h2 className="text-[10px] font-bold uppercase tracking-[.4em] text-muted-foreground/60">Account Management</h2>
             </div>
-            <h1 className="text-4xl font-bold uppercase tracking-tighter text-foreground leading-none">
+            <h1 className="text-2xl sm:text-4xl font-bold uppercase tracking-tighter text-foreground leading-none">
                 User <span className="text-primary">Details</span>
             </h1>
             <p className="text-sm font-semibold text-muted-foreground/60 uppercase tracking-widest leading-relaxed max-w-xl">
@@ -95,7 +95,7 @@ const SettingsPage = () => {
         </div>
 
         {/* --- 🧑‍💻 PROFILE SETTINGS --- */}
-        <div className="bg-card p-8 md:p-10 rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group">
+        <div className="bg-card p-6 sm:p-10 rounded-2xl sm:rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group">
             <div className="flex items-center gap-4 mb-8">
                 <div className="h-14 w-14 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
                     <User className="h-6 w-6" />
@@ -144,7 +144,7 @@ const SettingsPage = () => {
         </div>
 
         {/* --- 🔐 PASSWORD SETTINGS --- */}
-        <div className="bg-card p-8 md:p-10 rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group relative overflow-hidden">
+        <div className="bg-card p-6 sm:p-10 rounded-2xl sm:rounded-[40px] border border-border shadow-sm hover:border-primary/20 transition-all group relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1.5 h-full opacity-60 bg-primary/40" />
             
             <div className="flex items-center gap-4 mb-8">
