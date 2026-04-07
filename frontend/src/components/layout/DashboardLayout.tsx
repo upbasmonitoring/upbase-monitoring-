@@ -22,7 +22,8 @@ import {
   ExternalLink,
   Moon,
   Sun,
-  Brain
+  Brain,
+  Telescope
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,8 +57,8 @@ const navItems = [
   { icon: Brain, label: "Up-base Intelligence", path: "/dashboard/intelligence", desc: "RCA Analytics" },
   { icon: Zap, label: "Self-Healing", path: "/dashboard/healing", desc: "Automated Recovery" },
   { icon: HistoryIcon, label: "Deployments", path: "/dashboard/deployments", desc: "Change Ledger" },
+  { icon: Telescope, label: "Observability", path: "/dashboard/observability", desc: "Trace Explorer" },
   { icon: ShieldCheck, label: "Up-base Diagnostics", path: "/dashboard/ralph", desc: "Verified Fixes" },
-
   { icon: Bell, label: "Security Alerts", path: "/dashboard/alerts", desc: "Incident Control" },
   { icon: Key, label: "API Keys", path: "/dashboard/keys", desc: "Access Vault" },
   { icon: ExternalLink, label: "Integrations", path: "/dashboard/integrations", desc: "Alert Handlers" },

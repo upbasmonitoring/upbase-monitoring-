@@ -12,8 +12,20 @@ import statsRoutes from './stats.js';
 import integrationsRoutes from './integrations.js';
 
 import publicRoutes from './public.js';
+import logRoutes from './logs.js';
+import traceRoutes from './traces.js';
+import analysisRoutes from './analysis.js';
 
 const router = express.Router();
+
+// ─── Log Ingestion & Query ──────────────────────────────────────
+router.use('/logs', logRoutes);
+
+// ─── Trace Correlation & Debugging ──────────────────────────────
+router.use('/traces', traceRoutes);
+
+// ─── AI Analysis & Actions ──────────────────────────────────────
+router.use('/obs', analysisRoutes);
 
 // Essential Core Routes
 router.use('/auth', authRoutes);
