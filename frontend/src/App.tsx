@@ -32,6 +32,9 @@ const AuditLogsPage        = lazy(() => import("./pages/system/AuditLogsPage"));
 const DeploymentsPage      = lazy(() => import("./pages/ops/DeploymentsPage"));
 const SelfHealingPage      = lazy(() => import("./pages/ops/SelfHealingPage"));
 
+// observability/
+const ObservabilityPage    = lazy(() => import("./pages/dashboard/ObservabilityPage"));
+
 // auth/
 const LoginPage            = lazy(() => import("./pages/auth/LoginPage"));
 const SignupPage            = lazy(() => import("./pages/auth/SignupPage"));
@@ -143,6 +146,7 @@ const router = createBrowserRouter([
         { path: "errors", element: <ErrorsPage /> },
         { path: "audit", element: <AuditLogsPage /> },
         { path: "settings", element: <SettingsPage /> },
+        { path: "observability", element: <ObservabilityPage /> },
     ]
   },
   { path: "*", element: <Suspense fallback={<PremiumLoader />}><NotFound /></Suspense> },
