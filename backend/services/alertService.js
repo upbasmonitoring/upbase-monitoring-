@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import User from '../models/User.js';
 import Monitor from '../models/Monitor.js';
+import Project from '../models/Project.js';
 import { addIncidentEvent } from './incidentService.js';
 import { triggerRalphLoop } from './ralphService.js';
 import { sendWhatsAppAlert } from './whatsappService.js';
@@ -24,8 +25,9 @@ const transporter = nodemailer.createTransport({
  * Handles tiered notifications: Discord -> Email -> WhatsApp -> Escalation
  */
 
-export const sendDiscordAlert = async (user, monitor, statusType) => {
-    const webhookUrl = user.integrations?.discordWebhook;
+export const sendDiscordAlert = async (user, monitor, statusType, integrations) => {
+    // Use project integrations (primary) with user fallback
+    const webhookUrl = integrations?.discordWebhook || user.integrations?.discordWebhook;
     if (!webhookUrl) return;
 
     const color = statusType === 'DOWN' ? 0xff0000 : 0xffa500; // Red for DOWN, Orange for SLOW
@@ -85,12 +87,16 @@ export const sendDiscordAlert = async (user, monitor, statusType) => {
     }
 };
 
-export const sendEmailAlert = async (user, monitor, statusType) => {
-    if (!user.integrations?.emailAlerts) return;
+export const sendEmailAlert = async (user, monitor, statusType, integrations) => {
+    // Check project integrations first, then fall back to user
+    const emailEnabled = integrations?.emailAlerts || user.integrations?.emailAlerts;
+    if (!emailEnabled) return;
+
+    const recipientEmail = integrations?.alertEmail || user.integrations?.alertEmail || user.email;
 
     const mailOptions = {
         from: `"Up-base Monitor" <${process.env.SMTP_USER || 'alerts@up-base.com'}>`,
-        to: user.integrations?.alertEmail || user.email,
+        to: recipientEmail,
         subject: `CRITICAL: ${monitor.name} is ${statusType}`,
         text: `Urgent Alert: ${monitor.url} is ${statusType}.\nResponse Time: ${monitor.responseTime}ms\nDetected at: ${new Date().toISOString()}`,
         html: `
@@ -117,7 +123,7 @@ export const sendEmailAlert = async (user, monitor, statusType) => {
         }
 
         await transporter.sendMail(mailOptions);
-        console.log(`[ALERT] Email alert sent to ${user.email}`);
+        console.log(`[ALERT] Email alert sent to ${recipientEmail}`);
 
         if (incident) {
             incident.alertSent = true;
@@ -125,7 +131,7 @@ export const sendEmailAlert = async (user, monitor, statusType) => {
         }
 
         // Log to incident timeline
-        await addIncidentEvent(monitor._id, 'ALERT_SENT', `Email escalation sent to administrative contact.`);
+        await addIncidentEvent(monitor._id, 'ALERT_SENT', `Email escalation sent to ${recipientEmail}.`);
     } catch (err) {
         console.error(`[ALERT-ERROR] Email failed: ${err.message}`);
     }
@@ -140,9 +146,12 @@ export const triggerEscalationCall = async (user, monitor) => {
     await addIncidentEvent(monitor._id, 'ALERT_SENT', `Final phone line escalation initiated for catastrophic failure.`);
 };
 
-export const sendRecoveryAlert = async (user, monitor) => {
-    const discordUrl = user.integrations?.discordWebhook;
-    const emailAlerts = user.integrations?.emailAlerts;
+export const sendRecoveryAlert = async (user, monitor, integrations) => {
+    // Use project integrations (primary) with user fallback
+    const discordUrl = integrations?.discordWebhook || user.integrations?.discordWebhook;
+    const emailEnabled = integrations?.emailAlerts || user.integrations?.emailAlerts;
+    const recipientEmail = integrations?.alertEmail || user.integrations?.alertEmail || user.email;
+    const phone = integrations?.phone || integrations?.whatsapp || user.integrations?.phone || user.integrations?.whatsapp;
 
     const message = `Up-base SUCCESS: ${monitor.name} is BACK UP!\n` +
                     `URL: ${monitor.url}\n` +
@@ -165,21 +174,21 @@ export const sendRecoveryAlert = async (user, monitor) => {
     }
 
     // WhatsApp Recovery
-    if (user.integrations?.phone) {
+    if (phone) {
         const duration = Math.round((Date.now() - new Date(monitor.failureStartedAt).getTime()) / (1000 * 60));
         const recoveryMsg = `✅ *UP-BASE RECOVERY*\n\n` +
                             `*Monitor:* ${monitor.name}\n` +
                             `*Status:* BACK UP / STABLE\n` +
                             `*Resolution:* Resolved after ${duration} mins\n` +
                             `*URL:* ${monitor.url}`;
-        await sendWhatsAppAlert(monitor.project.toString(), user.integrations.phone, recoveryMsg);
+        await sendWhatsAppAlert(monitor.project.toString(), phone, recoveryMsg);
     }
 
     // Email Recovery
-    if (emailAlerts) {
+    if (emailEnabled) {
         const mailOptions = {
             from: `"Up-base Monitor" <${process.env.SMTP_USER || 'alerts@up-base.com'}>`,
-            to: user.integrations?.alertEmail || user.email,
+            to: recipientEmail,
             subject: `RESTORED: ${monitor.name} is BACK UP`,
             text: message,
             html: `
@@ -194,6 +203,7 @@ export const sendRecoveryAlert = async (user, monitor) => {
             `
         };
         await transporter.sendMail(mailOptions).catch(() => {});
+        console.log(`[ALERT] Recovery email sent to ${recipientEmail}`);
     }
 };
 
@@ -205,6 +215,15 @@ export const processAlertingTier = async (monitor) => {
     const user = await User.findById(monitor.user);
     if (!user) return;
 
+    // Fetch PROJECT integrations (where email/discord/webhook are actually saved)
+    let integrations = {};
+    try {
+        const project = await Project.findById(monitor.project);
+        integrations = project?.integrations || {};
+    } catch (err) {
+        console.error(`[ALERTING-ENGINE] Failed to fetch project integrations: ${err.message}`);
+    }
+
     const now = Date.now();
     const failureDurationMs = now - new Date(monitor.failureStartedAt).getTime();
     const failureDurationMins = failureDurationMs / (1000 * 60);
@@ -213,7 +232,8 @@ export const processAlertingTier = async (monitor) => {
 
     // Tier 1: WhatsApp (Instant Alert upon failure)
     if (monitor.consecutiveFailures >= 3 && (monitor.alertLevel === 'NONE' || !monitor.alertLevel)) {
-        if (user.integrations?.phone) {
+        const phone = integrations.phone || integrations.whatsapp || user.integrations?.phone || user.integrations?.whatsapp;
+        if (phone) {
             let severity = 'LOW';
             try {
                 const { default: Incident } = await import('../models/Incident.js');
@@ -221,7 +241,7 @@ export const processAlertingTier = async (monitor) => {
                 if (incident) severity = incident.severity;
             } catch (err) {}
 
-            console.log(`[ALERT] Sending Engineering WhatsApp Alert to ${user.integrations.phone}`);
+            console.log(`[ALERT] Sending Engineering WhatsApp Alert to ${phone}`);
             
             const message = `🚨 *UP-BASE CRITICAL ALERT*\n\n` +
                             `*Monitor:* ${monitor.name}\n` +
@@ -233,7 +253,7 @@ export const processAlertingTier = async (monitor) => {
                             `*Error:* ${monitor.lastError || 'Service Connectivity Failure'}\n\n` +
                             `_Ralph AI Autopilot is scanning for root cause..._`;
 
-            await sendWhatsAppAlert(monitor.project.toString(), user.integrations.phone, message);
+            await sendWhatsAppAlert(monitor.project.toString(), phone, message);
         }
         
         // --- Ralph Loop Integration (Autopilot Radar) ---
@@ -251,26 +271,27 @@ export const processAlertingTier = async (monitor) => {
     // Tier 2: Discord (Trigger after ~30s of WhatsApp alert)
     if (failureDurationMins >= 0.5 && monitor.alertLevel === 'WHATSAPP') {
         const statusType = monitor.responseTime > 2000 ? 'SLOW' : 'DOWN';
-        await sendDiscordAlert(user, monitor, statusType);
+        await sendDiscordAlert(user, monitor, statusType, integrations);
         monitor.alertLevel = 'DISCORD';
         monitor.lastAlertSentAt = new Date();
     }
 
     // Tier 3: Email (4-5 mins still down)
     if (failureDurationMins >= 5 && monitor.alertLevel === 'DISCORD') {
-        await sendEmailAlert(user, monitor, 'DOWN');
+        await sendEmailAlert(user, monitor, 'DOWN', integrations);
         monitor.alertLevel = 'EMAIL';
         monitor.lastAlertSentAt = new Date();
     }
 
     // Tier 4: WhatsApp URGENT Escalation (After 15 mins still down)
     if (failureDurationMins >= 15 && monitor.alertLevel === 'EMAIL') {
-        if (user.integrations?.phone) {
+        const phone = integrations.phone || integrations.whatsapp || user.integrations?.phone || user.integrations?.whatsapp;
+        if (phone) {
             const message = `⚠️ *URGENT WHATSAPP ESCALATION*\n\n` +
                             `*CRITICAL:* Site *${monitor.name}* still DOWN after ${Math.round(failureDurationMins)} minutes.\n\n` +
                             `*Action Required:* Automated recovery failover failed. Manual intervention requested for ${monitor.url}.\n\n` +
                             `_Status: Engineering Escalation Tier 4_`;
-            await sendWhatsAppAlert(monitor.project.toString(), user.integrations.phone, message);
+            await sendWhatsAppAlert(monitor.project.toString(), phone, message);
         }
         
         // Log escalation
