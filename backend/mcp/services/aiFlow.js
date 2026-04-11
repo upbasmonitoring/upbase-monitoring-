@@ -56,10 +56,14 @@ export async function runQueryFlow({ query, monitorId, targetUrl, requestId, deb
 
     // FETCH MONITOR FALLBACK FOR URL
     let monitor = null;
+    let monitorLiveStatus = null;
     if (monitorId) {
-        monitor = await Monitor.findById(monitorId).lean();
+        monitor = await Monitor.findById(monitorId).select('url status consecutiveFailures lastError').lean();
+        monitorLiveStatus = monitor?.status || null;
     }
     const finalUrl = targetUrl || monitor?.url || null;
+    const isMonitorCurrentlyHealthy = ['UP', 'GOOD', 'OK', 'DEGRADED', 'PROTECTED'].includes(monitorLiveStatus) 
+        && (monitor?.consecutiveFailures || 0) === 0;
 
     // PARALLEL EXECUTION
     const results = await Promise.allSettled([
@@ -100,8 +104,16 @@ export async function runQueryFlow({ query, monitorId, targetUrl, requestId, deb
     // 2. PRIMARY DATA PARSING
     let severity = "low";
     const p95Val = parseInt(latency.p95);
-    const hasCriticalErrors = errors.length > 0;
+    let hasCriticalErrors = errors.length > 0;
     const hasSecIssues = security.issues && security.issues.length > 0 && !security.issues.includes("present");
+
+    // ACCURACY GUARD: If monitor is currently healthy, discard stale error signals
+    // This prevents the AI from reporting "critical backend failure" when the site has already recovered
+    if (isMonitorCurrentlyHealthy && hasCriticalErrors) {
+        console.log(`[MCP][${requestId}][ACCURACY] Monitor is HEALTHY (${monitorLiveStatus}) — discarding ${errors.length} stale error(s)`);
+        errors.length = 0; // Clear the stale errors array in-place
+        hasCriticalErrors = false;
+    }
 
     // 3. PERFORMANCE NOTE GENERATION (FIXED STRING LOGIC)
     let perfNote = "N/A";
@@ -184,7 +196,7 @@ Data Accuracy: Real-time pulse verified.`;
     // Intent Overrides (Integrated Context)
     switch (intent) {
         case "performance":
-            if (hasCriticalErrors) {
+            if (hasCriticalErrors && !isMonitorCurrentlyHealthy) {
                 summary = `Performance is technically ${perfNote}, but system stability is compromised by backend errors. Stability fix is high priority.`;
             } else {
                 summary = `Performance Analysis: ${perfNote}. The system responds within expected tail-latency bounds.`;
