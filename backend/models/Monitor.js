@@ -89,7 +89,7 @@ const monitorSchema = new mongoose.Schema({
     },
     alertLevel: {
         type: String,
-        enum: ['NONE', 'DISCORD', 'EMAIL', 'ESCALATED'],
+        enum: ['NONE', 'WHATSAPP', 'DISCORD', 'EMAIL', 'ESCALATED'],
         default: 'NONE',
     },
     // Section 3: Git Integration

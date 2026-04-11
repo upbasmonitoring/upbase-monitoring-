@@ -4,6 +4,7 @@ import Monitor from '../models/Monitor.js';
 import MonitorLog from '../models/MonitorLog.js';
 import Log from '../models/Log.js';
 import User from '../models/User.js';
+import Project from '../models/Project.js';
 import { processAlertingTier, sendRecoveryAlert } from './alertService.js';
 import { getOrCreateActiveIncident, addIncidentEvent, resolveIncident } from './incidentService.js';
 import { generateSmartInsights } from './insightService.js';
@@ -369,8 +370,18 @@ export const checkSingleMonitor = async (monitor) => {
     } else {
         if (monitor.failureStartedAt) {
             const user = await User.findById(monitor.user);
+            
+            // Accuracy Fix: Fetch project integrations to ensure custom email destination is used for recovery alerts
+            let integrations = {};
+            try {
+                const project = await Project.findById(monitor.project);
+                integrations = project?.integrations || {};
+            } catch (pErr) {
+                console.error(`[RECOVERY-SYNC] Failed to fetch project context: ${pErr.message}`);
+            }
+
             if (user && monitor.alertLevel !== 'NONE') {
-                await sendRecoveryAlert(user, monitor);
+                await sendRecoveryAlert(user, monitor, integrations);
             }
             // Resolve incident (will only perform action if incident status is OPEN)
             await resolveIncident(monitor._id);

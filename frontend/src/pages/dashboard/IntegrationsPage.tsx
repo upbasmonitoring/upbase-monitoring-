@@ -281,7 +281,10 @@ const IntegrationsPage = () => {
                                 name="alertEmail"
                                 autoComplete="email"
                                 placeholder="alerts@yourteam.com" 
-                                defaultValue={integrations.alertEmail}
+                                value={integrations.alertEmail || ""}
+                                onChange={(e) => {
+                                    setIntegrations({ ...integrations, alertEmail: e.target.value });
+                                }}
                                 onBlur={(e) => {
                                     handleUpdateIntegrations('email', { alertEmail: e.target.value });
                                 }}

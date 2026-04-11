@@ -208,7 +208,14 @@ router.post('/:provider', protect, async (req, res) => {
     else if (p === 'slack') project.integrations.slackWebhook = webhookUrl;
     else if (p === 'webhook') project.integrations.customWebhook = webhookUrl;
     else if (p === 'pagerduty') project.integrations.pagerdutyWebhook = webhookUrl;
-    else if (p === 'email') project.integrations.emailAlerts = enabled !== undefined ? enabled : true;
+    else if (p === 'email') {
+        if (enabled !== undefined) project.integrations.emailAlerts = enabled;
+        else project.integrations.emailAlerts = true;
+        // Persist the custom destination email if provided
+        if (req.body.alertEmail !== undefined) {
+            project.integrations.alertEmail = req.body.alertEmail?.trim() || null;
+        }
+    }
     else if (p === 'sms') {
          project.integrations.smsAlerts = enabled !== undefined ? enabled : true;
          if (phone) project.integrations.phone = phone;
