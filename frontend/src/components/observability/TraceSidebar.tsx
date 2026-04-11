@@ -33,7 +33,6 @@ export default function TraceSidebar({ selectedTraceId, projectId, onSelectTrace
     queryKey: ['trace-errors', severity, projectId],
     queryFn: () => observabilityApi.getErrors({ severity, limit: 40, project_id: projectId || undefined }),
     refetchInterval: 30000,
-    enabled: !!projectId,
   });
 
   const traces = data?.data || [];

@@ -1,6 +1,8 @@
 import axios from 'axios';
+import crypto from 'crypto';
 import Monitor from '../models/Monitor.js';
 import MonitorLog from '../models/MonitorLog.js';
+import Log from '../models/Log.js';
 import User from '../models/User.js';
 import { processAlertingTier, sendRecoveryAlert } from './alertService.js';
 import { getOrCreateActiveIncident, addIncidentEvent, resolveIncident } from './incidentService.js';
@@ -9,6 +11,7 @@ import { analyzeWithGroq } from './groqService.js';
 import { checkWithStealthBrowser } from './browserHealthService.js';
 import { generateHash } from '../utils/hash.js';
 import { storeHash } from './blockchainService.js';
+import { correlateTrace } from './correlationEngine.js';
 
 /**
  * Up-base IQ (V2) - Intelligent Hazard Detection
@@ -411,6 +414,117 @@ export const checkSingleMonitor = async (monitor) => {
         userAgent: 'Up-base-Engine', // Analytics Context
         responseBody: status === 'DOWN' ? responseBody : null // Save space, only failed body
     });
+
+    // --- 🔍 OBSERVABILITY TRACE BRIDGE ---
+    // Emit structured logs to the Log model so the Observability page/TraceSidebar
+    // can display correlated error traces via the correlation engine.
+    if (status === 'DOWN' && errorMessage) {
+        try {
+            // Generate a deterministic trace_id per monitor per 10-min window
+            // This groups related check failures into a single trace
+            const windowKey = Math.floor(Date.now() / (10 * 60 * 1000)); // 10-min bucket
+            const traceId = crypto.createHash('sha256')
+                .update(`${monitor._id}-${windowKey}`)
+                .digest('hex')
+                .substring(0, 24);
+
+            const projectId = monitor.project ? monitor.project.toString() : null;
+
+            // Build log entries for this failure event
+            const traceLogs = [];
+
+            // 1. Frontend failure log (if frontend is down)
+            if (!frontendUp) {
+                traceLogs.push({
+                    type: 'frontend',
+                    source: 'upbase-monitor',
+                    service: monitor.name,
+                    severity: 'error',
+                    message: `Frontend check failed for ${monitor.url}: ${errorMessage}`,
+                    metadata: {
+                        monitor_id: monitor._id.toString(),
+                        monitor_name: monitor.name,
+                        url: monitor.url,
+                        status_code: statusCode,
+                        latency_ms: frontendLatency,
+                        consecutive_failures: monitor.consecutiveFailures,
+                        is_demo: false,
+                    },
+                    trace_id: traceId,
+                    project_id: projectId,
+                    environment: 'production',
+                    timestamp: new Date(),
+                    ingested_by: 'monitor-service',
+                });
+            }
+
+            // 2. Backend failure log (if backend is down and has apiUrl)
+            if (monitor.apiUrl && !backendUp) {
+                traceLogs.push({
+                    type: 'backend',
+                    source: 'upbase-monitor',
+                    service: monitor.name,
+                    severity: 'critical',
+                    message: `Backend API unreachable at ${monitor.apiUrl}: ${errorMessage}`,
+                    metadata: {
+                        monitor_id: monitor._id.toString(),
+                        monitor_name: monitor.name,
+                        api_url: monitor.apiUrl,
+                        consecutive_failures: monitor.consecutiveFailures,
+                        is_demo: false,
+                    },
+                    trace_id: traceId,
+                    project_id: projectId,
+                    environment: 'production',
+                    timestamp: new Date(),
+                    ingested_by: 'monitor-service',
+                });
+            }
+
+            // 3. System-level summary log
+            traceLogs.push({
+                type: 'system',
+                source: 'upbase-monitor',
+                service: 'monitor-engine',
+                severity: monitor.consecutiveFailures >= 3 ? 'critical' : 'error',
+                message: `Monitor [${monitor.name}] detected DOWN: ${errorMessage}`,
+                metadata: {
+                    monitor_id: monitor._id.toString(),
+                    monitor_name: monitor.name,
+                    url: monitor.url,
+                    api_url: monitor.apiUrl || null,
+                    status_code: statusCode,
+                    response_time: responseTime,
+                    edge_latency: edgeLatency,
+                    consecutive_failures: monitor.consecutiveFailures,
+                    frontend_down: !frontendUp,
+                    backend_down: monitor.apiUrl ? !backendUp : false,
+                    is_demo: false,
+                },
+                trace_id: traceId,
+                project_id: projectId,
+                environment: 'production',
+                timestamp: new Date(),
+                ingested_by: 'monitor-service',
+            });
+
+            // Insert logs and trigger correlation (fire-and-forget)
+            if (traceLogs.length > 0) {
+                await Log.insertMany(traceLogs, { ordered: false });
+                // Correlate in the background so traces appear in Observability
+                setImmediate(async () => {
+                    try {
+                        await correlateTrace(traceId);
+                        console.log(`[OBSERVABILITY-BRIDGE] Trace ${traceId} correlated for monitor ${monitor.name}`);
+                    } catch (corrErr) {
+                        console.error(`[OBSERVABILITY-BRIDGE] Correlation failed: ${corrErr.message}`);
+                    }
+                });
+            }
+        } catch (obsErr) {
+            console.error(`[OBSERVABILITY-BRIDGE] Log emission failed: ${obsErr.message}`);
+        }
+    }
 
     // --- 🛡️ Blockchain Integrity Pulse ---
     try {
